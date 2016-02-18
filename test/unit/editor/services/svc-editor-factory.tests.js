@@ -37,7 +37,7 @@ describe('service: editorFactory:', function() {
           if(updatePresentation){
             deferred.resolve({item: this._presentation});
           }else{
-            deferred.reject({result: {error: { message: 'ERROR; could not get presentation'}}});
+            deferred.reject({status: 403, result: {error: { message: 'ERROR; could not get presentation'}}});
           }
           return deferred.promise;
         },
@@ -96,6 +96,15 @@ describe('service: editorFactory:', function() {
         trackerCalled = name;
       };
     });
+    $provide.service('store', function() {
+      return {
+        product: {
+          list: function() {
+            return Q.resolve({items:[{productCode: 'test'}]});
+          }
+        }
+      }
+    });
     $provide.service('$state',function(){
       return {
         go : function(state, params){
@@ -138,7 +147,7 @@ describe('service: editorFactory:', function() {
       };
     })
     $provide.value('VIEWER_URL', 'http://rvaviewer-test.appspot.com');
-
+    $provide.value('TEMPLATES_CATEGORY', 'Templates');
   }));
   var editorFactory, trackerCalled, updatePresentation, currentState, stateParams, 
     presentationParser, $window, $modal;
@@ -223,7 +232,8 @@ describe('service: editorFactory:', function() {
       .then(function(result) {
         done(result);
       })
-      .then(null, function() {
+      .then(null, function(e) {
+        expect(e).to.be.ok;
         expect(editorFactory.errorMessage).to.be.ok;
         expect(editorFactory.errorMessage).to.equal("Failed to get Presentation!");
         expect(editorFactory.apiError).to.be.ok;
@@ -517,8 +527,11 @@ describe('service: editorFactory:', function() {
   it('addPresentationModal: ', function(done) {
     editorFactory.addPresentationModal();
     expect(trackerCalled).to.equal("Add Presentation");
+    var copyTemplateSpy = sinon.spy(editorFactory, 'copyTemplate');
     
     setTimeout(function() {
+      copyTemplateSpy.should.have.been.called;
+
       expect(editorFactory.loadingPresentation).to.be.false;
 
       expect(editorFactory.presentation.id).to.not.be.ok;
@@ -531,6 +544,72 @@ describe('service: editorFactory:', function() {
       done();
     }, 10);
 
+  });
+  
+  describe('copyTemplate: ', function() {
+    var newCopyOfSpy, copyPresentationSpy;
+    
+    beforeEach(function() {
+      newCopyOfSpy = sinon.spy(editorFactory, 'newCopyOf');
+      copyPresentationSpy = sinon.spy(editorFactory, 'copyPresentation');
+    });
+
+    it('should copy the template based on productDetails', function(done) {
+      editorFactory.copyTemplate({rvaEntityId: 'presentationId'});
+      
+      newCopyOfSpy.should.have.been.calledWith('presentationId');
+      
+      setTimeout(function() {
+        copyPresentationSpy.should.have.been.called;        
+        
+        done();
+      }, 10);
+    });
+    
+    it('should copy the template based on rvaEntityId', function(done) {      
+      editorFactory.copyTemplate(null, 'presentationId');
+      
+      newCopyOfSpy.should.have.been.calledWith('presentationId');
+
+      setTimeout(function() {
+        copyPresentationSpy.should.have.been.called;        
+        
+        done();
+      }, 10);
+    });
+    
+    it('if API returns 403, and product is available, show goToStoreModal', function(done) {  
+      var $modalOpenSpy = sinon.spy($modal, 'open');
+      
+      updatePresentation = false;    
+      editorFactory.copyTemplate({rvaEntityId: 'presentationId'});
+      
+      newCopyOfSpy.should.have.been.calledWith('presentationId');
+      
+      setTimeout(function() {
+        copyPresentationSpy.should.not.have.been.called;        
+        
+        $modalOpenSpy.should.have.been.called;
+        done();
+      }, 10);
+    });
+    
+    it('if API returns 403, and product is not available, show goToStoreModal', function(done) {  
+      var $modalOpenSpy = sinon.spy($modal, 'open');
+      
+      updatePresentation = false;    
+      editorFactory.copyTemplate(null, 'presentationId');
+      
+      newCopyOfSpy.should.have.been.calledWith('presentationId');
+      
+      setTimeout(function() {
+        copyPresentationSpy.should.not.have.been.called;        
+        
+        $modalOpenSpy.should.have.been.called;
+        
+        done();
+      }, 10);
+    });
   });
 
   it('addFromSharedTemplateModal: ', function(done) {
@@ -560,22 +639,27 @@ describe('service: editorFactory:', function() {
 
   });
 
-  it('newCopyOf: ', function(done) {
-    editorFactory.newCopyOf("presentationId");
+  describe('newCopyOf: ', function(done) {
+    it('should return a promise', function() {
+      expect(editorFactory.newCopyOf().then).to.be.a.function;
+    });
     
-    setTimeout(function() {
-      expect(editorFactory.loadingPresentation).to.be.false;
-
-      expect(editorFactory.presentation.id).to.not.be.ok;
-      expect(editorFactory.presentation.name).to.equal('Copy of some presentation');
+    it('should copy Presentation', function(done) {
+      editorFactory.newCopyOf("presentationId");
       
-      expect(trackerCalled).to.equal('Presentation Copied');
-      expect(currentState).to.equal('apps.editor.workspace.artboard');
-      expect(stateParams).to.deep.equal({presentationId: undefined, copyPresentation:true});
+      setTimeout(function() {
+        expect(editorFactory.loadingPresentation).to.be.false;
 
-      done();
-    }, 10);
+        expect(editorFactory.presentation.id).to.not.be.ok;
+        expect(editorFactory.presentation.name).to.equal('Copy of some presentation');
+        
+        expect(trackerCalled).to.equal('Presentation Copied');
+        expect(currentState).to.equal('apps.editor.workspace.artboard');
+        expect(stateParams).to.deep.equal({presentationId: undefined, copyPresentation:true});
 
+        done();
+      }, 10);
+    });
   });
 
   describe('saveAndPreview: ', function() {

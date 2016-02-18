@@ -14,11 +14,11 @@ angular.module('risevision.editor.controllers')
   ])
   .controller('storeProductsModal', ['$scope', 'ScrollingListService',
     'store', '$modalInstance', '$loading', '$filter', 'STORE_URL', 'category',
-    '$modal', 'storeAuthorization', 'playlistItemFactory',
-    'TEMPLATE_PRODUCT_TAGS', 'TEMPLATES_CATEGORY',
+    '$modal', 'playlistItemFactory', 'TEMPLATE_PRODUCT_TAGS', 
+    'TEMPLATES_CATEGORY',
     function ($scope, ScrollingListService, store, $modalInstance, $loading,
-      $filter, STORE_URL, category, $modal, storeAuthorization,
-      playlistItemFactory, TEMPLATE_PRODUCT_TAGS, TEMPLATES_CATEGORY) {
+      $filter, STORE_URL, category, $modal, playlistItemFactory, 
+      TEMPLATE_PRODUCT_TAGS, TEMPLATES_CATEGORY) {
       var defaultCount = 1000;
 
       $scope.productTags = TEMPLATE_PRODUCT_TAGS;
@@ -57,31 +57,7 @@ angular.module('risevision.editor.controllers')
       };
 
       $scope.select = function (product) {
-        if (category === TEMPLATES_CATEGORY &&
-          product.paymentTerms.toLowerCase() !== 'free') {
-          $loading.start('product-list-loader');
-          storeAuthorization.check(product.productCode).then(function () {
-            $modalInstance.close(product);
-          }, function () {
-            var goToStoreModalInstance = $modal.open({
-              templateUrl: 'partials/editor/go-to-store-modal.html',
-              size: 'md',
-              controller: 'GoToStoreModalController',
-              resolve: {
-                product: function () {
-                  return product;
-                }
-              }
-            });
-            goToStoreModalInstance.result.then(function () {
-              $modalInstance.dismiss();
-            });
-          }).finally(function () {
-            $loading.stop('product-list-loader');
-          });
-        } else {
-          $modalInstance.close(product);
-        }
+        $modalInstance.close(product);
       };
 
       $scope.addWidgetByUrl = function () {

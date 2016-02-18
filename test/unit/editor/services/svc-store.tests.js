@@ -131,6 +131,16 @@ describe('service: store:', function() {
         .then(null,done);
     });
     
+    it('should search by rvaEntityId',function(done){
+      store.product.list({category:'Presentations',rvaEntityId:'presentationId'})
+        .then(function(result){
+          expect(searchString).to.equal('(visibleTo:ALL OR visibleTo:TEST_COMP_ID) AND (productTag:Presentations) AND (rvaEntityId:presentationId)');
+
+          done();
+        })
+        .then(null,done);
+    });
+    
     it("should handle failure to get list correctly",function(done){
       returnList = false;
 

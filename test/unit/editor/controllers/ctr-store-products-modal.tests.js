@@ -39,11 +39,6 @@ describe('controller: Store Products Modal', function() {
       }
     });
     $provide.value('category', 'Templates');
-    $provide.service('storeAuthorization',function(){
-      return {
-        check : function(){}
-      };
-    });
     $provide.service('$modal',function(){
       return {
         open: function(func){
@@ -65,7 +60,7 @@ describe('controller: Store Products Modal', function() {
     });
   }));
   
-  var $scope, $loading, $loadingStartSpy, $loadingStopSpy, storeAuthorization;
+  var $scope, $loading, $loadingStartSpy, $loadingStopSpy;
   var $modalInstance, $modalInstanceDismissSpy, $modalInstanceCloseSpy, $q;
   var $modal, playlistItemAddWidgetByUrlSpy, scrollingListService;
   beforeEach(function(){
@@ -80,7 +75,6 @@ describe('controller: Store Products Modal', function() {
       $modalInstance = $injector.get('$modalInstance');
       $q = $injector.get('$q');
       $modal = $injector.get('$modal');
-      storeAuthorization = $injector.get('storeAuthorization');
       $modalInstanceDismissSpy = sinon.spy($modalInstance, 'dismiss');
       $modalInstanceCloseSpy = sinon.spy($modalInstance, 'close');
       var playlistItemFactory = $injector.get('playlistItemFactory');
@@ -187,57 +181,12 @@ describe('controller: Store Products Modal', function() {
       expect($scope.dismiss).to.be.a('function');
     });
 
-    describe('select:',function(){
-      it('should close modal when clicked on a free product',function(){
-        var product = {paymentTerms: 'free'};
-        $scope.select(product);
+    it('select: should close modal when clicked on a product',function(){
+      var product = {paymentTerms: 'free'};
+      $scope.select(product);
 
-        $modalInstanceCloseSpy.should.have.been.calledWith(product);
-      });
-
-      it('should check store authorization for premium templates',function(done){
-        var product = {productCode: 'pc', paymentTerms: 'premium'};        
-        var checkStub = sinon.stub(storeAuthorization, 'check').returns($q.when(true));
-        
-        $scope.select(product); 
-
-        checkStub.should.have.been.calledWith(product.productCode);
-        $scope.$digest();
-        setTimeout(function(){
-          $modalInstanceCloseSpy.should.have.been.calledWith(product);
-
-          $loadingStartSpy.should.have.been.calledWith('product-list-loader');
-          $loadingStopSpy.should.have.been.calledWith('product-list-loader');
-
-          done();
-        },10);        
-      });
-
-      it('should open modal to handle unauthorizad templates',function(done){
-        var product = { productCode: 'pc', paymentTerms: 'premium' };
-        
-        var deferred = $q.defer();
-        var checkStub = sinon.stub(storeAuthorization, 'check').returns(deferred.promise);
-        deferred.reject();
-
-        var modalOpenSpy = sinon.spy($modal,'open')
-
-        $scope.select(product);
-
-        checkStub.should.have.been.calledWith(product.productCode);
-        $scope.$digest();
-        setTimeout(function(){
-          modalOpenSpy.should.have.been.called;
-          $modalInstanceCloseSpy.should.not.have.been.called;
-          $modalInstanceDismissSpy.should.have.been.called;
-          
-          $loadingStartSpy.should.have.been.calledWith('product-list-loader');
-          $loadingStopSpy.should.have.been.calledWith('product-list-loader');
-
-          done();
-        },10);        
-      });
-    }); 
+      $modalInstanceCloseSpy.should.have.been.calledWith(product);
+    });
 
     it('should dismiss modal when clicked on close with no action',function(){
       $scope.dismiss();
