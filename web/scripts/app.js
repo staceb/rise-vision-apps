@@ -333,7 +333,7 @@ angular.module('risevision.apps', [
                 } else if (!$stateParams.copyPresentation) {
                   var copyOf = $location.search().copyOf;
                   if (copyOf) {
-                    return editorFactory.newCopyOf(copyOf);
+                    return editorFactory.copyTemplate(null, copyOf);
                   }
                   editorFactory.openPresentationProperties();
                   return editorFactory.newPresentation();

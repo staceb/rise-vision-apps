@@ -19,12 +19,13 @@ angular.module('risevision.editor.services')
   )
   .factory('editorFactory', ['$q', '$state', 'userState', 'presentation',
     'presentationParser', 'distributionParser', 'presentationTracker',
-    'VIEWER_URL', 'REVISION_STATUS_REVISED', 'REVISION_STATUS_PUBLISHED',
-    'DEFAULT_LAYOUT', '$modal', '$rootScope', '$window',
+    'store', 'VIEWER_URL', 'REVISION_STATUS_REVISED', 
+    'REVISION_STATUS_PUBLISHED', 'DEFAULT_LAYOUT', 'TEMPLATES_CATEGORY', 
+    '$modal', '$rootScope', '$window',
     function ($q, $state, userState, presentation, presentationParser,
-      distributionParser, presentationTracker, VIEWER_URL,
+      distributionParser, presentationTracker, store, VIEWER_URL,
       REVISION_STATUS_REVISED, REVISION_STATUS_PUBLISHED, DEFAULT_LAYOUT,
-      $modal, $rootScope, $window) {
+      TEMPLATES_CATEGORY, $modal, $rootScope, $window) {
       var factory = {};
 
       factory.openPresentationProperties = function () {
@@ -88,7 +89,7 @@ angular.module('risevision.editor.services')
           .then(null, function (e) {
             _showErrorMessage('get', e);
 
-            deferred.reject();
+            deferred.reject(e);
           })
           .finally(function () {
             factory.loadingPresentation = false;
@@ -323,7 +324,7 @@ angular.module('risevision.editor.services')
       };
 
       factory.newCopyOf = function (presentationId) {
-        factory.getPresentation(presentationId)
+        return factory.getPresentation(presentationId)
           .then(factory.copyPresentation);
       };
 
@@ -346,8 +347,50 @@ angular.module('risevision.editor.services')
             return;
           }
 
-          factory.newCopyOf(productDetails.rvaEntityId);
+          factory.copyTemplate(productDetails);
         });
+      };
+      
+      var _goToStoreModal = function(product) {
+        var goToStoreModalInstance = $modal.open({
+          templateUrl: 'partials/editor/go-to-store-modal.html',
+          size: 'md',
+          controller: 'GoToStoreModalController',
+          resolve: {
+            product: function () {
+              return product;
+            }
+          }
+        });
+        goToStoreModalInstance.result.then(function () {
+          $modalInstance.dismiss();
+        });
+      }
+      
+      factory.copyTemplate = function(productDetails, rvaEntityId) {
+        rvaEntityId = productDetails ? productDetails.rvaEntityId
+          : rvaEntityId;
+        
+        factory.newCopyOf(rvaEntityId)
+          .then(null, function(e) {
+            // 403 Status indicates Premium Template needs purchase
+            if (e && e.status === 403) {
+              if (productDetails) {
+                _goToStoreModal(productDetails);
+              }
+              else {
+                return store.product.list({
+                  category: TEMPLATES_CATEGORY,
+                  rvaEntityId: rvaEntityId
+                })
+                .then(function(products) {
+                  if (products && products.items && products.items[0]) {
+                    _goToStoreModal(products.items[0]);
+                  }
+                });
+              }
+            }
+          });
       };
 
       factory.addFromSharedTemplateModal = function () {
