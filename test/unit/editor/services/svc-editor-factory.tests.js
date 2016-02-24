@@ -670,7 +670,7 @@ describe('service: editorFactory:', function() {
       
       setTimeout(function() {
         $windowOpenSpy.should.have.been.called.twice;
-        $windowOpenSpy.should.have.been.calledWith('http://rvaviewer-test.appspot.com/?type=presentation&id=presentationId&showui=false', 'rvPresentationPreview');
+        $windowOpenSpy.should.have.been.calledWith('http://rvaviewer-test.appspot.com/?type=presentation&id=presentationId', 'rvPresentationPreview');
 
         done();
       }, 10);
@@ -684,7 +684,7 @@ describe('service: editorFactory:', function() {
         
         setTimeout(function() {
           $windowOpenSpy.should.have.been.called.twice;
-          $windowOpenSpy.should.have.been.calledWith('http://rvaviewer-test.appspot.com/?type=presentation&id=presentationId&showui=false', 'rvPresentationPreview');
+          $windowOpenSpy.should.have.been.calledWith('http://rvaviewer-test.appspot.com/?type=presentation&id=presentationId', 'rvPresentationPreview');
 
           done();
         }, 10);
@@ -699,7 +699,7 @@ describe('service: editorFactory:', function() {
       editorFactory.preview('presentationId');
       
       setTimeout(function() {
-        $windowOpenSpy.should.have.been.calledWith('http://rvaviewer-test.appspot.com/?type=presentation&id=presentationId&showui=false', 'rvPresentationPreview');
+        $windowOpenSpy.should.have.been.calledWith('http://rvaviewer-test.appspot.com/?type=presentation&id=presentationId', 'rvPresentationPreview');
         done();
       }, 10);
     });
