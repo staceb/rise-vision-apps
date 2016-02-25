@@ -3,7 +3,8 @@
 angular.module('risevision.editor.services')
   .value('IFRAME_PREFIX', 'if_')
   .value('RENDER_WIDGETS', {
-    'TEXT_WIDGET_PROD': 'ba0da120-7c67-437f-9caf-73585bd30c74',
+    'TEXT_WIDGET_PROD': '32d460d1-a727-4765-a8e9-587f7915ab05',
+    'TEXT_WIDGET_PROD_OLD': 'ba0da120-7c67-437f-9caf-73585bd30c74',
     'TEXT_WIDGET_TEST': '64cc543c-c2c6-49ab-a4e9-40ceba48a253',
     'IMAGE_WIDGET_PROD': '5233a598-35ce-41a4-805c-fd2147f144a3',
     'IMAGE_WIDGET_TEST': '2707fc05-5051-4d7b-bcde-01fafd6eaa5e'
