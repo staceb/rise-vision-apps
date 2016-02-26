@@ -72,7 +72,7 @@ angular.module('risevision.editor.services')
         element.find('#' + frameName).remove();
       };
 
-      factory.notifyResize = function (placeholder, element) {
+      factory.forceReload = function (placeholder, element) {
         if (factory._placeholders[placeholder.id]) {
           factory.unregister(placeholder, element);
           factory.register(placeholder, element);

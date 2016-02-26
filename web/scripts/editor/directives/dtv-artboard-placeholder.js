@@ -12,7 +12,7 @@ angular.module('risevision.editor.directives')
             $scope.factory = placeholderFactory;
             element.addClass('ph-block');
 
-            $scope.$watch('placeholder', function () {
+            $scope.$watch('placeholder', function (newValue, oldValue) {
               element.css('top', $scope.placeholder.top + $scope.placeholder
                 .topUnits);
               element.css('left', $scope.placeholder.left + $scope.placeholder
@@ -27,6 +27,9 @@ angular.module('risevision.editor.directives')
                 '');
               element.css('z-index', $scope.placeholder.zIndex);
               widgetRenderer.notifyChanges($scope.placeholder, element);
+              if (newValue.items && newValue.items[0] && oldValue.items && oldValue.items[0] && newValue.items[0].additionalParams != oldValue.items[0].additionalParams) {
+                widgetRenderer.forceReload($scope.placeholder, element);
+              }              
             }, true);
 
             $scope.$watch('factory.placeholder', function () {

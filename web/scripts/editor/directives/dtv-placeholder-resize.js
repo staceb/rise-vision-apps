@@ -67,7 +67,7 @@ angular.module('risevision.editor.directives')
                   $event.stopPropagation();
                   $document.off('mousemove', mousemove);
                   $document.off('mouseup', mouseup);
-                  widgetRenderer.notifyResize($scope.placeholder,
+                  widgetRenderer.forceReload($scope.placeholder,
                     $element);
                 };
 

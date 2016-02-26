@@ -34,7 +34,8 @@ describe('directive: artboard-placeholder', function() {
       return {
         register: function(){},
         unregister: function(){},
-        notifyChanges: function(){}
+        notifyChanges: function(){},
+        forceReload: function(){}
       };
     });
   }));
@@ -117,6 +118,16 @@ describe('directive: artboard-placeholder', function() {
       var spy = sinon.spy(widgetRenderer,"notifyChanges");
       var element = $compile('<artboard-placeholder placeholder="placeholder"></artboard-placeholder>')($scope);
       $scope.placeholder.top = 200;
+      $scope.$apply();
+      spy.should.have.been.calledWith($scope.placeholder);
+    });
+
+    it('should force placeholder render reload if additionalParams has changed',function(){
+      var spy = sinon.spy(widgetRenderer,"forceReload");
+      $scope.placeholder.items = [{additionalParams: "original"}];
+      var element = $compile('<artboard-placeholder placeholder="placeholder"></artboard-placeholder>')($scope);      
+      $scope.$apply();
+      $scope.placeholder.items[0].additionalParams = "changed";
       $scope.$apply();
       spy.should.have.been.calledWith($scope.placeholder);
     });
