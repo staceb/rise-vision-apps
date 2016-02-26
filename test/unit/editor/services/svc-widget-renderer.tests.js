@@ -37,7 +37,7 @@ describe('service: widgetRenderer:', function() {
     expect(widgetRenderer.register).to.be.a('function');
     expect(widgetRenderer.unregister).to.be.a('function');
     expect(widgetRenderer.notifyChanges).to.be.a('function');
-    expect(widgetRenderer.notifyResize).to.be.a('function');
+    expect(widgetRenderer.forceReload).to.be.a('function');
   });
 
   it('shuold register rpc on init',function(){
@@ -175,8 +175,8 @@ describe('service: widgetRenderer:', function() {
     });
   });
 
-  describe('notifyResize:',function(){
-    it('should handle resize by refreshing the iframe',function(){
+  describe('forceReload:',function(){
+    it('should refreshing the iframe',function(){
       widgetRenderer.register(placeholder,element);
 
       placeholder.width = 100;
@@ -184,17 +184,17 @@ describe('service: widgetRenderer:', function() {
       var registerSpy = sinon.spy(widgetRenderer,'register'); 
       var unregisterSpy = sinon.spy(widgetRenderer,'unregister'); 
       
-      widgetRenderer.notifyResize(placeholder,element);
+      widgetRenderer.forceReload(placeholder,element);
 
       registerSpy.should.have.been.calledWith(placeholder,element);
       unregisterSpy.should.have.been.calledWith(placeholder,element);
     });
 
-    it('should not handle resize if placeholder is not registered',function(){
+    it('should not refresh if placeholder is not registered',function(){
       var registerSpy = sinon.spy(widgetRenderer,'register'); 
       var unregisterSpy = sinon.spy(widgetRenderer,'unregister'); 
       
-      widgetRenderer.notifyResize(placeholder,element);
+      widgetRenderer.forceReload(placeholder,element);
 
       registerSpy.should.not.have.been.called;
       unregisterSpy.should.not.have.been.called;
