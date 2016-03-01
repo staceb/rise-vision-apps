@@ -542,6 +542,18 @@ describe('service: PresentationParser ', function() {
       
       expect(presentationParser.updatePresentationData(presentation, presentation.layout))
         .to.equal('<script language="javascript">\n\t<!--\n\tvar presentationData = {\n\t"presentationData": {\n\t\t"hidePointer": true,\n\t\t"donePlaceholder": "image_Logo",\n\t\t"placeholders": [\n\t\t\t{\n\t\t\t\t"id": "image_Logo",\n\t\t\t\t"type": "playlist",\n\t\t\t\t"timeDefined": false,\n\t\t\t\t"recurrenceDaysOfWeek": [\n\t\t\t\t\t"Wed",\n\t\t\t\t\t"Fri"\n\t\t\t\t],\n\t\t\t\t"visibility": true,\n\t\t\t\t"transition": "none",\n\t\t\t\t"items": [\n\t\t\t\t\t{\n\t\t\t\t\t\t"name": "Image Widget",\n\t\t\t\t\t\t"duration": 10,\n\t\t\t\t\t\t"type": "widget",\n\t\t\t\t\t\t"objectReference": "5233a598-35ce-41a4-805c-fd2147f144a3",\n\t\t\t\t\t\t"index": 0,\n\t\t\t\t\t\t"playUntilDone": false,\n\t\t\t\t\t\t"objectData": "http://s3.amazonaws.com/widget-image/0.1.1/dist/widget.html"\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t]\n\t}\n};\n\t//-->\n\t</script>');
+    });
+
+    it('should replace &quot; from presentationData', function() {
+      var presentation = {
+        layout: presentationHtml
+      };
+      presentationParser.parsePresentation(presentation);
+      
+      presentation.placeholders[0].items[0].additionalParams = "&quot;a&quot;";
+      
+      expect(presentationParser.updatePresentationData(presentation, presentation.layout))
+        .to.equal('<script language="javascript">\n\t<!--\n\tvar presentationData = {\n\t"presentationData": {\n\t\t"hidePointer": true,\n\t\t"donePlaceholder": "image_Logo",\n\t\t"placeholders": [\n\t\t\t{\n\t\t\t\t"id": "image_Logo",\n\t\t\t\t"type": "playlist",\n\t\t\t\t"timeDefined": false,\n\t\t\t\t"visibility": true,\n\t\t\t\t"transition": "none",\n\t\t\t\t"items": [\n\t\t\t\t\t{\n\t\t\t\t\t\t"name": "Image Widget",\n\t\t\t\t\t\t"duration": 10,\n\t\t\t\t\t\t"type": "widget",\n\t\t\t\t\t\t"objectReference": "5233a598-35ce-41a4-805c-fd2147f144a3",\n\t\t\t\t\t\t"index": 0,\n\t\t\t\t\t\t"playUntilDone": false,\n\t\t\t\t\t\t"objectData": "http://s3.amazonaws.com/widget-image/0.1.1/dist/widget.html",\n\t\t\t\t\t\t"additionalParams": "\\\\\\"a\\\\\\""\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t]\n\t}\n};\n\t//-->\n\t</script>');
     });  
   });
   
