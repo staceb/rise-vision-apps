@@ -7,7 +7,9 @@ angular.module('risevision.editor.services')
     'TEXT_WIDGET_PROD_OLD': 'ba0da120-7c67-437f-9caf-73585bd30c74',
     'TEXT_WIDGET_TEST': '64cc543c-c2c6-49ab-a4e9-40ceba48a253',
     'IMAGE_WIDGET_PROD': '5233a598-35ce-41a4-805c-fd2147f144a3',
-    'IMAGE_WIDGET_TEST': '2707fc05-5051-4d7b-bcde-01fafd6eaa5e'
+    'IMAGE_WIDGET_TEST': '2707fc05-5051-4d7b-bcde-01fafd6eaa5e',
+    'TIME_AND_DATE_WIDGET_PROD': '8b984369-f83c-4eca-add6-e431d338eaff',
+    'TIME_AND_DATE_WIDGET_TEST': '23e390be-8abb-4569-9084-e89722038895'
   })
   .value('CUSTOM_WIDGET_ICONS', {
     '2d407395-d1ae-452c-bc27-78124a47132b': 'ph-video-item', // Video Widget - Prod
@@ -128,8 +130,8 @@ angular.module('risevision.editor.services')
         })();
       };
 
-      gadgetsApi.rpc.register('rsevent_ready', function () {
-        //Register to avoid error messages. Doing nothing for now.
+      gadgetsApi.rpc.register('rsevent_ready', function (id) {
+        gadgetsApi.rpc.call(IFRAME_PREFIX + id, 'rscmd_play_' + id);
       });
 
       gadgetsApi.rpc.register('rsparam_get', function (id, param) {
