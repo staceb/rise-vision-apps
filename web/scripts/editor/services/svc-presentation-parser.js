@@ -637,7 +637,7 @@ angular.module('risevision.editor.services')
           presentationData: data
         };
 
-        var presentationDataString = JSON.stringify(data, null, '\t');
+        var presentationDataString = JSON.stringify(data, null, '\t').replace(/&quot;/g,'\\\\\\"');
 
         var modifiedDataVariableString = dataVariableString.replace(
           '%data%', presentationDataString);
