@@ -84,14 +84,14 @@ describe('service: widgetRenderer:', function() {
       expect(placeholder.className).to.equal('');
     });
 
-    it('should not render Image Widget if image url is not https',function(){
+    it('should render Image Widget if image url is not https',function(){
       placeholder.items[0].objectReference = '5233a598-35ce-41a4-805c-fd2147f144a3';
       placeholder.items[0].additionalParams = '{\"selector\":{\"url\":\"http://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png\"}}';
 
       widgetRenderer.register(placeholder,element);
 
-      expect(Object.keys(widgetRenderer._placeholders).length).to.equal(0);
-      expect(placeholder.className).to.equal('ph-item-icon');
+      expect(Object.keys(widgetRenderer._placeholders).length).to.equal(1);
+      expect(placeholder.className).to.equal(''); 
     });
 
     it('should render Image Widget with old params format',function(){
