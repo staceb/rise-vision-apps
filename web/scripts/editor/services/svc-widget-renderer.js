@@ -26,14 +26,7 @@ angular.module('risevision.editor.services')
       var _isRenderingAllowed = function (playlistItem) {
         var objectReference = playlistItem.objectReference;
         for (var k in RENDER_WIDGETS) {
-          if (RENDER_WIDGETS[k] === objectReference) {
-            if (objectReference === RENDER_WIDGETS.IMAGE_WIDGET_PROD ||
-              objectReference === RENDER_WIDGETS.IMAGE_WIDGET_TEST) {
-              var params = JSON.parse(playlistItem.additionalParams);
-              return (params.url && params.url.slice(0, 8) === 'https://') ||
-                (params && params.selector && params.selector.url && params
-                  .selector.url.slice(0, 8) === 'https://');
-            }
+          if (RENDER_WIDGETS[k] === objectReference) { 
             return true;
           }
         }
