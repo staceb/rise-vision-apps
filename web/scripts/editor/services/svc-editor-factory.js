@@ -19,8 +19,8 @@ angular.module('risevision.editor.services')
   )
   .factory('editorFactory', ['$q', '$state', 'userState', 'presentation',
     'presentationParser', 'distributionParser', 'presentationTracker',
-    'store', 'VIEWER_URL', 'REVISION_STATUS_REVISED', 
-    'REVISION_STATUS_PUBLISHED', 'DEFAULT_LAYOUT', 'TEMPLATES_CATEGORY', 
+    'store', 'VIEWER_URL', 'REVISION_STATUS_REVISED',
+    'REVISION_STATUS_PUBLISHED', 'DEFAULT_LAYOUT', 'TEMPLATES_CATEGORY',
     '$modal', '$rootScope', '$window',
     function ($q, $state, userState, presentation, presentationParser,
       distributionParser, presentationTracker, store, VIEWER_URL,
@@ -350,8 +350,8 @@ angular.module('risevision.editor.services')
           factory.copyTemplate(productDetails);
         });
       };
-      
-      var _goToStoreModal = function(product) {
+
+      var _goToStoreModal = function (product) {
         var goToStoreModalInstance = $modal.open({
           templateUrl: 'partials/editor/go-to-store-modal.html',
           size: 'md',
@@ -366,28 +366,27 @@ angular.module('risevision.editor.services')
           $modalInstance.dismiss();
         });
       }
-      
-      factory.copyTemplate = function(productDetails, rvaEntityId) {
-        rvaEntityId = productDetails ? productDetails.rvaEntityId
-          : rvaEntityId;
-        
+
+      factory.copyTemplate = function (productDetails, rvaEntityId) {
+        rvaEntityId = productDetails ? productDetails.rvaEntityId :
+          rvaEntityId;
+
         factory.newCopyOf(rvaEntityId)
-          .then(null, function(e) {
+          .then(null, function (e) {
             // 403 Status indicates Premium Template needs purchase
             if (e && e.status === 403) {
               if (productDetails) {
                 _goToStoreModal(productDetails);
-              }
-              else {
+              } else {
                 return store.product.list({
-                  category: TEMPLATES_CATEGORY,
-                  rvaEntityId: rvaEntityId
-                })
-                .then(function(products) {
-                  if (products && products.items && products.items[0]) {
-                    _goToStoreModal(products.items[0]);
-                  }
-                });
+                    category: TEMPLATES_CATEGORY,
+                    rvaEntityId: rvaEntityId
+                  })
+                  .then(function (products) {
+                    if (products && products.items && products.items[0]) {
+                      _goToStoreModal(products.items[0]);
+                    }
+                  });
               }
             }
           });
