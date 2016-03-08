@@ -6,6 +6,7 @@ angular.module('risevision.apps.controllers')
       $scope.navOptions = [{
         title: 'Home',
         link: $state.href('apps.launcher.home'),
+        cid: true,
         states: [
           'apps.launcher.home',
           'apps.launcher.signup',
@@ -14,6 +15,7 @@ angular.module('risevision.apps.controllers')
       }, {
         title: 'Presentations',
         link: $state.href('apps.editor.home'),
+        cid: true,
         states: [
           'apps.editor.home',
           'apps.editor.list',
@@ -23,6 +25,7 @@ angular.module('risevision.apps.controllers')
       }, {
         title: 'Schedules',
         link: $state.href('apps.schedules.home'),
+        cid: true,
         states: [
           'apps.schedules.home',
           'apps.schedules.list',
@@ -32,6 +35,7 @@ angular.module('risevision.apps.controllers')
       }, {
         title: 'Displays',
         link: $state.href('apps.displays.home'),
+        cid: true,
         states: [
           'apps.displays.home',
           'apps.displays.list',
@@ -41,6 +45,7 @@ angular.module('risevision.apps.controllers')
       }, {
         title: 'Alerts',
         link: $state.href('apps.displays.alerts'),
+        cid: true,
         states: ['apps.displays.alerts']
       }];
       $scope.navSelected = 'apps.launcher.home';
