@@ -26,7 +26,7 @@ angular.module('risevision.editor.services')
       var _isRenderingAllowed = function (playlistItem) {
         var objectReference = playlistItem.objectReference;
         for (var k in RENDER_WIDGETS) {
-          if (RENDER_WIDGETS[k] === objectReference) { 
+          if (RENDER_WIDGETS[k] === objectReference) {
             return true;
           }
         }

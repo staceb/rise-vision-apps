@@ -53,7 +53,7 @@ angular.module('risevision.editor.services')
               filterString = filterString + ' AND (productTag:' +
                 productTag + ')';
             }
-            
+
             if (search.rvaEntityId) {
               filterString += ' AND (rvaEntityId:' + search.rvaEntityId +
                 ')';

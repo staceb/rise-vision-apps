@@ -21,14 +21,21 @@ describe('service: presentation tracker:', function() {
         load: function(){}
       }
     });
+    $provide.service('bigQueryLogging',function(){
+      return {
+        logEvent: function() {}
+      }
+    });
   }));
   
-  var presentationTracker, eventName, eventData;
+  var presentationTracker, eventName, eventData, bQSpy;
   beforeEach(function(){
     eventName = undefined;
     eventData = undefined;
     inject(function($injector){
       presentationTracker = $injector.get('presentationTracker');
+      var bigQueryLogging = $injector.get('bigQueryLogging');
+      bQSpy = sinon.spy(bigQueryLogging,'logEvent');
     });
   });
 
@@ -42,6 +49,13 @@ describe('service: presentation tracker:', function() {
 
     expect(eventName).to.equal('Presentation Updated');
     expect(eventData).to.deep.equal({presentationId: 'presentationId', presentationName: 'presentationName', companyId: 'companyId'});
+    bQSpy.should.not.have.been.called;
+  });
+
+  it('should log Presentation Created to BQ',function(){
+    presentationTracker('Presentation Created', 'presentationId', 'presentationName');
+
+    bQSpy.should.have.been.calledWith('Presentation Created', 'presentationId');
   });
 
   it('should not call segment w/ blank event',function(){
@@ -49,6 +63,7 @@ describe('service: presentation tracker:', function() {
 
     expect(eventName).to.not.be.ok;
     expect(eventData).to.not.be.ok;
+    bQSpy.should.not.have.been.called;
   });
 
 
