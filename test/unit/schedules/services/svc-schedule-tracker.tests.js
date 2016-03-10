@@ -21,14 +21,21 @@ describe('service: schedule tracker:', function() {
         load: function(){}
       }
     });
+    $provide.service('bigQueryLogging',function(){
+      return {
+        logEvent: function() {}
+      }
+    });
   }));
   
-  var scheduleTracker, eventName, eventData;
+  var scheduleTracker, eventName, eventData, bQSpy;
   beforeEach(function(){
     eventName = undefined;
     eventData = undefined;
     inject(function($injector){
       scheduleTracker = $injector.get('scheduleTracker');
+      var bigQueryLogging = $injector.get('bigQueryLogging');
+      bQSpy = sinon.spy(bigQueryLogging,'logEvent');
     });
   });
 
@@ -42,6 +49,12 @@ describe('service: schedule tracker:', function() {
 
     expect(eventName).to.equal('Schedule Updated');
     expect(eventData).to.deep.equal({scheduleId: 'scheduleId', scheduleName: 'scheduleName', companyId: 'companyId'});
+    bQSpy.should.not.have.been.called;
+  });
+
+  it('should track Schedule Created event to BQ',function(){
+    scheduleTracker('Schedule Created', 'scheduleId', 'scheduleName');
+    bQSpy.should.have.been.calledWith('Schedule Created', 'scheduleId');
   });
 
   it('should not call segment w/ blank event',function(){
@@ -49,6 +62,7 @@ describe('service: schedule tracker:', function() {
 
     expect(eventName).to.not.be.ok;
     expect(eventData).to.not.be.ok;
+    bQSpy.should.not.have.been.called;
   });
 
 
