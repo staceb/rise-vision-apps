@@ -28,13 +28,14 @@ describe('service: display tracker:', function() {
     });
   }));
   
-  var displayTracker, eventName, eventData, bigQueryLogging;
+  var displayTracker, eventName, eventData, bQSpy;
   beforeEach(function(){
     eventName = undefined;
     eventData = undefined;
     inject(function($injector){
       displayTracker = $injector.get('displayTracker');
-      bigQueryLogging = $injector.get('bigQueryLogging');
+      var bigQueryLogging = $injector.get('bigQueryLogging');
+      bQSpy = sinon.spy(bigQueryLogging,'logEvent');
     });
   });
 
@@ -44,7 +45,6 @@ describe('service: display tracker:', function() {
   });
   
   it('should call segment analytics service',function(){
-    var bQSpy = sinon.spy(bigQueryLogging,'logEvent');
     displayTracker('Display Updated', 'displayId', 'displayName', 'downloadType');
 
     expect(eventName).to.equal('Display Updated');
@@ -53,16 +53,16 @@ describe('service: display tracker:', function() {
   });
 
   it('should track Player Download event to BQ',function(){
-    var bQSpy = sinon.spy(bigQueryLogging,'logEvent');
-
     displayTracker('Player Download', 'displayId', 'displayName', 'downloadType');
-
     bQSpy.should.have.been.calledWith('Player Download', 'displayId');
   });
 
-  it('should not call segment w/ blank event',function(){
-    var bQSpy = sinon.spy(bigQueryLogging,'logEvent');
+  it('should track Display Created event to BQ',function(){
+    displayTracker('Display Created', 'displayId', 'displayName', 'downloadType');
+    bQSpy.should.have.been.calledWith('Display Created', 'displayId');
+  });
 
+  it('should not call segment w/ blank event',function(){
     displayTracker();
 
     expect(eventName).to.not.be.ok;

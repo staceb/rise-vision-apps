@@ -1,9 +1,12 @@
 'use strict';
 
 angular.module('risevision.editor.services')
+  .value('PRESENTATION_EVENTS_TO_BQ', [
+    'Presentation Created'
+  ])
   .factory('presentationTracker', ['userState', 'segmentAnalytics',
-    'bigQueryLogging',
-    function (userState, segmentAnalytics, bigQueryLogging) {
+    'bigQueryLogging', 'PRESENTATION_EVENTS_TO_BQ',
+    function (userState, segmentAnalytics, bigQueryLogging, PRESENTATION_EVENTS_TO_BQ) {
       return function (eventName, presentationId, presentationName) {
         if (eventName) {
           segmentAnalytics.track(eventName, {
@@ -11,7 +14,7 @@ angular.module('risevision.editor.services')
             presentationName: presentationName,
             companyId: userState.getSelectedCompanyId()
           });
-          if (eventName === 'Presentation Created') {
+          if (PRESENTATION_EVENTS_TO_BQ.indexOf(eventName) !== -1) {
             bigQueryLogging.logEvent(eventName, presentationId);
           }
         }
