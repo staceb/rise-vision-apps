@@ -75,6 +75,7 @@ var SharedTemplatesScenarios = function() {
     it("should preview template in a new tab", function (done) {
       var newWindowHandle, oldWindowHandle;
       sharedTemplatesModalPage.getPreviewLinks().get(0).click();
+      browser.ignoreSynchronization = true;
       browser.getAllWindowHandles().then(function (handles) {
         oldWindowHandle = handles[0];
         newWindowHandle = handles[1];
@@ -94,6 +95,10 @@ var SharedTemplatesScenarios = function() {
       helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
 
       expect(presentationPropertiesModalPage.getNameInput().getAttribute('value')).to.eventually.contain('Copy of ');
+    });
+
+    afterEach(function(){
+      browser.ignoreSynchronization = false;
     });
   });
 };

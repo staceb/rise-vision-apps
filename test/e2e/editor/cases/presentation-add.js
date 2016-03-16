@@ -61,7 +61,7 @@ var PresentationAddScenarios = function() {
     it('should add presentation', function () {
       var presentationName = 'TEST_E2E_PRESENTATION';
 
-      presentationPropertiesModalPage.getNameInput().click();
+      helper.wait(presentationPropertiesModalPage.getNameInput(), 'Waiting for Name Input');
       presentationPropertiesModalPage.getNameInput().clear();
       presentationPropertiesModalPage.getNameInput().sendKeys(presentationName);
       helper.clickWhenClickable(presentationPropertiesModalPage.getApplyButton(), 'Apply Button');
