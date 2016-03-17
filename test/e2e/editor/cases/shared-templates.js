@@ -75,6 +75,7 @@ var SharedTemplatesScenarios = function() {
     it("should preview template in a new tab", function (done) {
       var newWindowHandle, oldWindowHandle;
       sharedTemplatesModalPage.getPreviewLinks().get(0).click();
+      browser.sleep(1000);
       browser.ignoreSynchronization = true;
       browser.getAllWindowHandles().then(function (handles) {
         oldWindowHandle = handles[0];
