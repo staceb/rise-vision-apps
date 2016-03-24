@@ -231,7 +231,7 @@ angular.module('risevision.editor.services')
         var tokens = htmlString.split(';');
         for (var x = 0; x < tokens.length; x++) {
           if (tokens[x].indexOf(':') !== -1) {
-            var param = tokens[x].split(':')[0];
+            var param = tokens[x].split(':')[0].trim();
             var value = tokens[x].substring(tokens[x].indexOf(':') + 1).trim();
 
             if (param.equalsIgnoreCase(widthParam)) {
@@ -473,16 +473,36 @@ angular.module('risevision.editor.services')
           found = true;
         }
 
-        styleString = htmlParser.updateStyle(widthParam, htmlParser.getUnitString(
-          placeholder.width, placeholder.widthUnits), styleString);
-        styleString = htmlParser.updateStyle(heightParam, htmlParser.getUnitString(
-          placeholder.height, placeholder.heightUnits), styleString);
-        styleString = htmlParser.updateStyle(leftParam, htmlParser.getUnitString(
-          placeholder.left, placeholder.leftUnits), styleString);
-        styleString = htmlParser.updateStyle(topParam, htmlParser.getUnitString(
-          placeholder.top, placeholder.topUnits), styleString);
-        styleString = htmlParser.updateStyle(zIndexParam, placeholder.zIndex +
-          '', styleString);
+        if (placeholder.width) {
+          styleString = htmlParser.updateStyle(widthParam, htmlParser.getUnitString(
+            placeholder.width, placeholder.widthUnits), styleString);
+        } else {
+          styleString = htmlParser.updateStyle(widthParam, '0px', styleString);
+        }
+        if (placeholder.height) {
+          styleString = htmlParser.updateStyle(heightParam, htmlParser.getUnitString(
+            placeholder.height, placeholder.heightUnits), styleString);
+        } else {
+          styleString = htmlParser.updateStyle(heightParam, '0px', styleString);
+        }
+        if (placeholder.left) {
+          styleString = htmlParser.updateStyle(leftParam, htmlParser.getUnitString(
+            placeholder.left, placeholder.leftUnits), styleString);
+        } else {
+          styleString = htmlParser.updateStyle(leftParam, '0px', styleString);
+        }
+        if (placeholder.top) {
+          styleString = htmlParser.updateStyle(topParam, htmlParser.getUnitString(
+            placeholder.top, placeholder.topUnits), styleString);
+        } else {
+          styleString = htmlParser.updateStyle(topParam, '0px', styleString);
+        }
+        if (placeholder.zIndex) {
+          styleString = htmlParser.updateStyle(zIndexParam, placeholder.zIndex +
+          '', styleString);  
+        } else {
+          styleString = htmlParser.updateStyle(zIndexParam, '0', styleString);  
+        }        
         if (placeholder.backgroundStyle) {
           styleString = htmlParser.updateStyle(backgroundParam, placeholder
             .backgroundStyle, styleString);

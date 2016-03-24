@@ -261,6 +261,17 @@ describe('service: PresentationParser ', function() {
        expect(placeholder).to.be.ok;
        expect(placeholder).to.deep.equal({width:1920,widthUnits:'px',backgroundStyle:'url(\'http://host.com/images/bg.jpg\') no-repeat left top',backgroundScaleToFit:false});
     });
+
+    it('should handle whitespaces',function(){
+      var styleToken = 'width: 842px;    height: 134px ;left:34px ;top:60px ;z-index:0;position:absolute;background:url(\'http://host.com/images/bg.jpg\') no-repeat left top;background-size:contain;';
+       
+       var placeholder = {};
+       presentationParser.parseStyle(placeholder, styleToken);
+       expect(placeholder).to.be.ok;
+       expect(placeholder.width).to.equal(842);
+       expect(placeholder.height).to.equal(134);
+       expect(placeholder).to.deep.equal({width:842,height:134,widthUnits:'px',heightUnits:'px',left:34,top:60,leftUnits:'px',topUnits:'px',zIndex:0,backgroundStyle:'url(\'http://host.com/images/bg.jpg\') no-repeat left top',backgroundScaleToFit:true});
+    });
   });
   
   describe('parseDiv: ', function() {
@@ -453,6 +464,17 @@ describe('service: PresentationParser ', function() {
       var newPlaceholderDiv = presentationParser.updateDiv(placeholder, placeholderDiv);
       
       expect(newPlaceholderDiv).to.equal(' id="image_Logo" placeholder="true" style="width:600px;height:400px;left:50px;top:50px;z-index:2;position:absolute;"');
+    });
+
+    it('should handle missing properties',function(){
+      var placeholderDiv = ' id="image_Logo" placeholder="true" style="position:absolute;"';
+      var placeholder = {
+        id: 'image_Logo',
+      };
+
+      var newPlaceholderDiv = presentationParser.updateDiv(placeholder, placeholderDiv);
+      
+      expect(newPlaceholderDiv).to.equal(' id="image_Logo" placeholder="true" style="position:absolute;width:0px;height:0px;left:0px;top:0px;z-index:0;"');
     });
   });
   
