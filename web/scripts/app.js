@@ -379,6 +379,29 @@ angular.module('risevision.apps', [
             }
           ]
         }
+      })
+
+      // storage
+      .state('apps.storage', {
+        url: '?cid',
+        abstract: true,
+        template: '<div class="storage-app" ui-view ' +
+          'off-canvas-content></div>'
+      })
+
+      .state('apps.storage.home', {
+        url: '/storage',
+        templateProvider: ['$templateCache', function ($templateCache) {
+          return $templateCache.get('partials/storage/home.html');
+        }],
+        controller: 'StorageController',
+        resolve: {
+          canAccessApps: ['canAccessApps',
+            function (canAccessApps) {
+              return canAccessApps();
+            }
+          ]
+        }
       });
 
     }
@@ -394,7 +417,8 @@ angular.module('risevision.apps', [
         if ($state.current.name === 'apps.schedules.list' ||
           $state.current.name === 'apps.editor.list' ||
           $state.current.name === 'apps.displays.list' ||
-          $state.current.name === 'apps.displays.alerts') {
+          $state.current.name === 'apps.displays.alerts' ||
+          $state.current.name === 'apps.storage.home') {
 
           $state.go($state.current, null, {
             reload: true
