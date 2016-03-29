@@ -4,7 +4,7 @@
 describe('Filters: ', function() {
 
   beforeEach(module('risevision.storage.filters'));
-  
+
   describe('fileTypeFilter: ', function() {
     var fileTypeFilter;
     

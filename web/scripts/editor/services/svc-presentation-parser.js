@@ -477,19 +477,22 @@ angular.module('risevision.editor.services')
           styleString = htmlParser.updateStyle(widthParam, htmlParser.getUnitString(
             placeholder.width, placeholder.widthUnits), styleString);
         } else {
-          styleString = htmlParser.updateStyle(widthParam, '0px', styleString);
+          styleString = htmlParser.updateStyle(widthParam, '0px',
+            styleString);
         }
         if (placeholder.height) {
           styleString = htmlParser.updateStyle(heightParam, htmlParser.getUnitString(
             placeholder.height, placeholder.heightUnits), styleString);
         } else {
-          styleString = htmlParser.updateStyle(heightParam, '0px', styleString);
+          styleString = htmlParser.updateStyle(heightParam, '0px',
+            styleString);
         }
         if (placeholder.left) {
           styleString = htmlParser.updateStyle(leftParam, htmlParser.getUnitString(
             placeholder.left, placeholder.leftUnits), styleString);
         } else {
-          styleString = htmlParser.updateStyle(leftParam, '0px', styleString);
+          styleString = htmlParser.updateStyle(leftParam, '0px',
+            styleString);
         }
         if (placeholder.top) {
           styleString = htmlParser.updateStyle(topParam, htmlParser.getUnitString(
@@ -499,10 +502,11 @@ angular.module('risevision.editor.services')
         }
         if (placeholder.zIndex) {
           styleString = htmlParser.updateStyle(zIndexParam, placeholder.zIndex +
-          '', styleString);  
+            '', styleString);
         } else {
-          styleString = htmlParser.updateStyle(zIndexParam, '0', styleString);  
-        }        
+          styleString = htmlParser.updateStyle(zIndexParam, '0',
+            styleString);
+        }
         if (placeholder.backgroundStyle) {
           styleString = htmlParser.updateStyle(backgroundParam, placeholder
             .backgroundStyle, styleString);

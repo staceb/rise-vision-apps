@@ -6,6 +6,7 @@ var HomePage = function() {
   var displaysUrl = config.rootUrl + '/displays/list';
   var editorUrl = config.rootUrl + '/editor/list';
   var schedulesUrl = config.rootUrl + '/schedules/list';
+  var storageUrl = config.rootUrl + '/storage';
 
   var appLauncherContainer = element(by.id('appLauncherContainer'));
   var presentationAddButton = element(by.id('presentationAddButton'));
@@ -36,6 +37,10 @@ var HomePage = function() {
 
   this.getSchedules = function() {
     browser.get(schedulesUrl);
+  };
+
+  this.getStorage = function() {
+    browser.get(storageUrl);
   };
 
   this.getUrl = function() {
