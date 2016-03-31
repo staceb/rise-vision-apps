@@ -177,6 +177,17 @@ describe("controller: Upload", function() {
       expect(args[0].name).to.be.equal("test/test1.jpg");
     });
 
+    describe('removeItem:',function(){
+
+      it('should remove item from Uploader queue',function(){
+        var spy = sinon.spy(FileUploader, "removeFromQueue");
+        var myItem = 'item'
+        scope.removeItem(myItem);
+        spy.should.have.been.calledWith(myItem);
+      });
+
+    });
+
     describe('onCompleteItem:',function(){
 
       it('should remove item on completed',function(){
