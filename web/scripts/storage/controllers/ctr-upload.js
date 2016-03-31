@@ -17,7 +17,7 @@ angular.module('risevision.storage.controllers')
     $scope.completed = [];
 
     $scope.removeItem = function (item) {
-      uploader.cancelItem(item);
+      uploader.removeFromQueue(item);
     };
 
     $scope.activeUploadCount = function () {
