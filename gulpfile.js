@@ -16,6 +16,7 @@ var gutil       = require("gulp-util");
 var rename      = require('gulp-rename');
 var runSequence = require('run-sequence');
 var factory     = require("widget-tester").gulpTaskFactory;
+var fs          = require('fs');
 
 //--------------------- Variables --------------------------------------
 
@@ -236,13 +237,19 @@ gulp.task("server", factory.testServer({
 }));
 gulp.task("server-close", factory.testServerClose());
 gulp.task("test:webdrive_update", factory.webdriveUpdate());
-gulp.task("test:e2e:core", ["test:webdrive_update"], factory.testE2EAngular({
+gulp.task("test:e2e:core", ["test:webdrive_update"],factory.testE2EAngular({
   browser: "chrome",
   loginUser: process.env.E2E_USER,
   loginPass: process.env.E2E_PASS,
-  testFiles: process.env.TEST_FILES
+  testFiles: function(){ 
+    try{
+      return JSON.parse(fs.readFileSync('/tmp/testFiles.txt').toString())
+    } catch (e) {
+      return process.env.TEST_FILES
+    }
+  }()
 }));
-gulp.task("test:e2e", function (cb) {
+gulp.task("test:e2e", function (cb) { 
   runSequence("config-e2e", "html2js", "server", "test:e2e:core", "server-close", cb);
 });
 
