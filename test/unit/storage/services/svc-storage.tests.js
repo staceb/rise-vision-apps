@@ -35,6 +35,50 @@ describe('service: storage:', function() {
                 def.reject("API Failed");
               }
               return def.promise;
+            },
+            delete: function(obj) {
+              expect(obj).to.be.ok;
+              storageApiRequestObj = obj;
+            
+              var def = Q.defer();
+              if (returnResult) {
+                def.resolve({
+                  result: {}
+                });
+              } else {
+                def.reject("API Failed");
+              }
+              return def.promise;
+            }
+          },
+          trash: {
+            move: function(obj) {
+              expect(obj).to.be.ok;
+              storageApiRequestObj = obj;
+            
+              var def = Q.defer();
+              if (returnResult) {
+                def.resolve({
+                  result: {}
+                });
+              } else {
+                def.reject("API Failed");
+              }
+              return def.promise;
+            },
+            restore: function(obj) {
+              expect(obj).to.be.ok;
+              storageApiRequestObj = obj;
+            
+              var def = Q.defer();
+              if (returnResult) {
+                def.resolve({
+                  result: {}
+                });
+              } else {
+                def.reject("API Failed");
+              }
+              return def.promise;
             }
           },
           startTrial: function(obj) {
@@ -64,7 +108,35 @@ describe('service: storage:', function() {
             }
             return def.promise;
           },
+          getFolderContents: function(obj) {
+            expect(obj).to.be.ok;
+            folderName = obj.folderName;
+            
+            var def = Q.defer();
+            if (returnResult) {
+              def.resolve({
+                result: {}
+              });
+            } else {
+              def.reject("API Failed");
+            }
+            return def.promise;
+          },
           getResumableUploadURI: function(obj) {
+            expect(obj).to.be.ok;
+            storageApiRequestObj = obj;
+            
+            var def = Q.defer();
+            if (returnResult) {
+              def.resolve({
+                result: {}
+              });
+            } else {
+              def.reject("API Failed");
+            }
+            return def.promise;
+          },
+          getSignedDownloadURI: function(obj) {
             expect(obj).to.be.ok;
             storageApiRequestObj = obj;
             
@@ -115,6 +187,10 @@ describe('service: storage:', function() {
     expect(storage.files.get).to.be.a('function');
     expect(storage.startTrial).to.be.a('function');
     expect(storage.createFolder).to.be.a('function');
+    expect(storage.getFolderContents).to.be.a('function');
+    expect(storage.getResumableUploadURI).to.be.a('function');
+    expect(storage.getSignedDownloadURI).to.be.a('function');
+    expect(storage.notifyGCMTargetsChanged).to.be.a('function');
   });
   
   describe('files.get:',function(){
@@ -143,6 +219,90 @@ describe('service: storage:', function() {
       returnResult = false;
       
       storage.files.get({})
+        .then(function(result) {
+          done(result);
+        })
+        .then(null, function(error) {
+          expect(error).to.deep.equal('API Failed');
+          done();
+        })
+        .then(null,done);
+    });
+  });
+
+  describe('files.delete:',function(){
+    it('should delete files',function(done){
+      storage.files.delete(['file1','file2'])
+      .then(function(result){
+        expect(result).to.be.truely;
+        expect(storageApiRequestObj.files).to.deep.equal(['file1','file2']);
+        expect(storageApiRequestObj.companyId).to.equal('TEST_COMP_ID');
+
+        done();
+      })
+      .then(null,done);
+    });
+
+    it('should handle failure',function(done){
+      returnResult = false;
+      
+      storage.files.delete({})
+        .then(function(result) {
+          done(result);
+        })
+        .then(null, function(error) {
+          expect(error).to.deep.equal('API Failed');
+          done();
+        })
+        .then(null,done);
+    });
+  });
+
+  describe('trash.move:',function(){
+    it('should move files to trash',function(done){
+      storage.trash.move(['file1','file2'])
+      .then(function(result){
+        expect(result).to.be.truely;
+        expect(storageApiRequestObj.files).to.deep.equal(['file1','file2']);
+        expect(storageApiRequestObj.companyId).to.equal('TEST_COMP_ID');
+
+        done();
+      })
+      .then(null,done);
+    });
+
+    it('should handle failure',function(done){
+      returnResult = false;
+      
+      storage.trash.move({})
+        .then(function(result) {
+          done(result);
+        })
+        .then(null, function(error) {
+          expect(error).to.deep.equal('API Failed');
+          done();
+        })
+        .then(null,done);
+    });
+  });
+
+  describe('trash.restore:',function(){
+    it('should restore files from trash',function(done){
+      storage.trash.restore(['file1','file2'])
+      .then(function(result){
+        expect(result).to.be.truely;
+        expect(storageApiRequestObj.files).to.deep.equal(['file1','file2']);
+        expect(storageApiRequestObj.companyId).to.equal('TEST_COMP_ID');
+
+        done();
+      })
+      .then(null,done);
+    });
+
+    it('should handle failure',function(done){
+      returnResult = false;
+      
+      storage.trash.restore({})
         .then(function(result) {
           done(result);
         })
@@ -212,6 +372,33 @@ describe('service: storage:', function() {
         .then(null,done);
     });
   });
+  
+  describe('getFolderContents:',function(){
+    it('should get folder contents',function(done){
+      storage.getFolderContents("folder1")
+        .then(function(result){
+          expect(result).to.be.ok;
+          expect(folderName).to.equal('folder1');
+
+          done();
+        })
+        .then(null,done);
+    });
+
+    it("should handle failure to get folder contents",function(done){
+      returnResult = false;
+
+      storage.getFolderContents()
+        .then(function(result) {
+          done(result);
+        })
+        .then(null, function(error) {
+          expect(error).to.deep.equal('API Failed');
+          done();
+        })
+        .then(null,done);
+    });
+  });
 
   describe('getResumableUploadURI:',function(){
     it('should get Resumable Upload URI',function(done){
@@ -242,7 +429,35 @@ describe('service: storage:', function() {
         .then(null,done);
     });
   });
+  
+  describe('getSignedDownloadURI', function() {
+    it('should get Signed Download URI',function(done){
+      storage.getSignedDownloadURI({name: 'fileName', type: 'fileType'})
+        .then(function(result){
+          expect(result).to.be.ok;
+          expect(storageApiRequestObj.fileName).to.equal('fileName');
+          expect(storageApiRequestObj.fileType).to.equal('fileType');
+          expect(storageApiRequestObj.companyId).to.equal('TEST_COMP_ID');
 
+          done();
+        })
+        .then(null,done);
+    });
+
+    it("should handle failure to get Resumable Upload URI",function(done){
+      returnResult = false;
+
+      storage.getSignedDownloadURI("fileName","fileType")
+        .then(function(result) {
+          done(result);
+        })
+        .then(null, function(error) {
+          expect(error).to.deep.equal('API Failed');
+          done();
+        })
+        .then(null,done);
+    });
+  });
   
   describe('notifyGCMTargetsChanged:',function(){
     it('should notify GCM Targets Changed',function(done){
