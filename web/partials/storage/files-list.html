@@ -62,8 +62,8 @@
       <tr class="clickable-row"
       ng-click="fileClick(file);"
       ng-class="{'active': file.isChecked, 'blocked-file': file.isThrottled, 'back-btn': file.currentFolder, 'no-select-row': file.currentFolder || storageFactory.fileIsTrash(file) || (storageFactory.fileIsFolder(file) && !storageFactory.storageFull) }"
-      ng-repeat="file in filesDetails.files | filter:search.query | orderBy:orderByAttribute:reverseSort track by $index">
-      <td ng-if="storageFactory.fileIsFolder(file) && (!storageFactory.fileIsTrash(file) || storageFactory.storageFull)">
+      ng-repeat="file in filesDetails.files | filter:search.query | orderBy:orderByAttribute:reverseSort track by $index" ng-if="!storageFactory.fileIsTrash(file) || storageFactory.storageFull">
+      <td ng-if="storageFactory.fileIsFolder(file)">
         <span class="folder">{{file.name | fileNameFilter:storageFactory.folderPath}}</span>
       </td>
       <td ng-if="!storageFactory.fileIsFolder(file)" class="col-sm-6">
@@ -79,13 +79,13 @@
           <p>This file is being requested too many times and is blocked. If you have a <a href="http://support.risevision.com" target="_blank">support subscription</a> please open a ticket for assistance with resolving this.  Otherwise, please post in the <a href="http://community.risevision.com" target="_blank">community</a> for help.</p>
         </div>
       </td>
-      <td ng-if="!fileIsFolder(file)" class="col-sm-2 hidden-xs">
+      <td class="col-sm-2 hidden-xs">
         <span> {{file.name | fileTypeFilter}}</span>
       </td>
-      <td ng-if="!fileIsFolder(file)" class="col-sm-2 visible-lg">
+      <td class="col-sm-2 visible-lg">
         <span> {{file.size | fileSizeFilter}}</span>
       </td>
-      <td ng-if="!fileIsFolder(file)" class="col-sm-2 visible-lg">
+      <td class="col-sm-2 visible-lg">
         <span> {{file.updated.value | date:'d-MMM-yyyy h:mm a'}}</span>
       </td>
     </tr>
