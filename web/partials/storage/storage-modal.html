@@ -1,6 +1,6 @@
 <div id="storageSelectorModal" ng-controller="FilesListController">
 <div class="modal-header">
-  <button type="button" id="closeButton" class="close" ng-click="dismiss()" data-dismiss="modal" aria-hidden="true">
+  <button type="button" id="closeButton" class="close" ng-click="fileSelectorFactory.cancel()" data-dismiss="modal" aria-hidden="true">
     <i class="fa fa-times"></i>
   </button>
   <h3 id="title" class="modal-title" translate="storage-client.select-{{storageFactory.selectorType}}"></h3>
@@ -35,7 +35,7 @@
     <button type="button" title="select" class="btn btn-primary" ng-click="fileSelectorFactory.sendFiles()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
       <span translate="common.select"></span> <span class="fa fa-check icon-right"></span>
     </button>
-    <button class="btn btn-default" ng-click="dismiss()">
+    <button class="btn btn-default" ng-click="fileSelectorFactory.cancel()">
       <span translate="common.cancel"></span> <span class="fa fa-times icon-right"></span>
     </button>
   </div>
