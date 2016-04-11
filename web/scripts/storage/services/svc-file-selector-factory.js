@@ -105,7 +105,7 @@ angular.module('risevision.storage.services')
       var _sendMessage = function (fileUrls) {
         if (storageFactory.storageIFrame) {
           var data = {
-            params: fileUrls
+            params: fileUrls[0]
           };
 
           console.log('Message posted to parent window', fileUrls);
