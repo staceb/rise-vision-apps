@@ -296,7 +296,7 @@ describe('service: fileSelectorFactory:', function() {
         fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
 
         rpcCallSpy.should.have.been.calledWith('', 'rscmd_saveSettings', null,
-          {params: ['https://storage.googleapis.com/risemedialibrary-companyId/test%2Ffile2']});
+          {params: 'https://storage.googleapis.com/risemedialibrary-companyId/test%2Ffile2'});
           
         // postMessage receives an array of file paths and a '*' as second parameter
         postMessageSpy.should.have.been.calledWith(['https://storage.googleapis.com/risemedialibrary-companyId/test%2Ffile2'], '*');
