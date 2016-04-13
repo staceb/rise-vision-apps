@@ -99,11 +99,6 @@ angular.module('risevision.storage.services')
           svc.filesDetails.files = resp.files || [];
           svc.statusDetails.code = resp.code;
 
-          if (storageFactory.isSingleFolderSelector()) {
-            svc.filesDetails.files = svc.filesDetails.files.filter(
-              storageFactory.fileIsFolder);
-          }
-
           if (!storageFactory.folderPath || !parentFolder || parentFolder ===
             '/') {
             // [AD] There may be a reason why the trash folder is added in 

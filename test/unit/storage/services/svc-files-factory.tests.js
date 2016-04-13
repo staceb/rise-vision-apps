@@ -62,12 +62,13 @@ describe('service: filesFactory:', function() {
       });
     });
     
-    it('should just load folders', function(done) {
+    it('should not load trash for selector', function(done) {
+      storageFactory.storageFull = false;
       storageFactory.selectorType = 'single-folder';
 
       filesFactory.refreshFilesList()
       setTimeout(function() {
-        expect(filesFactory.filesDetails.files.length).to.equal(2);
+        expect(filesFactory.filesDetails.files.length).to.equal(4);
         
         done();
       });
