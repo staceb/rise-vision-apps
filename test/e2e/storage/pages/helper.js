@@ -10,6 +10,7 @@
   var PresentationListPage = require('./../../editor/pages/presentationListPage.js');
   var PresentationPropertiesModalPage = require('./../../editor/pages/presentationPropertiesModalPage.js');
   var StorageHomePage = require('./storageHomePage.js');
+  var FilesListPage = require('./filesListPage.js');
 
   var homepage = new HomePage();
   var loginPage = new LoginPage();
@@ -19,6 +20,7 @@
   var presentationListPage = new PresentationListPage();
   var presentationPropertiesModalPage = new PresentationPropertiesModalPage();
   var storageHomePage = new StorageHomePage();
+  var filesListPage = new FilesListPage();
 
   var factory = {
     setupIframeSingleFolderSelector: function(){
@@ -37,7 +39,7 @@
       });
       iframePage.getSingleFileSelector();
       helper.wait(storageSelectorModalPage.getStorageSelectorModal(), 'Storage Selector Modal');
-      helper.waitDisappear(storageSelectorModalPage.getLoader(), 'Storage Files Loader');
+      helper.waitDisappear(filesListPage.getFilesListLoader(), 'Storage Files Loader');
     },
 
     setupStorageHome: function(){
@@ -46,7 +48,7 @@
         loginPage.signIn();
       });
       helper.wait(storageHomePage.getStorageAppContainer(), 'Storage Apps Container');
-      helper.waitDisappear(storageHomePage.getLoader(), 'Storage Files Loader');
+      helper.waitDisappear(filesListPage.getFilesListLoader(), 'Storage Files Loader');
     },
 
     setupAppsSingleFileSelector: function(){
@@ -55,7 +57,6 @@
         loginPage.signIn();
       });
       presentationListPage.openNewPresentation();
-      helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
       presentationPropertiesModalPage.getBackgroundImageCheckbox().click();
       helper.wait(presentationPropertiesModalPage.getBackgroundImageURLInput(), 'Background Image URL Input');
       presentationPropertiesModalPage.getBackgroundImageStorageButton().click();
@@ -66,4 +67,3 @@
   module.exports = factory;
 
 })(module);
-
