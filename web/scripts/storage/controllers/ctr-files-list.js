@@ -1,10 +1,10 @@
 'use strict';
 angular.module('risevision.storage.controllers')
   .controller('FilesListController', ['$scope', '$rootScope',
-    'storageFactory', 'fileSelectorFactory', 'filesFactory', '$loading',
-    '$filter', '$translate', '$timeout',
+    'storageFactory', 'fileSelectorFactory', 'filesFactory',
+    'FileUploader', '$loading', '$filter', '$translate', '$timeout',
     function ($scope, $rootScope, storageFactory, fileSelectorFactory,
-      filesFactory, $loading, $filter, $translate,
+      filesFactory, FileUploader, $loading, $filter, $translate,
       $timeout) {
       $scope.search = {
         doSearch: function () {}
@@ -12,6 +12,7 @@ angular.module('risevision.storage.controllers')
       $scope.storageFactory = storageFactory;
       $scope.fileSelectorFactory = fileSelectorFactory;
       $scope.filesFactory = filesFactory;
+      $scope.fileUploader = FileUploader;
 
       $scope.filterConfig = {
         placeholder: 'Search for files or folders',

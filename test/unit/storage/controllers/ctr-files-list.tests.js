@@ -66,6 +66,9 @@ describe('controller: Files List', function() {
         statusDetails: {}
       }
     });
+    $provide.service('FileUploader',function(){
+      return {}
+    });
     $provide.value('SELECTOR_TYPES', {SINGLE_FILE: 'single-file'});
   }));
   var $scope, isSingleFileSelector, onFileSelect, folderSelect, fileCheckToggled, storageFactory;
@@ -92,6 +95,7 @@ describe('controller: Files List', function() {
     expect($scope.filesFactory).to.be.ok;
     expect($scope.fileSelectorFactory).to.be.ok;
     expect($scope.filterConfig).to.be.ok;
+    expect($scope.fileUploader).to.be.ok;    
 
     expect($scope.filesDetails).to.be.ok;
     expect($scope.statusDetails).to.be.ok;
