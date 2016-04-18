@@ -79,7 +79,7 @@ angular.module('risevision.storage.controllers')
         } else {
           if (storageFactory.isSingleFileSelector()) {
             fileSelectorFactory.onFileSelect(file);
-          } else {
+          } else if (!storageFactory.isSingleFolderSelector()) {
             fileSelectorFactory.fileCheckToggled(file);
           }
         }
@@ -124,9 +124,16 @@ angular.module('risevision.storage.controllers')
         }
       };
 
-      // $scope.cancelFolderDownload = function(folder)  {
-      //   DownloadService.cancelFolderDownload(folder);
-      // };
+      $scope.isNoSelectRow = function(file) {
+        var isFileCases = !storageFactory.fileIsFolder(file) && 
+          storageFactory.isSingleFolderSelector();
+        var isFolderCases = storageFactory.fileIsFolder(file) && 
+          !storageFactory.isSingleFolderSelector() && 
+          !storageFactory.storageFull;
+
+        return file.currentFolder || storageFactory.fileIsTrash(file) || 
+          (isFileCases) || (isFolderCases);
+      };
 
     }
   ]);
