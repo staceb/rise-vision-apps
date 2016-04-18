@@ -138,6 +138,7 @@ describe('service: filesFactory:', function() {
         filesFactory.addFile({ name: 'folder/subFolder/file2.txt' });
 
         expect(filesFactory.filesDetails.files.length).to.equal(5);
+        expect(filesFactory.filesDetails.files[4]).to.deep.equal({name: 'folder/', kind: 'folder'});
       });
     });
 

@@ -33,7 +33,8 @@ angular.module('risevision.storage.services')
         if (idx >= 0) {
           if (!existingFileNameIndex) {
             svc.filesDetails.files.push({
-              name: fileName
+              name: fileName,
+              kind: 'folder'
             });
           }
         } else if (existingFileNameIndex) {
