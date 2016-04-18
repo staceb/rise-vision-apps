@@ -23,7 +23,7 @@
 
 	</div><!--app-header-->
 
-  <div class="container ng-scope" id="fileinspector_noFiles" ng-show="statusDetails.code!==202 && !filesDetails.bucketExists && !trialAvailable && fileUploader.queue.length === 0">    
+  <div class="container ng-scope" id="fileinspector_noFiles" ng-show="statusDetails.code!==202 && !isFileListVisible() && !trialAvailable && fileUploader.queue.length === 0">    
     <div class="product-graphic">
       <svg-icon p="riseStorage"></svg-icon>
     </div>
@@ -45,9 +45,9 @@
     </div>    
   </div>
 
-  <search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable && filesDetails.bucketExists"></search-filter>
+  <search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable && isFileListVisible()"></search-filter>
 
-  <ng-include src="'partials/storage/files-list.html'" ng-show="filesDetails.bucketExists"></ng-include>
+  <ng-include src="'partials/storage/files-list.html'" ng-show="isFileListVisible()"></ng-include>
 	
   <ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
 
