@@ -73,10 +73,10 @@
                 {{file.name | fileNameFilter:storageFactory.folderPath}}
               </a>
             </span>
-            <div ng-show="file.showThrottledCallout && !storageFactory.fileIsFolder(file)" class="callout callout-red" ng-click="file.showThrottledCallout=false">
+            <div ng-show="file.showThrottledCallout && !storageFactory.fileIsFolder(file)" class="callout callout-red" ng-click="$event.stopPropagation();file.showThrottledCallout=false;">
               <span class="arrow"></span>
-              <strong>File Is Blocked</strong>
-              <p>This file is being requested too many times and is blocked. If you have a <a href="http://support.risevision.com" target="_blank">support subscription</a> please open a ticket for assistance with resolving this.  Otherwise, please post in the <a href="http://community.risevision.com" target="_blank">community</a> for help.</p>
+              <p translate="storage-client.blocked-file"></p>
+              <p translate="common.need-help"></p>
             </div>
           </td>
           <td class="col-sm-2 hidden-xs">

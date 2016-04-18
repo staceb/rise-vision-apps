@@ -270,16 +270,6 @@ describe('service: fileSelectorFactory:', function() {
     });
     
     describe('selecting a single file: ', function() {
-      it('should post throttle warning, and not select file', function() {
-        filesFactory.filesDetails.files[1].isThrottled = true;
-
-        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
-
-        expect(filesFactory.filesDetails.files[1].showThrottledCallout).to.be.true;
-        
-        $broadcastSpy.should.not.have.been.called;
-      });
-      
       it('should select file', function() {
         fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
 

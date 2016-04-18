@@ -155,6 +155,27 @@ describe('controller: Files List', function() {
       expect(fileCheckToggled).to.be.true;
     });
     
+    it('should post throttle warning, and not select file', function() {
+      var file = {name: 'someFolder/image.jpg', isThrottled: true};
+      $scope.fileClick(file);
+      
+      expect(file.showThrottledCallout).to.be.true;
+      expect(onFileSelect).to.be.false;
+      expect(folderSelect).to.be.false;
+      expect(fileCheckToggled).to.be.false;
+    });
+    
+    it('two clicks should close throttle warning', function() {
+      var file = {name: 'someFolder/image.jpg', isThrottled: true};
+      $scope.fileClick(file);
+      $scope.fileClick(file);
+
+      expect(file.showThrottledCallout).to.be.false;
+      expect(onFileSelect).to.be.false;
+      expect(folderSelect).to.be.false;
+      expect(fileCheckToggled).to.be.false;
+    });
+    
     it('should select folder with one click', function(done) {
       isSingleFileSelector = false;
       isSingleFolderSelector = true;
