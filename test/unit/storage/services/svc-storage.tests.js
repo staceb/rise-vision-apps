@@ -414,6 +414,16 @@ describe('service: storage:', function() {
         })
         .then(null,done);
     });
+    
+    it('should encode URI',function(done){
+      storage.getResumableUploadURI("fileName#","fileType")
+        .then(function(result){
+          expect(storageApiRequestObj.fileName).to.equal('fileName%23');
+
+          done();
+        })
+        .then(null,done);
+    });
 
     it("should handle failure to get Resumable Upload URI",function(done){
       returnResult = false;
