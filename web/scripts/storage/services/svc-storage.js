@@ -199,7 +199,7 @@ angular.module('risevision.storage.services')
 
           var obj = {
             'companyId': userState.getSelectedCompanyId(),
-            'fileName': fileName,
+            'fileName': encodeURIComponent(fileName),
             'fileType': fileType,
             'origin': $window.location.origin
           };
