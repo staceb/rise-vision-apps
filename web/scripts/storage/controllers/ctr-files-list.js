@@ -77,6 +77,12 @@ angular.module('risevision.storage.controllers')
             }, dblClickDelay);
           }
         } else {
+          if (file.isThrottled) {
+            file.showThrottledCallout = !file.showThrottledCallout;
+            // calloutClosingService.add(file);
+            return;
+          }
+
           if (storageFactory.isSingleFileSelector()) {
             fileSelectorFactory.onFileSelect(file);
           } else if (!storageFactory.isSingleFolderSelector()) {

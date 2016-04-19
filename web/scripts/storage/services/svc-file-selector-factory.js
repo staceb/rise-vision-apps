@@ -159,12 +159,6 @@ angular.module('risevision.storage.services')
           filesFactory.refreshFilesList();
 
         } else {
-          if (file.isThrottled) {
-            file.showThrottledCallout = true;
-            // calloutClosingService.add(file);
-            return;
-          }
-
           _postFileToParent(file);
         }
       };
