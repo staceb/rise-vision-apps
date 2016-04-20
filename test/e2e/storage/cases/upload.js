@@ -15,7 +15,8 @@ var UploadScenarios = function() {
     var describeUpload = function () {
 
       it('should show upload dropdown', function() {
-        helper.clickWhenClickable(storageSelectorModalPage.getUploadDropdown(), 'Upload dropdown');
+        helper.wait(storageSelectorModalPage.getUploadDropdown(), 'Upload dropdown');
+        storageSelectorModalPage.getUploadDropdown().click();
         
         helper.wait(storageSelectorModalPage.getUploadButton(), 'Upload Button');
         
