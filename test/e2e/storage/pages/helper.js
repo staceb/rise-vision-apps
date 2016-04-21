@@ -30,6 +30,7 @@
       });
       iframePage.getSingleFolderSelector();
       helper.wait(storageSelectorModalPage.getStorageSelectorModal(), 'Storage Selector Modal');
+      helper.waitDisappear(filesListPage.getFilesListLoader(), 'Storage Files Loader');
     },
 
     setupIframeSingleFileSelector: function(){
@@ -61,6 +62,7 @@
       helper.wait(presentationPropertiesModalPage.getBackgroundImageURLInput(), 'Background Image URL Input');
       presentationPropertiesModalPage.getBackgroundImageStorageButton().click();
       helper.wait(storageSelectorModalPage.getStorageSelectorModal(), 'Storage Selector Modal');
+      helper.waitDisappear(filesListPage.getFilesListLoader(), 'Storage Files Loader');
     }
   };
 
