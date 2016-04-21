@@ -3,15 +3,13 @@ angular.module('risevision.storage.services')
   .factory('filesFactory', ['storage', 'storageFactory',
     function (storage, storageFactory) {
       var svc = {
-        startTrial: storage.startTrial
-      };
-
-      svc.filesDetails = {
-        files: []
-      };
-
-      svc.statusDetails = {
-        code: 202
+        startTrial: storage.startTrial,
+        filesDetails: {
+          files: []
+        },
+        statusDetails: {
+          code: 202
+        }
       };
 
       svc.addFile = function (newFile) {
