@@ -6,7 +6,7 @@
   
   <!-- Simple dropdown -->
   <div id="uploadDropdown" class="btn-group" dropdown on-toggle="toggled(open)">
-    <label class="btn btn-primary btn-lg dropdown-toggle" dropdown-toggle ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed || statusDetails.code!==200 || fileListStatus.code===404">
+    <label class="btn btn-primary btn-lg dropdown-toggle" dropdown-toggle ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed || statusDetails.code !== 200">
       <span translate="storage-client.upload"></span> <i class="fa fa-cloud-upload fa-lg icon-right"></i>
     </label>
     <ul class="dropdown-menu">
