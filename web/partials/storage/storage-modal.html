@@ -1,66 +1,65 @@
 <div id="storageSelectorModal" ng-controller="FilesListController">
-<div class="modal-header">
-  <button type="button" id="closeButton" class="close" ng-click="fileSelectorFactory.cancel()" data-dismiss="modal" aria-hidden="true">
-    <i class="fa fa-times"></i>
-  </button>
-  <h3 id="title" class="modal-title" translate="storage-client.select-{{storageFactory.selectorType}}"></h3>
-</div>
-
-<div class="modal-body storage-full" stop-event="touchend">
-  <div ng-controller="SubscriptionStatusController">
-    <div id="subscription-status" subscription-status
-         product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
-         ng-model="subscriptionStatus.result" show-store-modal="showStoreModal" expanded-format="true">
-    </div>
-  </div>
-
-	<div class="padding-large-horizontal padding-large-bottom">
-	<div class="app-header">
-    <div class="title-block"></div>
-    <ng-include src="'partials/storage/global-actions.html'"></ng-include>	  
-
-    <ng-include src="'partials/storage/upload-panel.html'"></ng-include>
-
-	</div><!--app-header-->
-
-  <div class="container ng-scope" id="fileinspector_noFiles" ng-show="statusDetails.code!==202 && !isFileListVisible() && !trialAvailable && fileUploader.queue.length === 0">    
-    <div class="product-graphic">
-      <svg-icon p="riseStorage"></svg-icon>
-    </div>
-    <div class="file-empty-state">
-      <br/>
-      <p>You haven't added files yet!</p>
-      <br>
-      <span> Select 
-        <button type="button" class="btn btn-link" title="Upload" disabled="disabled">
-          <i class="fa fa-cloud-upload fa-2x"></i>
-        </button>
-        above to upload a file,<br>
-        or 
-        <button type="button" class="btn btn-link" title="Add Folder" disabled="disabled">
-          <svg-icon p="iconNewFolder"></svg-icon>
-        </button>
-        to create a folder.
-      </span>
-    </div>    
-  </div>
-
-  <search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable && isFileListVisible()"></search-filter>
-
-  <ng-include src="'partials/storage/files-list.html'" ng-show="isFileListVisible()"></ng-include>
-	
-  <ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
-
-  <div ng-show="storageFactory.isMultipleFileSelector() && !trialAvailable">
-    <button type="button" title="select" class="btn btn-primary" ng-click="fileSelectorFactory.sendFiles()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
-      <span translate="common.select"></span> <span class="fa fa-check icon-right"></span>
+  <div class="modal-header">
+    <button type="button" id="closeButton" class="close" ng-click="fileSelectorFactory.cancel()" data-dismiss="modal" aria-hidden="true">
+      <i class="fa fa-times"></i>
     </button>
-    <button class="btn btn-default" ng-click="fileSelectorFactory.cancel()">
-      <span translate="common.cancel"></span> <span class="fa fa-times icon-right"></span>
-    </button>
+    <h3 id="title" class="modal-title" translate="storage-client.select-{{storageFactory.selectorType}}"></h3>
   </div>
 
+  <div class="modal-body storage-full" stop-event="touchend">
+    <div class="padding-large-horizontal padding-large-bottom">
+      <div class="app-header">
+        <div ng-controller="SubscriptionStatusController" class="add-left add-right">
+          <div id="subscription-status" subscription-status
+               product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
+               ng-model="subscriptionStatus.result" show-store-modal="showStoreModal" expanded-format="true">
+          </div>
+        </div>
+        
+        <div class="title-block"></div>
+        <ng-include src="'partials/storage/global-actions.html'"></ng-include>	  
 
-	</div><!--padding-->
-</div><!--modal-body-->
+        <ng-include src="'partials/storage/upload-panel.html'"></ng-include>
+
+    	</div><!--app-header-->
+
+      <div class="container ng-scope" id="fileinspector_noFiles" ng-show="statusDetails.code!==202 && !isFileListVisible() && !trialAvailable && fileUploader.queue.length === 0">    
+        <div class="product-graphic">
+          <svg-icon p="riseStorage"></svg-icon>
+        </div>
+        <div class="file-empty-state">
+          <br/>
+          <p>You haven't added files yet!</p>
+          <br>
+          <span> Select 
+            <button type="button" class="btn btn-link" title="Upload" disabled="disabled">
+              <i class="fa fa-cloud-upload fa-2x"></i>
+            </button>
+            above to upload a file,<br>
+            or 
+            <button type="button" class="btn btn-link" title="Add Folder" disabled="disabled">
+              <svg-icon p="iconNewFolder"></svg-icon>
+            </button>
+            to create a folder.
+          </span>
+        </div>    
+      </div>
+
+      <search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable && isFileListVisible()"></search-filter>
+
+      <ng-include src="'partials/storage/files-list.html'" ng-show="isFileListVisible()"></ng-include>
+    	
+      <ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
+
+      <div ng-show="storageFactory.isMultipleFileSelector() && !trialAvailable">
+        <button type="button" title="select" class="btn btn-primary" ng-click="fileSelectorFactory.sendFiles()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+          <span translate="common.select"></span> <span class="fa fa-check icon-right"></span>
+        </button>
+        <button class="btn btn-default" ng-click="fileSelectorFactory.cancel()">
+          <span translate="common.cancel"></span> <span class="fa fa-times icon-right"></span>
+        </button>
+      </div>
+
+  	</div><!--padding-->
+  </div><!--modal-body-->
 </div>

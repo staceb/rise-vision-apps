@@ -7,7 +7,7 @@
 		<ng-include src="'partials/storage/global-actions.html'"></ng-include>
 
 		<div style="clear: both;"></div>
-		<div ng-controller="SubscriptionStatusController">
+		<div ng-controller="SubscriptionStatusController" class="add-left add-right half-top">
 			<div id="subscription-status" subscription-status
 			product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
 			ng-model="subscriptionStatus.result" show-store-modal="showStoreModal" expanded-format="true"></div>
