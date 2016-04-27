@@ -104,6 +104,36 @@ describe('service: widgetRenderer:', function() {
       expect(placeholder.className).to.equal('');
     });
 
+    it('should render Web Page Widget if url is https',function(){
+      placeholder.items[0].objectReference = 'df887785-3614-4f05-86c7-fce07b8745dc';
+      placeholder.items[0].additionalParams = '{\"selector\":{\"url\":\"https://www.risevision.com\"}}';
+
+      widgetRenderer.register(placeholder,element);
+
+      expect(Object.keys(widgetRenderer._placeholders).length).to.equal(1);
+      expect(placeholder.className).to.equal('');
+    });
+
+    it('should not render Web Page Widget if url is not https',function(){
+      placeholder.items[0].objectReference = 'df887785-3614-4f05-86c7-fce07b8745dc';
+      placeholder.items[0].additionalParams = '{\"selector\":{\"url\":\"http://www.risevision.com\"}}';
+
+      widgetRenderer.register(placeholder,element);
+
+      expect(Object.keys(widgetRenderer._placeholders).length).to.equal(0);
+      expect(placeholder.className).to.equal('ph-item-icon');
+    });
+
+    it('should not render Web Page Widget if additionalParams are not set',function(){
+      placeholder.items[0].objectReference = 'df887785-3614-4f05-86c7-fce07b8745dc';
+      placeholder.items[0].additionalParams = null;
+
+      widgetRenderer.register(placeholder,element);
+
+      expect(Object.keys(widgetRenderer._placeholders).length).to.equal(0);
+      expect(placeholder.className).to.equal('ph-item-icon');
+    });
+
     describe('icon:',function(){
       it('should show icon for widgets that are not rendered',function(){
         placeholder.items[0].objectReference = 'otherId';

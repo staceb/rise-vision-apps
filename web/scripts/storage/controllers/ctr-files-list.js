@@ -130,14 +130,14 @@ angular.module('risevision.storage.controllers')
         }
       };
 
-      $scope.isNoSelectRow = function(file) {
-        var isFileCases = !storageFactory.fileIsFolder(file) && 
+      $scope.isNoSelectRow = function (file) {
+        var isFileCases = !storageFactory.fileIsFolder(file) &&
           storageFactory.isSingleFolderSelector();
-        var isFolderCases = storageFactory.fileIsFolder(file) && 
-          !storageFactory.isSingleFolderSelector() && 
+        var isFolderCases = storageFactory.fileIsFolder(file) &&
+          !storageFactory.isSingleFolderSelector() &&
           !storageFactory.storageFull;
 
-        return file.currentFolder || storageFactory.fileIsTrash(file) || 
+        return file.currentFolder || storageFactory.fileIsTrash(file) ||
           (isFileCases) || (isFolderCases);
       };
 
