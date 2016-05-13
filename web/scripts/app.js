@@ -105,6 +105,18 @@ angular.module('risevision.apps', [
         ]
       })
 
+      .state('apps.launcher.sendnote', {
+        url: '/send-note',
+        controller: ['$state', 'canAccessApps', 'supportFactory', 
+          function ($state, canAccessApps, supportFactory) {
+            canAccessApps().then(function(){
+              supportFactory.handleSendUsANote();
+              $state.go('apps.launcher.home');
+            });
+          }
+        ]
+      })
+
       .state('apps.launcher.signup', {
         url: '/signup',
         controller: ['$state', function ($state) {
