@@ -43,7 +43,24 @@ describe('app:', function() {
         done();
       }, 10);
     });
+  });
 
-  });  
+  describe('state apps.launcher.sendnote:',function(){
+    
+    it('should register state',function(){
+      var supportState = $state.get('apps.launcher.sendnote')
+      expect(supportState).to.be.ok;
+      expect(supportState.url).to.equal('/send-note');
+      expect(supportState.controller).to.be.ok;
+    });
 
+    it('should init Send Us a Note modal',function(done){
+      var spy = sinon.spy(supportFactory,'handleSendUsANote') 
+      $state.get('apps.launcher.sendnote').controller[3]($state, canAccessApps, supportFactory);
+      setTimeout(function() {
+        spy.should.have.been.called;
+        done();
+      }, 10);
+    });
+  });
 });
