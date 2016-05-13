@@ -18,10 +18,13 @@ var PresentationListPage = function() {
   var tableHeaderChangeDate = element(by.id('tableHeaderChangeDate'));
   var presentationItems = element.all(by.repeater('presentation in presentations.list'));
 
+  var presentationsLoader = element(by.xpath('//div[@spinner-key="presentation-list-loader"]'));
+
   this.openNewPresentation = function() {
     var storeProductsModalPage = new StoreProductsModalPage();
     var presentationPropertiesModalPage = new PresentationPropertiesModalPage();
 
+    helper.waitDisappear(presentationsLoader,'Presentation loader');
     presentationAddButton.click();
     helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
     helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader());
@@ -70,6 +73,10 @@ var PresentationListPage = function() {
   this.getPresentationItems = function() {
     return presentationItems;
   };
+
+  this.getPresentationsLoader = function() {
+    return presentationsLoader;
+  }
 };
 
 module.exports = PresentationListPage;

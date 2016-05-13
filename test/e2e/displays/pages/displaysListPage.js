@@ -9,6 +9,7 @@ var DisplaysListPage = function() {
   var tableHeaderStatus = element(by.id('tableHeaderStatus'));
   var tableHeaderActivity = element(by.id('tableHeaderActivity'));
   var displayItems = element.all(by.repeater('display in displays.list'));
+  var displaysLoader = element(by.xpath('//div[@spinner-key="displays-list-loader"]'));
 
   this.getDisplaysAppContainer = function() {
     return displaysAppContainer;
@@ -44,6 +45,10 @@ var DisplaysListPage = function() {
 
   this.getDisplayItems = function() {
     return displayItems;
+  };
+
+  this.getDisplaysLoader = function() {
+    return displaysLoader;
   };
 };
 

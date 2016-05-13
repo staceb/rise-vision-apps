@@ -11,7 +11,7 @@ angular.module('risevision.schedules.controllers')
 
       $scope.search = angular.extend({
         sortBy: 'changeDate',
-        count: DB_MAX_COUNT,
+        count: $scope.listLimit || DB_MAX_COUNT,
         reverse: true,
       }, $location.search());
 

@@ -34,6 +34,7 @@ var AddDistributionScenarios = function() {
       helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader').then(function () {
         loginPage.signIn();
       });
+      helper.waitDisappear(schedulesListPage.getLoader(),'Schedules loader');
     });
 
     describe(" Given a user is adding a new schedule ", function () {

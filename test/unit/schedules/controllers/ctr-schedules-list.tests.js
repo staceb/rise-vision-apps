@@ -84,6 +84,7 @@ describe('controller: schedules list', function() {
     };
     inject(function($injector,$rootScope, $controller){
       $scope = $rootScope.$new();
+      $scope.listLimit = 5;
       $loading = $injector.get('$loading');
       $loadingStartSpy = sinon.spy($loading, 'start');
       $loadingStopSpy = sinon.spy($loading, 'stop');
@@ -118,6 +119,7 @@ describe('controller: schedules list', function() {
     expect($scope.search).to.have.property('sortBy');
     expect($scope.search).to.have.property('count');
     expect($scope.search).to.have.property('reverse');
+    expect($scope.search.count).to.equal(5);
   });
   
   beforeEach(function(done) {

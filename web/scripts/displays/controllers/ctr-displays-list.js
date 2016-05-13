@@ -13,7 +13,7 @@ angular.module('risevision.displays.controllers')
 
       $scope.search = angular.extend({
         sortBy: 'name',
-        count: DB_MAX_COUNT,
+        count: $scope.listLimit || DB_MAX_COUNT,
         reverse: false,
       }, $location.search());
 

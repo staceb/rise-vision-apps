@@ -8,6 +8,7 @@ var SchedulesListPage = function() {
   var tableHeaderName = element(by.id('tableHeaderName'));
   var tableHeaderChangeDate = element(by.id('tableHeaderChangeDate'));
   var scheduleItems = element.all(by.repeater('schedule in schedules.list'));
+  var loader = element(by.xpath('//div[@spinner-key="schedules-list-loader"]'));
 
   this.getSchedulesAppContainer = function() {
     return schedulesAppContainer;
@@ -39,6 +40,10 @@ var SchedulesListPage = function() {
 
   this.getScheduleItems = function() {
     return scheduleItems;
+  };
+
+  this.getLoader = function() {
+    return loader;
   };
 };
 

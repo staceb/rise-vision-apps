@@ -32,6 +32,7 @@ var DisplayAddScenarios = function() {
       helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader').then(function () {
         loginPage.signIn();
       });
+      helper.waitDisappear(displaysListPage.getDisplaysLoader(), 'Displays loader');
       displaysListPage.getDisplayAddButton().click();
     });
 
