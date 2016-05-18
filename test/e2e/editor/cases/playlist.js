@@ -86,7 +86,7 @@ var PlaylistScenarios = function() {
     });
 
     describe('Should Add a content playlist item: ', function () {
-      before('Click Add Content: ', function () {
+      before('Click Add Widget: ', function () {
         placeholderPlaylistPage.getAddContentButton().click();
         helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
       });
@@ -96,12 +96,12 @@ var PlaylistScenarios = function() {
       });
 
       it('should show modal title', function () {
-        expect(storeProductsModalPage.getModalTitle().getText()).to.eventually.equal('Add Content');
+        expect(storeProductsModalPage.getModalTitle().getText()).to.eventually.equal('Add Widget');
       });
 
       it('should show a search box', function () {
         expect(storeProductsModalPage.getSearchFilter().isDisplayed()).to.eventually.be.true;
-        expect(storeProductsModalPage.getSearchInput().getAttribute('placeholder')).to.eventually.equal('Search for Content');
+        expect(storeProductsModalPage.getSearchInput().getAttribute('placeholder')).to.eventually.equal('Search for Widget');
       });
 
       it('should show a list of products', function () {

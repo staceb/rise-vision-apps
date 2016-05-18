@@ -57,6 +57,26 @@ angular.module('risevision.editor.controllers')
       };
 
       $scope.select = function (product) {
+        if (category === TEMPLATES_CATEGORY) {
+          var productDetailsModal = $modal.open({
+            templateUrl: 'partials/editor/product-details-modal.html',
+            size: 'lg',
+            controller: 'ProductDetailsModalController',
+            resolve: {
+              product: function () {
+                return product;
+              }
+            }
+          });
+          productDetailsModal.result.then(function () {
+            $modalInstance.close(product);
+          });
+        } else {
+          $modalInstance.close(product);
+        }
+      };
+
+      $scope.quickSelect = function (product) {
         $modalInstance.close(product);
       };
 

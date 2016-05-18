@@ -8,6 +8,7 @@ var WorkspacePage = require('./../pages/workspacePage.js');
 var helper = require('rv-common-e2e').helper;
 var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
 var StoreProductsModalPage = require('./../pages/storeProductsModalPage.js');
+var ProductDetailsModalPage = require('./../pages/productDetailsModalPage.js');
 
 var TemplateAddScenarios = function() {
 
@@ -22,6 +23,7 @@ var TemplateAddScenarios = function() {
     var workspacePage;
     var presentationPropertiesModalPage;
     var storeProductsModalPage;
+    var productDetailsModalPage;
 
     before(function () {
       homepage = new HomePage();
@@ -31,6 +33,7 @@ var TemplateAddScenarios = function() {
       commonHeaderPage = new CommonHeaderPage();
       presentationPropertiesModalPage = new PresentationPropertiesModalPage();
       storeProductsModalPage = new StoreProductsModalPage();
+      productDetailsModalPage = new ProductDetailsModalPage();
 
       homepage.getEditor();
       //wait for spinner to go away.
@@ -77,6 +80,30 @@ var TemplateAddScenarios = function() {
 
     it('should show a link to Missing Template form',function(){
       expect(storeProductsModalPage.getSuggestTemplate().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should show preview modal when seleting a free template',function(){
+      storeProductsModalPage.getFreeProducts().get(0).click();
+      browser.sleep(1000);
+      expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
+      expect(productDetailsModalPage.getUseProductButton().isDisplayed()).to.eventually.be.true;
+      expect(productDetailsModalPage.getUseProductButton().getText()).to.eventually.equal('Start with this Template');
+      expect(productDetailsModalPage.getBackButton().isDisplayed()).to.eventually.be.true;
+      productDetailsModalPage.getBackButton().click();
+      browser.sleep(1000);
+    });
+
+    it('should show preview modal selecting a premium template',function(){
+      storeProductsModalPage.getPremiumProducts().get(0).click();
+      browser.sleep(1000);
+      expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
+      expect(productDetailsModalPage.getViewInStoreButton().isDisplayed()).to.eventually.be.true;
+      expect(productDetailsModalPage.getViewInStoreButton().getText()).to.eventually.equal('View In Store');
+    });
+
+    it('should show pricing for premium template',function(){
+      helper.waitDisappear(productDetailsModalPage.getPricingLoader());
+      expect(productDetailsModalPage.getPricingInfo().getText()).to.eventually.equal('$10 USD Per Company');
     });
 
     // The Store Templates are not yet released to sub-companies
