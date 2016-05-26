@@ -8,7 +8,7 @@ var helper = require('rv-common-e2e').helper;
 
 var SignupScenarios = function() {
 
-  browser.driver.manage().window().setSize(1024, 768);
+  browser.driver.manage().window().setSize(1920, 1080);
   describe("In order to sign up with Rise Vision " +
            "As a user " +
            "I would like to have access to the sign up process", function() {

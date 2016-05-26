@@ -8,7 +8,7 @@ var helper = require('rv-common-e2e').helper;
 
 var SigninRedirectScenarios = function() {
 
-  browser.driver.manage().window().setSize(1024, 768);
+  browser.driver.manage().window().setSize(1920, 1080);
   describe("In order to access a protected link " +
            "As a user " +
            "I would like to authenticate and be redirected to the original url", function() {

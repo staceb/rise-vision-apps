@@ -9,7 +9,7 @@ var StoreProductsModalPage = require('./../../editor/pages/storeProductsModalPag
 
 var HomepageScenarios = function() {
   
-  browser.driver.manage().window().setSize(1024, 768);
+  browser.driver.manage().window().setSize(1920, 1080);
   describe("In order to access Rise Vison apps " +
            "As a user " +
            "I would like to have access to the homepage of the apps launcher", function() {
@@ -45,12 +45,6 @@ var HomepageScenarios = function() {
 
     it('should show common header',function(){
       expect(commonHeaderPage.getCommonHeader().isDisplayed()).to.eventually.be.true;
-    });
-
-    it('should open Templates modal when adding new presentation',function(){
-      homepage.getPresentationAddButton().click();
-      helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
-      expect(storeProductsModalPage.getStoreProductsModal().isDisplayed()).to.eventually.be.true;
     });
     
     describe("Given a user who wants to share the url", function () {
@@ -89,6 +83,72 @@ var HomepageScenarios = function() {
         expect(homepage.getMetaByProperty('og:description').getAttribute('content')).to.eventually.equal('We have a couple of apps that will allow you to manage your Digital Signage. Managing from the content creation to its delivery on an unlimited number of displays anywhere in the world.');
         expect(homepage.getMetaByProperty('article:publisher').getAttribute('content')).to.eventually.equal('https://www.facebook.com/risevision');
         expect(homepage.getMetaByProperty('og:site_name').getAttribute('content')).to.eventually.equal('Rise Vision | Apps');
+      });
+    });
+
+    describe("Help Animation:",function(){
+      it("should be closed on init",function(){
+        expect(homepage.getHelpContainer().isDisplayed()).to.eventually.be.false;
+      });
+
+      it("should show animation when clicking help text",function(){
+        homepage.getHelpToggleButton().click();
+        expect(homepage.getHelpContainer().isDisplayed()).to.eventually.be.true;
+      });
+
+      it("should hide animation when clicking help text again",function(){
+        homepage.getHelpToggleButton().click();
+        expect(homepage.getHelpContainer().isDisplayed()).to.eventually.be.false;
+      });
+    });
+
+    describe("Presentations:",function(){
+      it("should show Presentations list",function(){
+        expect(homepage.getPresentationsList().isDisplayed()).to.eventually.be.true;
+      });
+
+      it("should show Add Presentation button",function(){
+        expect(homepage.getPresentationAddButton().isDisplayed()).to.eventually.be.true;
+      });
+
+      it("should show View All Presentations button",function(){
+        expect(homepage.getPresentationsViewAll().isDisplayed()).to.eventually.be.true;
+      });
+
+      it('should open Templates modal when adding new presentation',function(){
+        homepage.getPresentationAddButton().click();
+        helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
+        expect(storeProductsModalPage.getStoreProductsModal().isDisplayed()).to.eventually.be.true;
+        storeProductsModalPage.getCloseButton().click();
+        helper.waitDisappear(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
+      });
+    });
+
+    describe("Schedules:",function(){
+      it("should show Schedules list",function(){
+        expect(homepage.getSchedulesList().isDisplayed()).to.eventually.be.true;
+      });
+
+      it("should show Add Schedule button",function(){
+        expect(homepage.getScheduleAddButton().isDisplayed()).to.eventually.be.true;
+      });
+
+      it("should show View All Schedules button",function(){
+        expect(homepage.getSchedulesViewAll().isDisplayed()).to.eventually.be.true;
+      });
+    });
+
+    describe("Displays:",function(){
+      it("should show Displays list",function(){
+        expect(homepage.getDisplaysList().isDisplayed()).to.eventually.be.true;
+      });
+
+      it("should show Add Display button",function(){
+        expect(homepage.getDisplayAddButton().isDisplayed()).to.eventually.be.true;
+      });
+
+      it("should show View All Displays button",function(){
+        expect(homepage.getDisplaysViewAll().isDisplayed()).to.eventually.be.true;
       });
     });
 

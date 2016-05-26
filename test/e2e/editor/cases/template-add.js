@@ -37,6 +37,7 @@ var TemplateAddScenarios = function() {
       helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader').then(function () {
         loginPage.signIn();
       });
+      helper.waitDisappear(presentationsListPage.getPresentationsLoader(),'Presentation loader');
       presentationsListPage.getPresentationAddButton().click();
 
       helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');

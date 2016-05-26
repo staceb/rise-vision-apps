@@ -16,6 +16,7 @@ var StoreProductsModalPage = function() {
   var statusFields = element.all(by.id('status'));
 
   var addWidgetByUrlButton = element(by.id('addWidgetByUrl'));
+  var closeButton = element(by.css('.close'));
 
 
   this.getStoreProductsModal = function () {
@@ -72,6 +73,10 @@ var StoreProductsModalPage = function() {
 
   this.getAddWidgetByUrlButton = function() {
     return addWidgetByUrlButton;
+  };
+
+  this.getCloseButton = function() {
+    return closeButton;
   };
 };
 

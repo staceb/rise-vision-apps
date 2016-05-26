@@ -32,6 +32,7 @@ var ScheduleAddScenarios = function() {
       helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader').then(function () {
         loginPage.signIn();
       });
+      helper.waitDisappear(schedulesListPage.getLoader(),'Schedules loader');
       schedulesListPage.getScheduleAddButton().click();
     });
 

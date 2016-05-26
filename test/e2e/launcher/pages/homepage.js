@@ -9,10 +9,21 @@ var HomePage = function() {
   var storageUrl = config.rootUrl + '/storage';
 
   var appLauncherContainer = element(by.id('appLauncherContainer'));
-  var presentationAddButton = element(by.id('presentationAddButton'));
+  var helpContainer = element(by.id('helpContainer'));
+  var helpToggleButton = element(by.id('helpToggleButton'));
 
-  var welcomeText = element(by.id('welcome-text'));
-  var appTitleText = element(by.id('app-title'));
+  var presentationAddButton = element(by.id('presentationAddButton'));
+  var presentationsList = element(by.id('presentationsList'));
+  var presentationsViewAll = element(by.id('presentationsViewAll'));
+
+  var scheduleAddButton = element(by.id('scheduleAddButton'));
+  var schedulesList = element(by.id('schedulesList'));
+  var schedulesViewAll = element(by.id('schedulesViewAll'));
+
+  var displayAddButton = element(by.id('displayAddButton'));
+  var displaysList = element(by.id('displaysList'));
+  var displaysViewAll = element(by.id('displaysViewAll'));
+
   var signUpText = element(by.id('sign-up-text'));
   var signInText = element(by.id('sign-in-text'));
   var signUpLink = element(by.id('sign-up-link'));
@@ -55,16 +66,48 @@ var HomePage = function() {
     return appLauncherContainer;
   };
 
+  this.getHelpContainer = function() {
+    return helpContainer;
+  };
+
+  this.getHelpToggleButton = function() {
+    return helpToggleButton;
+  };
+
   this.getPresentationAddButton = function() {
     return presentationAddButton;
   };
 
-  this.getWelcomeText = function() {
-    return welcomeText;
+  this.getPresentationsList = function() {
+    return presentationsList;
   };
 
-  this.getAppTitleText = function() {
-    return appTitleText;
+  this.getPresentationsViewAll = function() {
+    return presentationsViewAll;
+  };
+
+  this.getScheduleAddButton = function() {
+    return scheduleAddButton;
+  };
+
+  this.getSchedulesList = function() {
+    return schedulesList;
+  };
+
+  this.getSchedulesViewAll = function() {
+    return schedulesViewAll;
+  };
+
+  this.getDisplayAddButton = function() {
+    return displayAddButton;
+  };
+
+  this.getDisplaysList = function() {
+    return displaysList;
+  };
+
+  this.getDisplaysViewAll = function() {
+    return displaysViewAll;
   };
 
   this.getSignUpText = function() {
