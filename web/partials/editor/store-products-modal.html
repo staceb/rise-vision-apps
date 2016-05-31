@@ -38,7 +38,8 @@
             <img ng-src="{{product.imageUrl}}" class="img-responsive">
           </div> 
           <div class="template-info">
-            <a class="btn btn-default btn-sm pull-right" ng-href="{{storeUrl}}/product/{{product.productId}}/" target="_blank" ng-click="$event.stopPropagation()"><i class="fa fa-info"></i></a>
+            <a ng-if="factory.search.category == 'Content'" class="btn btn-default btn-sm pull-right" ng-href="{{storeUrl}}/product/{{product.productId}}/" target="_blank" ng-click="$event.stopPropagation()"><i class="fa fa-info"></i></a>
+            <a ng-if="factory.search.category == 'Templates'" class="btn btn-primary btn-sm pull-right" href="" ng-click="quickSelect(product); $event.stopPropagation()"><i class="fa fa-plus"></i></a>
             <h3 id="productName">{{product.name}}</h3>
             <p id="status">{{product.paymentTerms.toLowerCase() === 'free'? 'Free' : 'Premium'}} {{product.trialPeriod > 0 ? ' - '+product.trialPeriod+' Days Trial' : ''}}</p>
           </div>

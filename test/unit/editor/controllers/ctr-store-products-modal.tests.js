@@ -181,7 +181,25 @@ describe('controller: Store Products Modal', function() {
       expect($scope.dismiss).to.be.a('function');
     });
 
-    it('select: should close modal when clicked on a product',function(){
+    it('quickSelect: should close modal when clicked',function(){
+      var product = {paymentTerms: 'free'};
+      $scope.quickSelect(product);
+
+      $modalInstanceCloseSpy.should.have.been.calledWith(product);
+    });
+
+    it('select: should show Template details',function(){
+      var modalOpenSpy = sinon.spy($modal, 'open');
+      var product = {paymentTerms: 'free'};
+      $scope.select(product);
+
+      modalOpenSpy.should.have.been.called;
+     
+      expect(modalOpenSpy.getCall(0).args[0].templateUrl).to.equal('partials/editor/product-details-modal.html');
+      expect(modalOpenSpy.getCall(0).args[0].controller).to.equal('ProductDetailsModalController');
+    });
+
+    it('select: should close modal and pass product when return',function(){
       var product = {paymentTerms: 'free'};
       $scope.select(product);
 
