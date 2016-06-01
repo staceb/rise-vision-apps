@@ -10,6 +10,15 @@ describe('service: scheduleFactory:', function() {
           id: "scheduleId",
           name: "some schedule"
         },
+        list: function() {
+          var deferred = Q.defer();
+          if(returnList){
+            deferred.resolve(returnList);
+          }else{
+            deferred.reject({result: {error: { message: 'ERROR; could not load list'}}});
+          }
+          return deferred.promise;
+        },
         add : function(){
           var deferred = Q.defer();
           if(updateSchedule){
@@ -66,14 +75,18 @@ describe('service: scheduleFactory:', function() {
     $provide.value('VIEWER_URL', 'http://rvaviewer-test.appspot.com');
 
   }));
-  var scheduleFactory, trackerCalled, updateSchedule, currentState;
+  var scheduleFactory, trackerCalled, updateSchedule, currentState, returnList, scheduleListSpy, scheduleAddSpy;
   beforeEach(function(){
     trackerCalled = undefined;
     currentState = undefined;
     updateSchedule = true;
+    returnList = null;
 
     inject(function($injector){
       scheduleFactory = $injector.get('scheduleFactory');
+      var schedule = $injector.get('schedule');
+      scheduleListSpy = sinon.spy(schedule,'list');
+      scheduleAddSpy = sinon.spy(schedule,'add');
     });
   });
 
@@ -284,6 +297,108 @@ describe('service: scheduleFactory:', function() {
         done(e);
       })
       .then(null,done);
+  });
+
+  describe('createFirstSchedule:', function(){
+    var firstScheduleSample = {
+      name: 'All Displays - 24/7',
+      content: [{
+        name: 'presentationName',
+        objectReference: 'presentationId',
+        playUntilDone: true,
+        timeDefined: false,
+        type: 'presentation'
+      }],
+      distributeToAll: true,
+      timeDefined: false
+    };
+
+    it('should create first schedule', function(done) {
+      returnList = {};
+      scheduleFactory.createFirstSchedule('presentationId','presentationName')
+      .then(function(){
+        scheduleListSpy.should.have.been.calledWith({count:1});
+
+        scheduleAddSpy.should.have.been.calledWith(firstScheduleSample);
+        
+        expect(trackerCalled).to.equal('Schedule Created');
+
+        done();
+      });
+    });
+
+    it('should not create twice', function(done) {
+      returnList = {};
+      scheduleFactory.createFirstSchedule('presentationId','presentationName')
+      .then(function(){
+        scheduleListSpy.should.have.been.calledWith({count:1});
+
+        scheduleAddSpy.should.have.been.calledWith(firstScheduleSample);
+        
+        expect(trackerCalled).to.equal('Schedule Created');
+
+        scheduleFactory.createFirstSchedule('presentationId','presentationName').then(function(){
+          done("Error: schedule created again");
+        },function(){
+          scheduleListSpy.should.have.been.calledOnce;          
+          scheduleAddSpy.should.have.been.calledOnce
+          done();  
+        });        
+      });
+    });
+
+    it('should handle error loading list', function(done) {
+      returnList = false;
+      scheduleFactory.createFirstSchedule('presentationId','presentationName')
+      .then(null,function(){
+        scheduleListSpy.should.have.been.calledOnce; 
+        done();
+      });
+    });
+
+    it('should handle error saving schedule', function(done) {
+      returnList = {};
+      updateSchedule = false;
+      scheduleFactory.createFirstSchedule('presentationId','presentationName')
+      .then(null,function(){
+        scheduleListSpy.should.have.been.calledOnce; 
+        done();
+      });
+    });
+
+    it('should not create if already have schedules',function(done){
+      returnList = { items: [{name:'schedule'}] };
+      scheduleFactory.createFirstSchedule('presentationId','presentationName')
+      .then(null, function(){
+        scheduleListSpy.should.have.been.calledWith({count:1});
+
+        scheduleAddSpy.should.not.have.been.called;
+        
+        expect(trackerCalled).to.not.be.ok;
+
+        done();
+      });
+    });
+
+    it('should cache result',function(done){
+      returnList = { items: [{name:'schedule'}] };
+      scheduleFactory.createFirstSchedule('presentationId','presentationName')
+      .then(null, function(){
+        scheduleListSpy.should.have.been.calledWith({count:1});
+        scheduleAddSpy.should.not.have.been.called;        
+        expect(trackerCalled).to.not.be.ok;
+
+        scheduleFactory.createFirstSchedule('presentationId','presentationName').then(function(){
+          done("Error: schedule created again");
+        },function(){
+          scheduleListSpy.should.have.been.calledOnce;          
+          scheduleAddSpy.should.not.have.been.called;
+          expect(trackerCalled).to.not.be.ok;
+          done();  
+        }); 
+      });
+    });
+
   });
 
 });

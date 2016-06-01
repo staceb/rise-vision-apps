@@ -5,6 +5,7 @@ angular.module('risevision.schedules.services')
     'VIEWER_URL',
     function ($q, $state, schedule, scheduleTracker, VIEWER_URL) {
       var factory = {};
+      var _hasSchedules = false;
       var _scheduleId;
 
       var _clearMessages = function () {
@@ -60,6 +61,60 @@ angular.module('risevision.schedules.services')
             factory.loadingSchedule = false;
           });
 
+        return deferred.promise;
+      };
+
+      var _initFirstSchedule = function (presentationId, presentationName) {
+        return {
+          name: 'All Displays - 24/7',
+          content: [{
+            name: presentationName,
+            objectReference: presentationId,
+            playUntilDone: true,
+            timeDefined: false,
+            type: 'presentation'
+          }],
+          distributeToAll: true,
+          timeDefined: false
+        };
+      };
+
+      factory.createFirstSchedule = function (presentationId,
+        presentationName) {
+        var deferred = $q.defer();
+        if (!_hasSchedules) {
+          schedule.list({
+            count: 1
+          }).then(function (result) {
+
+            if (result && (!result.items || result.items.length === 0)) {
+              var firstSchedule = _initFirstSchedule(presentationId,
+                presentationName);
+
+              schedule.add(firstSchedule).then(function (resp) {
+
+                if (resp && resp.item && resp.item.id) {
+                  _hasSchedules = true;
+                  scheduleTracker('Schedule Created', resp.item.id,
+                    resp.item.name);
+                  deferred.resolve();
+
+                } else {
+                  deferred.reject('Error adding Schedule');
+                }
+              }, function (error) {
+                deferred.reject(error);
+              });
+            } else {
+              _hasSchedules = true;
+              deferred.reject('Already have Schedules');
+            }
+          }, function (error) {
+            deferred.reject(error);
+          });
+        } else {
+          deferred.reject('Already have Schedules');
+        }
         return deferred.promise;
       };
 
