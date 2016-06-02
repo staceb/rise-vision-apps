@@ -61,6 +61,7 @@ angular.module('risevision.editor.controllers')
           var productDetailsModal = $modal.open({
             templateUrl: 'partials/editor/product-details-modal.html',
             size: 'lg',
+            windowClass: 'product-preview-modal',
             controller: 'ProductDetailsModalController',
             resolve: {
               product: function () {

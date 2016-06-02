@@ -7,7 +7,7 @@ var ProductDetailsModalPage = function() {
   var pricingLoader = element(by.xpath('//div[@spinner-key="loading-price"]'));
 
   var pricingInfo = element(by.id('pricingInfo'));
-  var backButton = element(by.id('backButton'));
+  var closeButton = element(by.id('closeButton'));
 
   this.getProductDetailsModal = function(){
     return productDetailsModal;
@@ -29,8 +29,8 @@ var ProductDetailsModalPage = function() {
     return pricingInfo;
   }
 
-  this.getBackButton = function() {
-    return backButton;
+  this.getCloseButton = function() {
+    return closeButton;
   };
 };
 

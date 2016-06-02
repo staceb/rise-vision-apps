@@ -1,10 +1,10 @@
-<div id="productDetailsModal" class="modal-body" style="padding: 30px;">
-
-  <button id="backButton" class="btn btn-default pull-left" ng-click="dismiss()"> <i class="fa fa-reply icon-left"></i> {{'editor-app.storeProduct.templates.back' | translate}}</button>
-
+<div id="productDetailsModal" class="modal-body padding-large">
+  <button id="closeButton" type="button" class="close button-badge" ng-click="dismiss()" aria-hidden="true">
+    <i class="fa fa-times"></i>
+  </button>
   <div class="row">
     <div class="col-xs-12">
-      <h3>{{product.name}}</h3>
+        <h3>{{product.name}}</h3>
     </div>
   </div>
 

@@ -88,8 +88,8 @@ var TemplateAddScenarios = function() {
       expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
       expect(productDetailsModalPage.getUseProductButton().isDisplayed()).to.eventually.be.true;
       expect(productDetailsModalPage.getUseProductButton().getText()).to.eventually.equal('Start with this Template');
-      expect(productDetailsModalPage.getBackButton().isDisplayed()).to.eventually.be.true;
-      productDetailsModalPage.getBackButton().click();
+      expect(productDetailsModalPage.getCloseButton().isDisplayed()).to.eventually.be.true;
+      productDetailsModalPage.getCloseButton().click();
       browser.sleep(1000);
     });
 
