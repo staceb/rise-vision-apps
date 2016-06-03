@@ -124,7 +124,9 @@ describe('service: editorFactory:', function() {
         getUsername : function() {
           return 'testusername';
         },
-        _restoreState : function() {}
+        _restoreState : function() {},
+        addEventListenerVisibilityAPI : function() {},
+        removeEventListenerVisibilityAPI : function() {}
       };
     });
     $provide.service('$modal',function(){
@@ -140,6 +142,13 @@ describe('service: editorFactory:', function() {
         }
       }
     });
+    $provide.service('scheduleFactory', function() { 
+      return {
+        createFirstSchedule: function(){
+          return Q.resolve();
+        }
+      };
+    });
     $provide.service('$window', function() {
       return {
         open: function(url, target) {
@@ -150,7 +159,7 @@ describe('service: editorFactory:', function() {
     $provide.value('TEMPLATES_CATEGORY', 'Templates');
   }));
   var editorFactory, trackerCalled, updatePresentation, currentState, stateParams, 
-    presentationParser, $window, $modal;
+    presentationParser, $window, $modal, scheduleFactory, userState;
   beforeEach(function(){
     trackerCalled = undefined;
     currentState = undefined;
@@ -161,6 +170,8 @@ describe('service: editorFactory:', function() {
       presentationParser = $injector.get('presentationParser');
       $window = $injector.get('$window');
       $modal = $injector.get('$modal');
+      scheduleFactory = $injector.get('scheduleFactory');
+      userState = $injector.get('userState');
     });
   });
 
@@ -288,6 +299,24 @@ describe('service: editorFactory:', function() {
         
         done();
       },10);
+    });
+
+    it('should create first Schedule when adding first presentation and show modal',function(done){
+      updatePresentation = true;
+
+      var createFirstScheduleSpy = sinon.spy(scheduleFactory,'createFirstSchedule');
+      var $modalOpenSpy = sinon.spy($modal, 'open');
+
+      editorFactory.addPresentation();
+
+      setTimeout(function(){
+        createFirstScheduleSpy.should.have.been.called;
+        $modalOpenSpy.should.have.been.called;
+        expect($modalOpenSpy.getCall(0).args[0].templateUrl).to.equal('partials/editor/auto-schedule-modal.html');
+        expect($modalOpenSpy.getCall(0).args[0].controller).to.equal('AutoScheduleModalController');  
+        
+        done();
+      },100);
     });
 
     it('should parse and add the presentation when $state is html-editor',function(done){
@@ -665,12 +694,16 @@ describe('service: editorFactory:', function() {
   describe('saveAndPreview: ', function() {
     it('should add and preview new presentation', function(done) {
       var $windowOpenSpy = sinon.spy($window, 'open');
+      var addEventSpy = sinon.spy(userState, 'addEventListenerVisibilityAPI');
+      var removeEventSpy = sinon.spy(userState, 'removeEventListenerVisibilityAPI');
       
       editorFactory.saveAndPreview();
+      removeEventSpy.should.have.been.called;
       
       setTimeout(function() {
         $windowOpenSpy.should.have.been.called.twice;
         $windowOpenSpy.should.have.been.calledWith('http://rvaviewer-test.appspot.com/?type=presentation&id=presentationId', 'rvPresentationPreview');
+        addEventSpy.should.have.been.called;
 
         done();
       }, 10);

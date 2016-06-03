@@ -21,11 +21,11 @@ angular.module('risevision.editor.services')
     'presentationParser', 'distributionParser', 'presentationTracker',
     'store', 'VIEWER_URL', 'REVISION_STATUS_REVISED',
     'REVISION_STATUS_PUBLISHED', 'DEFAULT_LAYOUT', 'TEMPLATES_CATEGORY',
-    '$modal', '$rootScope', '$window',
+    '$modal', '$rootScope', '$window', 'scheduleFactory',
     function ($q, $state, userState, presentation, presentationParser,
       distributionParser, presentationTracker, store, VIEWER_URL,
       REVISION_STATUS_REVISED, REVISION_STATUS_PUBLISHED, DEFAULT_LAYOUT,
-      TEMPLATES_CATEGORY, $modal, $rootScope, $window) {
+      TEMPLATES_CATEGORY, $modal, $rootScope, $window, scheduleFactory) {
       var factory = {};
 
       factory.openPresentationProperties = function () {
@@ -156,8 +156,22 @@ angular.module('risevision.editor.services')
 
               $state.go('apps.editor.workspace.artboard', {
                 presentationId: resp.item.id
+              }).then(function () {
+                scheduleFactory.createFirstSchedule(resp.item.id,
+                    resp.item.name)
+                  .then(function () {
+                    var modalInstance = $modal.open({
+                      templateUrl: 'partials/editor/auto-schedule-modal.html',
+                      size: 'md',
+                      controller: 'AutoScheduleModalController',
+                      resolve: {
+                        presentationName: function () {
+                          return resp.item.name;
+                        }
+                      }
+                    });
+                  });
               });
-
               deferred.resolve(resp.item.id);
             }
           })
@@ -362,9 +376,6 @@ angular.module('risevision.editor.services')
             }
           }
         });
-        goToStoreModalInstance.result.then(function () {
-          $modalInstance.dismiss();
-        });
       };
 
       factory.copyTemplate = function (productDetails, rvaEntityId) {
@@ -424,10 +435,13 @@ angular.module('risevision.editor.services')
       };
 
       factory.saveAndPreview = function () {
+        userState.removeEventListenerVisibilityAPI();
         $window.open('/loading-preview.html', 'rvPresentationPreview');
 
         factory.save().then(function (presentationId) {
           factory.preview(presentationId);
+        }).finally(function(){
+          userState.addEventListenerVisibilityAPI();
         });
       };
 
