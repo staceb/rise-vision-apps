@@ -305,7 +305,7 @@ describe('service: scheduleFactory:', function() {
       content: [{
         name: 'presentationName',
         objectReference: 'presentationId',
-        playUntilDone: true,
+        duration: 10,
         timeDefined: false,
         type: 'presentation'
       }],
