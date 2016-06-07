@@ -70,7 +70,7 @@ angular.module('risevision.schedules.services')
           content: [{
             name: presentationName,
             objectReference: presentationId,
-            playUntilDone: true,
+            duration: 10,
             timeDefined: false,
             type: 'presentation'
           }],
