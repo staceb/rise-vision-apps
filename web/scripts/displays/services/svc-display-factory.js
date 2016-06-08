@@ -2,7 +2,8 @@
 
 angular.module('risevision.displays.services')
   .factory('displayFactory', ['$q', '$state', 'display', 'displayTracker',
-    function ($q, $state, display, displayTracker) {
+    'displayEmail',
+    function ($q, $state, display, displayTracker, displayEmail) {
       var factory = {};
       var _displayId;
 
@@ -83,6 +84,8 @@ angular.module('risevision.displays.services')
             if (resp && resp.item && resp.item.id) {
               displayTracker('Display Created', resp.item.id, resp.item
                 .name);
+
+              displayEmail.send(resp.item.id, resp.item.name);
 
               $state.go('apps.displays.details', {
                 displayId: resp.item.id

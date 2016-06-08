@@ -63,6 +63,13 @@ describe('service: displayFactory:', function() {
         trackerCalled = name;
       };
     });
+    $provide.service('displayEmail', function() {
+      return {
+        send: function() {
+          emailSent = true;
+        }
+      }
+    })
     $provide.service('$state',function(){
       return {
         go : function(state, params){
@@ -75,9 +82,10 @@ describe('service: displayFactory:', function() {
     });
 
   }));
-  var displayFactory, trackerCalled, updateDisplay, currentState, returnList, displayListSpy, displayAddSpy;
+  var displayFactory, trackerCalled, emailSent, updateDisplay, currentState, returnList, displayListSpy, displayAddSpy;
   beforeEach(function(){
     trackerCalled = undefined;
+    emailSent = undefined;
     currentState = undefined;
     updateDisplay = true;
     returnList = null;
@@ -205,6 +213,7 @@ describe('service: displayFactory:', function() {
       setTimeout(function(){
         expect(currentState).to.equal('apps.displays.details');
         expect(trackerCalled).to.equal('Display Created');
+        expect(emailSent).to.be.true;
         expect(displayFactory.savingDisplay).to.be.false;
         expect(displayFactory.loadingDisplay).to.be.false;
         expect(displayFactory.errorMessage).to.not.be.ok;
@@ -225,6 +234,7 @@ describe('service: displayFactory:', function() {
       setTimeout(function(){
         expect(currentState).to.be.empty;
         expect(trackerCalled).to.not.be.ok;
+        expect(emailSent).to.not.be.ok;
         expect(displayFactory.savingDisplay).to.be.false;
         expect(displayFactory.loadingDisplay).to.be.false;
 
