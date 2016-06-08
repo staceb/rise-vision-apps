@@ -268,9 +268,11 @@ angular.module('risevision.apps', [
         }],
         controller: 'displayDetails',
         resolve: {
-          canAccessApps: ['canAccessApps',
-            function (canAccessApps) {
-              return canAccessApps();
+          displayId: ['canAccessApps', '$stateParams',
+            function (canAccessApps, $stateParams) {
+              return canAccessApps().then(function () {
+                return $stateParams.displayId;
+              });
             }
           ]
         }
@@ -284,9 +286,9 @@ angular.module('risevision.apps', [
         }],
         controller: 'displayAdd',
         resolve: {
-          canAccessApps: ['canAccessApps',
-            function (canAccessApps) {
-              return canAccessApps();
+          displayInfo: ['canAccessApps', 'displayFactory',
+            function (canAccessApps, displayFactory) {
+              return canAccessApps().then(displayFactory.newDisplay);
             }
           ]
         }

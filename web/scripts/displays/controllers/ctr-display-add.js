@@ -1,53 +1,26 @@
 'use strict';
 
-//updated url parameters to selected display status from status filter
 angular.module('risevision.displays.controllers')
-  .controller('displayAdd', ['$scope', '$state', 'display', '$loading',
-    '$log', 'displayTracker',
-    function ($scope, $state, display, $loading, $log, displayTracker) {
-      $scope.display = {
-        'width': 1920,
-        'height': 1080,
-        'status': 1,
-        'restartEnabled': true,
-        'restartTime': '02:00',
-        'monitoringEnabled': true,
-        'useCompanyAddress': true
-      };
-      $scope.savingDisplay = false;
+  .controller('displayAdd', ['$scope', 'displayFactory', '$loading', '$log',
+    function ($scope, displayFactory, $loading, $log) {
+      $scope.factory = displayFactory;
+      $scope.display = displayFactory.display;
 
-      $scope.$watch('savingDisplay', function (loading) {
+      $scope.$watch('factory.loadingDisplay', function (loading) {
         if (loading) {
-          $loading.start('displays-loader');
+          $loading.start('display-loader');
         } else {
-          $loading.stop('displays-loader');
+          $loading.stop('display-loader');
         }
       });
 
-      $scope.save = function (id, comment, toggleStatus) {
+      $scope.save = function () {
         if (!$scope.displayDetails.$valid) {
           $log.error('form not valid: ', $scope.displayDetails.errors);
           return;
         }
 
-        $scope.savingDisplay = true;
-
-        display.add($scope.display)
-          .then(function (resp) {
-            if (resp && resp.item && resp.item.id) {
-              displayTracker('Display Created', resp.item.id, resp.item.name);
-
-              $state.go('apps.displays.details', {
-                displayId: resp.item.id
-              });
-            }
-          })
-          .then(null, function (e) {
-            $scope.submitError = e.message ? e.message : e.toString();
-          })
-          .finally(function () {
-            $scope.savingDisplay = false;
-          });
+        displayFactory.addDisplay();
       };
 
     }

@@ -5,32 +5,14 @@ describe('controller: display add', function() {
   beforeEach(module('risevision.displays.services'));
   beforeEach(module(mockTranlate()));
   beforeEach(module(function ($provide) {
-    $provide.service('userState',userState);
-    $provide.service('display',function(){
+    $provide.service('displayFactory',function(){
       return {
-        _display: {},
-        add : function(display){
-          var deferred = Q.defer();
-          if(updateDisplay){
-            this._display = display;
-            deferred.resolve({item: display});
-          }else{
-            deferred.reject('ERROR; could not create display');
-          }
-          return deferred.promise;
+        display: {},
+        loadingDisplay: true,
+        addDisplay : function(){
+          displayAdded = true;
         }
-      }
-    });
-    $provide.service('$state',function(){
-      return {
-        _state : '',
-        go : function(state, params){
-          if (state){
-            this._state = state;
-          }
-          return this._state;
-        }
-      }
+      };
     });
     $provide.service('$loading',function(){
       return {
@@ -42,44 +24,24 @@ describe('controller: display add', function() {
         }
       }
     });
-    $provide.service('displayTracker', function() { 
-      return function(name) {
-        trackerCalled = name;
-      };
-    });
 
   }));
-  var $scope, userState, $state, updateDisplay,$loading,$loadingStartSpy, $loadingStopSpy,
-  trackerCalled;
+  var $scope, displayFactory, $loading,$loadingStartSpy, $loadingStopSpy, displayAdded;
   beforeEach(function(){
-    updateDisplay = true;
-    trackerCalled = undefined;
+    displayAdded = false;
     
-    userState = function(){
-      return {
-        getSelectedCompanyId : function(){
-          return 'some_company_id';
-        },
-        _restoreState : function(){
-
-        },
-        isSubcompanySelected : function(){
-          return true;
-        }
-      }
-    };
     inject(function($injector,$rootScope, $controller){
       $scope = $rootScope.$new();
-      $state = $injector.get('$state');
+      displayFactory = $injector.get('displayFactory');
       $loading = $injector.get('$loading');
       $loadingStartSpy = sinon.spy($loading, 'start');
       $loadingStopSpy = sinon.spy($loading, 'stop');
       $controller('displayAdd', {
         $scope : $scope,
-        $state : $state,
-        display: $injector.get('display'),
+        displayFactory: displayFactory,
         $loading: $loading,
-        $log : $injector.get('$log')});
+        $log: $injector.get('$log')
+      });
       $scope.$digest();
     });
   });
@@ -92,15 +54,7 @@ describe('controller: display add', function() {
 
   it('should init the correct defaults',function(){
     expect($scope.display).to.be.truely;
-    expect($scope.display).to.deep.equal({
-      'width': 1920,
-      'height': 1080,
-      'status': 1,
-      'restartEnabled': true,
-      'restartTime': '02:00',
-      'monitoringEnabled': true,
-      'useCompanyAddress': true
-    });
+    expect($scope.display).to.deep.equal({});
   });
 
   it('should return early if the form is invalid',function(){
@@ -109,40 +63,25 @@ describe('controller: display add', function() {
     $scope.save();
   });
 
-  it('should save the display',function(done){
-    updateDisplay = true;
-
+  it('should save the display',function(){
     $scope.displayDetails = {};
     $scope.displayDetails.$valid = true;
     $scope.display = {id:123};
     $scope.save();
-    expect($scope.savingDisplay).to.be.true;
-    $scope.$digest();
-    $loadingStartSpy.should.have.been.calledWith('displays-loader');
-    setTimeout(function(){
-      expect($state._state).to.equal('apps.displays.details');
-      expect(trackerCalled).to.equal('Display Created');
-      expect($scope.savingDisplay).to.be.false;
-      expect($state.submitError).to.not.be.ok;
-      $loadingStopSpy.should.have.been.calledWith('displays-loader');
-      done();
-    },10);
+
+    expect(displayAdded).to.be.true;
+
   });
 
-  it('should show an error if fails to create display',function(done){
-    updateDisplay = false;
-
+  it('should show/hide loading spinner if loading', function(done) {
     $scope.$digest();
-    $scope.displayDetails = {};
-    $scope.displayDetails.$valid = true;
-    $scope.save();
+    $loadingStartSpy.should.have.been.calledWith('display-loader');
+
+    displayFactory.loadingDisplay = false;
+    $scope.$digest();
     setTimeout(function(){
-      expect($state._state).to.be.empty;
-      expect(trackerCalled).to.not.equal('Display Created');
-      expect($scope.savingDisplay).to.be.false;
-      expect($scope.submitError).to.be.ok;
+      $loadingStopSpy.should.have.been.calledWith('display-loader');
       done();
     },10);
-  });
-
+  })
 });

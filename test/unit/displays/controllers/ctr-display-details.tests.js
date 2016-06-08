@@ -5,46 +5,22 @@ describe('controller: display details', function() {
   beforeEach(module('risevision.displays.services'));
   beforeEach(module(mockTranlate()));
   beforeEach(module(function ($provide) {
-    $provide.service('userState',userState);
-    $provide.service('display',function(){
+    $provide.service('displayFactory',function(){
       return {
-        update : function(display){
-          var deferred = Q.defer();
-          if(updateDisplay){
-            deferred.resolve(displayId);
-          }else{
-            deferred.reject('ERROR; could not update display');
-          }
-          return deferred.promise;
+        display: {},
+        getDisplay: function(displayId) {
+          this.display.id = displayId;
+
+          return Q.resolve();
         },
-        get: function(displayId) {
-          var deferred = Q.defer();
-          if(updateDisplay){
-            deferred.resolve(displayId);
-          }else{
-            deferred.reject('ERROR; could not get display');
-          }
-          return deferred.promise;
+        updateDisplay : function(){
+          updateCalled = true;
+          
+          return Q.resolve();
         },
-        delete: function(displayId) {
-          var deferred = Q.defer();
-          if(updateDisplay){
-            deferred.resolve(displayId);
-          }else{
-            deferred.reject('ERROR; could not delete display');
-          }
-          return deferred.promise;
+        deleteDisplay: function() {
+          deleteCalled = true;
         }
-      }
-    });
-    $provide.service('displayTracker', function() { 
-      return function(name) {
-        trackerCalled = name;
-      };
-    });
-    $provide.service('$stateParams',function(){
-      return {
-        displayId: 'abcd1234'
       }
     });
     $provide.service('$state',function(){
@@ -75,30 +51,19 @@ describe('controller: display details', function() {
         }
       }
     });
+    $provide.value('displayId', '1234');
   }));
-  var $scope, userState, $state, updateDisplay, confirmDelete, trackerCalled;
+  var $scope, $state, updateCalled, deleteCalled, confirmDelete;
   beforeEach(function(){
-    trackerCalled = undefined;
-    userState = function(){
-      return {
-        getSelectedCompanyId : function(){
-          return 'some_company_id';
-        },
-        _restoreState : function(){
-
-        },
-        isSubcompanySelected : function(){
-          return true;
-        }
-      }
-    };
+    updateCalled = false;
+    deleteCalled = false;
+    
     inject(function($injector,$rootScope, $controller){
       $scope = $rootScope.$new();
       $state = $injector.get('$state');
       $controller('displayDetails', {
         $scope : $scope,
-        userState : $injector.get('userState'),
-        display:$injector.get('display'),
+        displayFactory:$injector.get('displayFactory'),
         $modal:$injector.get('$modal'),
         $state : $state,
         $log : $injector.get('$log')});
@@ -106,26 +71,21 @@ describe('controller: display details', function() {
     });
   });
   
-  beforeEach(function(done) {
-    updateDisplay = true;
-    
-    setTimeout(function(){
-      expect($scope.loadingDisplay).to.be.false;
-      done();
-    },10);
-  });
-
   it('should exist',function(){
     expect($scope).to.be.ok;
-    expect($scope.displayId).to.be.ok;
-    expect($scope.displayTracker).to.be.ok;
+    expect($scope.factory).to.be.ok;
 
     expect($scope.save).to.be.a('function');
     expect($scope.confirmDelete).to.be.a('function');
   });
-
-  it('should init the correct defaults',function(){
-    expect($scope.savingDisplay).to.be.false;
+  
+  it('should initialize', function(done) {
+    setTimeout(function() {
+      expect($scope.display).to.be.ok;      
+      expect($scope.display.id).to.equal('1234');
+      
+      done();
+    }, 10);
   });
 
   describe('submit: ',function(){
@@ -133,38 +93,17 @@ describe('controller: display details', function() {
       $scope.displayDetails = {};
       $scope.displayDetails.$valid = false;
       $scope.save();
+      
+      expect(updateCalled).to.be.false;
     });
 
-    it('should save the display',function(done){
-      updateDisplay = true;
-
+    it('should save the display',function(){
       $scope.displayDetails = {};
       $scope.displayDetails.$valid = true;
       $scope.display = {id:123};
       $scope.save();
-      expect($scope.savingDisplay).to.be.true;
-      setTimeout(function(){
-        expect(trackerCalled).to.equal('Display Updated');
-        expect($scope.savingDisplay).to.be.false;
-        expect($scope.submitError).to.not.be.ok;
-        done();
-      },10);
-    });
 
-    it('should show an error if fails to update the display',function(done){
-      updateDisplay = false;
-
-      $scope.$digest();
-      $scope.displayDetails = {};
-      $scope.displayDetails.$valid = true;
-      $scope.save();
-      setTimeout(function(){
-        expect($state._state).to.be.empty;
-        expect(trackerCalled).to.not.equal('Display Updated');
-        expect($scope.savingDisplay).to.be.false;
-        expect($scope.submitError).to.be.ok;
-        done();
-      },10);
+      expect(updateCalled).to.be.true;
     });
   });
   
@@ -176,38 +115,22 @@ describe('controller: display details', function() {
     it('should return early the user does not confirm',function(){
       $scope.confirmDelete();
       
-      expect($scope.loadingDisplay).to.be.false;
-      expect($state._state).to.be.empty;
+      expect(deleteCalled).to.be.false;
     });
     
     it('should delete the display',function(done){
       confirmDelete = true;
-      updateDisplay = true;
       $scope.display = {id:123};
       
       $scope.confirmDelete();
-      setTimeout(function(){
-        expect($scope.loadingDisplay).to.be.false;
-        expect($scope.submitError).to.not.be.ok;
-        expect(trackerCalled).to.equal('Display Deleted');
-        expect($state._state).to.equal('apps.displays.list');
+
+      setTimeout(function() {
+        expect(deleteCalled).to.be.true;
+        
         done();
-      },10);
+      }, 10);
     });
     
-    it('should show an error if fails to delete the display',function(done){
-      confirmDelete = true;
-      updateDisplay = false;
-      
-      $scope.confirmDelete();
-      setTimeout(function(){
-        expect($state._state).to.be.empty;
-        expect(trackerCalled).to.not.be.ok;
-        expect($scope.loadingDisplay).to.be.false;
-        expect($scope.submitError).to.be.ok;
-        done();
-      },10);
-    });
   });
 
   describe('browserUpgradeMode:',function(){
