@@ -19,8 +19,8 @@
     
     <display-fields></display-fields>
 
-    <div ng-show="submitError" class="alert alert-danger" role="alert">
-      <strong translate>displays-app.details.error </strong>{{submitError}}
+    <div id="errorBox" ng-show="factory.apiError" class="alert alert-danger" role="alert">
+      <strong>{{factory.errorMessage}}</strong> {{factory.apiError}}
     </div> 
     
     <div class="button-row text-right">
@@ -32,8 +32,8 @@
       </button>
       <span class="hidden-xs add-right"><last-modified change-date="display.changeDate" changed-by="display.changedBy"></last-modified></span>
       <!-- Indicates a successful or positive action -->
-      <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="displayDetails.$invalid || savingDisplay" require-role="da">
-        {{ savingDisplay ? ('common.saving' | translate) : ('common.save' | translate)}} 
+      <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="displayDetails.$invalid || factory.savingDisplay" require-role="da">
+        {{ factory.savingDisplay ? ('common.saving' | translate) : ('common.save' | translate)}} 
         <i class="fa fa-check icon-right"></i>
       </button>
       <!-- Indicates cancel or non-destructive action -->

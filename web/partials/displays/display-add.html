@@ -12,13 +12,13 @@
     
     <display-fields></display-fields>
     
-    <div ng-show="submitError" class="alert alert-danger" role="alert">
-      <strong translate>displays-app.add.error </strong>{{submitError}}
+    <div ng-show="factory.apiError" class="alert alert-danger" role="alert">
+      <strong>{{factory.errorMessage}}</strong> {{factory.apiError}}
     </div> 
 
     <div class="button-row text-right">      
       <!-- Indicates a successful or positive action -->
-      <button id="saveButton" type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="displayDetails.$invalid || savingDisplay" require-role="da">
+      <button id="saveButton" type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="displayDetails.$invalid || factory.savingDisplay" require-role="da">
         {{ savingDisplay ? ('common.saving' | translate) : ('common.save' | translate)}} 
         <i class="fa fa-check icon-right"></i>
       </button>

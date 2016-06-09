@@ -440,7 +440,7 @@ angular.module('risevision.editor.services')
 
         factory.save().then(function (presentationId) {
           factory.preview(presentationId);
-        }).finally(function(){
+        }).finally(function () {
           userState.addEventListenerVisibilityAPI();
         });
       };
