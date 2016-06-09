@@ -77,6 +77,7 @@ var DisplayAddScenarios = function() {
     });
     
     it('should show download buttons', function() {
+      helper.wait(displayAddPage.getDownloadWindows64Button(), 'Download Button');
       expect(displayAddPage.getDownloadWindows64Button().isDisplayed()).to.eventually.be.true;
     });
 
