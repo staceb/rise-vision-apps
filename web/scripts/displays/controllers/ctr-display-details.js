@@ -7,9 +7,9 @@ angular.module('risevision.displays.controllers')
     function ($scope, $q, $state, displayFactory, $loading, $log, $modal,
       $templateCache, displayId) {
       $scope.factory = displayFactory;
-      
-      displayFactory.getDisplay(displayId).then(function() {
-        $scope.display = displayFactory.display;        
+
+      displayFactory.getDisplay(displayId).then(function () {
+        $scope.display = displayFactory.display;
       });
 
       $scope.$watch('factory.loadingDisplay', function (loading) {

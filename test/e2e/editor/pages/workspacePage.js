@@ -7,9 +7,9 @@ var WorkspacePage = function() {
   var presentationPropertiesButton = element(by.id('presentationPropertiesButton'));
   var addPlaceholderButton = element(by.id('addPlaceholderButton'));
   var previewButton = element(by.id('previewButton'));
+  var saveAndPreviewButton = element(by.id('saveAndPreviewButton'));
   var changeTemplateButton = element(by.id('changeTemplateButton'));
   var saveButton = element(by.id('saveButton'));
-  var cancelButton = element(by.id('cancelButton'));
   var restoreButton = element(by.id('restoreButton'));
   var publishButton = element(by.id('publishButton'));
   var designButton = element(by.id('designButton'));
@@ -45,16 +45,16 @@ var WorkspacePage = function() {
     return previewButton;
   };
 
+  this.getSaveAndPreviewButton = function() {
+    return saveAndPreviewButton;
+  };
+
   this.getChangeTemplateButton = function() {
     return changeTemplateButton;
   };
 
   this.getSaveButton = function() {
     return saveButton;
-  };
-
-  this.getCancelButton = function() {
-    return cancelButton;
   };
 
   this.getRestoreButton = function() {

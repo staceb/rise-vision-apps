@@ -88,6 +88,15 @@ describe('controller: Workspace', function() {
     expect($scope.hasUnsavedChanges).to.be.false;
   });
 
+  it('should not flag unsaved changes when publishing',function(){    
+    editorFactory.presentation.revisionStatusName = 'Published';
+    editorFactory.presentation.changeDate = new Date();
+    editorFactory.presentation.changedBy = 'newUsername';
+    $scope.$apply();
+
+    expect($scope.hasUnsavedChanges).to.be.false;
+  });
+
   it('should notify unsaved changes when changing URL',function(){
     editorFactory.presentation.name = "New Name";
     $scope.$apply();

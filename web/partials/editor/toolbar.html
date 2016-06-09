@@ -15,10 +15,8 @@
 
       <div class="pull-right">
         <button id="changeTemplateButton" ng-if="!factory.presentation.id" class="btn btn-default" ng-click="changeTemplate()">{{'editor-app.workspace.toolbar.changeTemplate' | translate}} <i class="fa fa-th icon-right"></i></button>
-        <span ng-if="!factory.presentation.id" class="text-muted add-left" translate>editor-app.workspace.toolbar.or</span>
-        <button class="btn btn-primary" id="previewButton" ng-click="factory.saveAndPreview()">{{'editor-app.workspace.toolbar.saveAndPreview' | translate}} <i class="fa fa-play icon-right"></i></button>
+        <span ng-if="!factory.presentation.id" class="text-muted add-left" translate>editor-app.workspace.toolbar.or</span>        
+        <button ng-if="!hasUnsavedChanges" class="btn btn-primary" id="previewButton" ng-click="factory.preview(factory.presentation.id)" ng-disabled="!factory.presentation.id">{{'editor-app.workspace.toolbar.preview' | translate}} <i class="fa fa-play icon-right"></i></button>
+        <button ng-if="hasUnsavedChanges" class="btn btn-primary add-left" id="saveAndPreviewButton" ng-click="factory.saveAndPreview()">{{'editor-app.workspace.toolbar.saveAndPreview' | translate}} <i class="fa fa-play icon-right"></i></button>
       </div>
-
-      
-
 </div><!--presentation-toolbar-->

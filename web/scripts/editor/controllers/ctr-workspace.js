@@ -16,12 +16,26 @@ angular.module('risevision.editor.controllers')
 
       var _initializing = true;
       $scope.$watch('factory.presentation', function (newValue, oldValue) {
+        if ($scope.hasUnsavedChanges) {
+          return;
+        }
         if (_initializing) {
           $timeout(function () {
             _initializing = false;
           });
         } else {
-          $scope.hasUnsavedChanges = true;
+          var newObject = angular.copy(newValue);
+          var oldObject = angular.copy(oldValue);
+          var ignoreFields = ['revisionStatusName', 'changeDate',
+            'changedBy', 'backgroundStyle', 'backgroundScaleToFit'
+          ];
+          for (var k in ignoreFields) {
+            delete newObject[ignoreFields[k]];
+            delete oldObject[ignoreFields[k]];
+          }
+          if (!angular.equals(newObject, oldObject)) {
+            $scope.hasUnsavedChanges = true;
+          }
         }
       }, true);
 
@@ -63,7 +77,7 @@ angular.module('risevision.editor.controllers')
         $window.onbeforeunload = undefined;
       });
 
-      $scope.changeTemplate = function() {
+      $scope.changeTemplate = function () {
         $scope.hasUnsavedChanges = false;
         $state.go('apps.editor.add');
       };
