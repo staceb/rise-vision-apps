@@ -1,5 +1,5 @@
 'use strict';
-describe('controller: display add', function() {
+describe('controller: display add modal', function() {
   var displayId = 1234;
   beforeEach(module('risevision.displays.controllers'));
   beforeEach(module('risevision.displays.services'));
@@ -11,35 +11,35 @@ describe('controller: display add', function() {
         loadingDisplay: true,
         addDisplay : function(){
           displayAdded = true;
+
+          return Q.resolve();
         }
       };
     });
-    $provide.service('$loading',function(){
+    
+    $provide.service('$modalInstance',function(){
       return {
-        start : function(spinnerKeys){
-          return;
-        },
-        stop : function(spinnerKeys){
+        dismiss : function(action){
           return;
         }
       }
     });
 
   }));
-  var $scope, displayFactory, $loading,$loadingStartSpy, $loadingStopSpy, displayAdded;
+  var $scope, displayFactory, $modalInstanceDismissSpy, displayAdded;
   beforeEach(function(){
     displayAdded = false;
     
     inject(function($injector,$rootScope, $controller){
       $scope = $rootScope.$new();
       displayFactory = $injector.get('displayFactory');
-      $loading = $injector.get('$loading');
-      $loadingStartSpy = sinon.spy($loading, 'start');
-      $loadingStopSpy = sinon.spy($loading, 'stop');
-      $controller('displayAdd', {
+      var $modalInstance = $injector.get('$modalInstance');
+      $modalInstanceDismissSpy = sinon.spy($modalInstance, 'dismiss');
+
+      $controller('displayAddModal', {
         $scope : $scope,
         displayFactory: displayFactory,
-        $loading: $loading,
+        $modalInstance: $modalInstance,
         $log: $injector.get('$log')
       });
       $scope.$digest();
@@ -58,14 +58,14 @@ describe('controller: display add', function() {
   });
 
   it('should return early if the form is invalid',function(){
-    $scope.displayDetails = {};
-    $scope.displayDetails.$valid = false;
+    $scope.displayAdd = {};
+    $scope.displayAdd.$valid = false;
     $scope.save();
   });
 
   it('should save the display',function(){
-    $scope.displayDetails = {};
-    $scope.displayDetails.$valid = true;
+    $scope.displayAdd = {};
+    $scope.displayAdd.$valid = true;
     $scope.display = {id:123};
     $scope.save();
 
@@ -73,15 +73,10 @@ describe('controller: display add', function() {
 
   });
 
-  it('should show/hide loading spinner if loading', function(done) {
-    $scope.$digest();
-    $loadingStartSpy.should.have.been.calledWith('display-loader');
+  it('should dismiss modal when clicked on close with no action',function(){
+    $scope.dismiss();
 
-    displayFactory.loadingDisplay = false;
-    $scope.$digest();
-    setTimeout(function(){
-      $loadingStopSpy.should.have.been.calledWith('display-loader');
-      done();
-    },10);
-  })
+    $modalInstanceDismissSpy.should.have.been.called;
+  });
+
 });

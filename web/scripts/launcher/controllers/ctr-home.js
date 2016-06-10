@@ -2,11 +2,12 @@
 
 angular.module('risevision.apps.launcher.controllers')
   .controller('HomeCtrl', ['$scope', 'launcherTracker', 'editorFactory',
-    'localStorageService', '$loading',
-    function ($scope, launcherTracker, editorFactory, localStorageService,
-      $loading) {
+    'displayFactory', 'localStorageService', '$loading',
+    function ($scope, launcherTracker, editorFactory, displayFactory, 
+      localStorageService, $loading) {
       $scope.launcherTracker = launcherTracker;
       $scope.editorFactory = editorFactory;
+      $scope.displayFactory = displayFactory;
       $scope.showHelp = localStorageService.get('launcher.showHelp') ===
         'true';
 

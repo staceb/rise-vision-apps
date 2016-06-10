@@ -1,7 +1,7 @@
 <div class="form-group" ng-class="{'has-error': !displayDetails.name.$pristine && displayDetails.name.$invalid}" show-errors>
   <label class="control-label">{{'displays-app.fields.name.name' | translate}} *</label>
   <div ng-class="{'input-group custom-addon': display.lastActivityDate}">
-    <input type="text" class="form-control" placeholder="Display Name" id="name" name="name" ng-model="display.name" required focus-me="!display.id">
+    <input type="text" class="form-control" placeholder="Display Name" id="name" name="name" ng-model="display.name" required>
     <span class="input-group-addon" ng-show="display.lastActivityDate">
       <div class="form-control-static nowrap" ng-if="display.id">
         <i class="fa {{display | status}} fa-circle icon-left"></i>
@@ -16,7 +16,14 @@
 
 <!--      INSTALL PLAYER      -->
 <div ng-show="display.id && !display.lastActivityDate">
-  <hr />
+
+  <div class="text-right add-top add-bottom">
+    <button class="btn btn-link" ng-click="showHelp = !showHelp">{{ 'displays-app.fields.controls.howtoInstall' | translate }}</button>
+  </div>
+
+  <div class="video-box add-bottom text-center" ng-show="showHelp">
+      <img style="width: auto" src="https://s3.amazonaws.com/Rise-Images/Animations/addadisplay.gif">
+  </div>
 
   <div class="panel panel-success display-panel"> 
     <div class="panel-heading"> 
@@ -45,12 +52,16 @@
   <hr />
 
   <div class="form-group form-inline">
+    <div class="text-right add-bottom pull-right">
+      <button class="btn btn-link" ng-click="showHelp = !showHelp">{{ 'displays-app.fields.controls.howto' | translate }} </button>
+    </div>
+
     <label class="control-label" translate>displays-app.fields.id</label>
-    <a target="_blank" class="btn btn-link pull-right" href="https://help.risevision.com/user/create-a-display">
-      <i class="fa fa-question-circle icon-left"></i>    
-      {{ 'displays-app.fields.controls.howto' | translate }}
-    </a>
     <div class="form-control-static">{{display.id}}</div>
+
+    <div class="video-box add-bottom" ng-show="showHelp">
+       <img class="img-responsive" src="https://s3.amazonaws.com/Rise-Images/Animations/howitworks.gif">
+    </div>
   </div>
   
   <!--      BUTTONS       -->

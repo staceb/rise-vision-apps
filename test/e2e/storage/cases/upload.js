@@ -16,9 +16,8 @@ var UploadScenarios = function() {
 
       it('should show upload dropdown', function() {
         helper.wait(storageSelectorModalPage.getUploadDropdown(), 'Upload dropdown');
+        browser.sleep(500);
         storageSelectorModalPage.getUploadDropdown().click();
-        browser.sleep(100);
-        
         helper.wait(storageSelectorModalPage.getUploadButton(), 'Upload Button');
         
         expect(storageSelectorModalPage.getUploadButton().isDisplayed()).to.eventually.be.true;

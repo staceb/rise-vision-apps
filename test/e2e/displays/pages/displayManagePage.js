@@ -1,5 +1,5 @@
 'use strict';
-var DisplayAddPage = function() {
+var DisplayManagePage = function() {
   var displaysAppContainer = element(by.css('.displays-app'));
   var title = element(by.id('title'));
   var displayNameField = element(by.model('display.name'));
@@ -82,4 +82,4 @@ var DisplayAddPage = function() {
   };
 };
 
-module.exports = DisplayAddPage;
+module.exports = DisplayManagePage;

@@ -278,22 +278,6 @@ angular.module('risevision.apps', [
         }
       })
 
-      .state('apps.displays.add', {
-        url: '/displays/add',
-        templateProvider: ['$templateCache', function ($templateCache) {
-          return $templateCache.get(
-            'partials/displays/display-add.html');
-        }],
-        controller: 'displayAdd',
-        resolve: {
-          displayInfo: ['canAccessApps', 'displayFactory',
-            function (canAccessApps, displayFactory) {
-              return canAccessApps().then(displayFactory.newDisplay);
-            }
-          ]
-        }
-      })
-
       .state('apps.displays.alerts', {
         url: '/alerts',
         templateProvider: ['$templateCache', function ($templateCache) {

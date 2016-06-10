@@ -2,14 +2,15 @@
 
 angular.module('risevision.displays.controllers')
   .controller('displaysList', ['$scope', 'userState', 'display', 'BaseList',
-    '$location', '$loading', '$filter', 'displayTracker',
+    '$location', '$loading', '$filter', 'displayFactory', 'displayTracker',
     function ($scope, userState, display, BaseList, $location, $loading,
-      $filter, displayTracker) {
+      $filter, displayFactory, displayTracker) {
       var DB_MAX_COUNT = 40; //number of records to load at a time
 
       $scope.displays = new BaseList(DB_MAX_COUNT);
       $scope.selectedCompayId = userState.getSelectedCompanyId();
       $scope.displayTracker = displayTracker;
+      $scope.displayFactory = displayFactory;
 
       $scope.search = angular.extend({
         sortBy: 'name',

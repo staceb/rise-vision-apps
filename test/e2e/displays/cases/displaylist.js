@@ -56,11 +56,6 @@ var DisplayListScenarios = function() {
         expect(displaysListPage.getDisplayAddButton().getText()).to.eventually.equal('Add Display');
       });
 
-      it('display add button should be a hyperlink', function () {
-        expect(displaysListPage.getDisplayAddButton().getAttribute('href')).to.eventually.be.ok;
-        expect(displaysListPage.getDisplayAddButton().getAttribute('href')).to.eventually.contain('cid=');
-      });
-
       it('should show display list table header Name', function () {
         expect(displaysListPage.getTableHeaderName().isPresent()).to.eventually.be.true;
         expect(displaysListPage.getTableHeaderName().getText()).to.eventually.equal('Name');

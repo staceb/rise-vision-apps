@@ -45,7 +45,7 @@ angular.module('risevision.displays.controllers')
 
       $scope.addDisplay = function () {
         if (!$scope.displayDetails.$dirty) {
-          $state.go('apps.displays.add');
+          displayFactory.addDisplayModal();
         } else {
           $scope.modalInstance = $modal.open({
             template: $templateCache.get(
@@ -72,12 +72,12 @@ angular.module('risevision.displays.controllers')
             // do what you need if user presses ok
             $scope.save()
               .then(function () {
-                $state.go('apps.displays.add');
+                displayFactory.addDisplayModal();
               });
           }, function (value) {
             // do what you need to do if user cancels
             if (value) {
-              $state.go('apps.displays.add');
+              displayFactory.addDisplayModal();
             }
           });
         }
