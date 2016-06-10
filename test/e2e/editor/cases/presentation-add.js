@@ -51,9 +51,9 @@ var PresentationAddScenarios = function() {
       expect(workspacePage.getSaveAndPreviewButton().isPresent()).to.eventually.be.false;
     });
 
-    it('should not show Publish/Restore Buttons', function () {
-      expect(workspacePage.getPublishButton().isDisplayed()).to.eventually.be.false;
-      expect(workspacePage.getRestoreButton().isDisplayed()).to.eventually.be.false;
+    it('should disable Publish/Restore Buttons', function () {
+      expect(workspacePage.getPublishButton().isEnabled()).to.eventually.be.false;
+      expect(workspacePage.getRestoreButton().isEnabled()).to.eventually.be.false;
     });
 
     it('should show disabled Save Button', function () {
@@ -91,14 +91,24 @@ var PresentationAddScenarios = function() {
       expect(workspacePage.getChangeTemplateButton().isPresent()).to.eventually.be.false;
     });
 
-    it('should show Publish/Restore Buttons after revised', function () {
+    it('should keep Publish/Restore Buttons disabled', function () {
+      expect(workspacePage.getPublishButton().isEnabled()).to.eventually.be.false;
+      expect(workspacePage.getRestoreButton().isEnabled()).to.eventually.be.false;
+    });
+
+    it('should enable Restore after changes', function () {
       workspacePage.getAddPlaceholderButton().click();
+      expect(workspacePage.getPublishButton().isEnabled()).to.eventually.be.false;
+      expect(workspacePage.getRestoreButton().isEnabled()).to.eventually.be.true;
+    });    
+
+    it('should enable Publish and Restore after revised', function () {     
       helper.clickWhenClickable(workspacePage.getSaveButton(), 'Save Button');
       browser.sleep(500);
       helper.wait(workspacePage.getPublishButton(), 'Publish Button');
 
-      expect(workspacePage.getPublishButton().isDisplayed()).to.eventually.be.true;
-      expect(workspacePage.getRestoreButton().isDisplayed()).to.eventually.be.true;
+      expect(workspacePage.getPublishButton().isEnabled()).to.eventually.be.true;
+      expect(workspacePage.getRestoreButton().isEnabled()).to.eventually.be.true;
     });
 
     it('should delete presentation and return to list', function(done) {
