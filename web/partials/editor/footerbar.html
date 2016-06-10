@@ -12,18 +12,12 @@
     <button id="restoreButton" require-role="cp" class="btn btn-default" ng-show="factory.isRevised()" ng-click="factory.restorePresentation()" >{{'common.restore' | translate}}</button>
 
     <!-- Indicates a successful or positive action -->
-    <button id="saveButton" require-role="ce cp" type="submit" class="btn btn-primary btn-fixed-width" ng-click="factory.save()">
+    <button id="saveButton" require-role="ce cp" type="submit" class="btn btn-primary btn-fixed-width" ng-click="factory.save()" ng-disabled="!hasUnsavedChanges">
       {{ factory.savingPresentation ? ('common.saving' | translate) : ('common.save' | translate)}}
       <i class="fa fa-check icon-right"></i>
     </button>
 
     <button id="publishButton" require-role="cp" class="btn btn-primary" ng-show="factory.isRevised()" ng-click="factory.publishPresentation()" >{{'common.publish' | translate}}</button>
-
-    <!-- Indicates cancel or non-destructive action -->
-    <button id="cancelButton" ui-sref="apps.editor.list" class="btn btn-default btn-fixed-width">
-      {{'common.cancel' | translate}}
-      <i class="fa fa-times icon-right"></i>
-    </button>
-
+    
   </div>
 </div><!--container-fluid-->

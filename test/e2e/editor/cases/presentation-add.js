@@ -45,8 +45,10 @@ var PresentationAddScenarios = function() {
       expect(workspacePage.getChangeTemplateButton().isDisplayed()).to.eventually.be.true;
     });
 
-    it('should show Preview Button', function () {
+    it('should show disabled Preview Button', function () {
       expect(workspacePage.getPreviewButton().isDisplayed()).to.eventually.be.true;
+      expect(workspacePage.getPreviewButton().isEnabled()).to.eventually.be.false;
+      expect(workspacePage.getSaveAndPreviewButton().isPresent()).to.eventually.be.false;
     });
 
     it('should not show Publish/Restore Buttons', function () {
@@ -54,12 +56,9 @@ var PresentationAddScenarios = function() {
       expect(workspacePage.getRestoreButton().isDisplayed()).to.eventually.be.false;
     });
 
-    it('should show Save Button', function () {
+    it('should show disabled Save Button', function () {
       expect(workspacePage.getSaveButton().isPresent()).to.eventually.be.true;
-    });
-
-    it('should show Cancel Button', function () {
-      expect(workspacePage.getCancelButton().isPresent()).to.eventually.be.true;
+      expect(workspacePage.getSaveButton().isEnabled()).to.eventually.be.false;
     });
 
     it('should rename presentation', function () {
@@ -72,15 +71,34 @@ var PresentationAddScenarios = function() {
       helper.clickWhenClickable(presentationPropertiesModalPage.getApplyButton(), 'Apply Button');
     });
 
-    it('should save presentation', function() {  
+    it('should enable "Save" and "Save & Preview" ',function(){
+      expect(workspacePage.getSaveButton().isEnabled()).to.eventually.be.true;
+      expect(workspacePage.getSaveAndPreviewButton().isDisplayed()).to.eventually.be.true;
+
+      expect(workspacePage.getPreviewButton().isPresent()).to.eventually.be.false;      
+    });
+
+    it('should save presentation and enable Preview button', function() {  
       helper.clickWhenClickable(workspacePage.getSaveButton(), 'Save Button');
       browser.sleep(500);
       helper.wait(workspacePage.getSaveStatus(), 'Save Status');
+      expect(workspacePage.getSaveButton().isEnabled()).to.eventually.be.false;
       expect(workspacePage.getPreviewButton().isEnabled()).to.eventually.be.true;
+      expect(workspacePage.getSaveAndPreviewButton().isPresent()).to.eventually.be.false;
     });
 
     it('should hide Change Template Button', function () {
       expect(workspacePage.getChangeTemplateButton().isPresent()).to.eventually.be.false;
+    });
+
+    it('should show Publish/Restore Buttons after revised', function () {
+      workspacePage.getAddPlaceholderButton().click();
+      helper.clickWhenClickable(workspacePage.getSaveButton(), 'Save Button');
+      browser.sleep(500);
+      helper.wait(workspacePage.getPublishButton(), 'Publish Button');
+
+      expect(workspacePage.getPublishButton().isDisplayed()).to.eventually.be.true;
+      expect(workspacePage.getRestoreButton().isDisplayed()).to.eventually.be.true;
     });
 
     it('should delete presentation and return to list', function(done) {

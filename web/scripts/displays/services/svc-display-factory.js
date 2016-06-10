@@ -31,7 +31,7 @@ angular.module('risevision.displays.services')
       };
 
       _init();
-      
+
       factory.newDisplay = function () {
         displayTracker('Add Display');
 
