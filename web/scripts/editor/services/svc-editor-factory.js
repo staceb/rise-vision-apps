@@ -242,6 +242,8 @@ angular.module('risevision.editor.services')
             presentationTracker('Presentation Deleted',
               factory.presentation.id, factory.presentation.name);
 
+            $rootScope.$broadcast('presentationDeleted');
+
             factory.presentation = {};
 
             $state.go('apps.editor.list');

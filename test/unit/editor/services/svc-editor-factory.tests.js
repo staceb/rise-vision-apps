@@ -159,7 +159,7 @@ describe('service: editorFactory:', function() {
     $provide.value('TEMPLATES_CATEGORY', 'Templates');
   }));
   var editorFactory, trackerCalled, updatePresentation, currentState, stateParams, 
-    presentationParser, $window, $modal, scheduleFactory, userState;
+    presentationParser, $window, $modal, scheduleFactory, userState, $rootScope;
   beforeEach(function(){
     trackerCalled = undefined;
     currentState = undefined;
@@ -172,6 +172,7 @@ describe('service: editorFactory:', function() {
       $modal = $injector.get('$modal');
       scheduleFactory = $injector.get('scheduleFactory');
       userState = $injector.get('userState');
+      $rootScope = $injector.get('$rootScope');
     });
   });
 
@@ -481,7 +482,8 @@ describe('service: editorFactory:', function() {
   describe('deletePresentation: ',function(){
     it('should delete the presentation',function(done){
       updatePresentation = true;
-      
+      var broadcastSpy = sinon.spy($rootScope,'$broadcast');
+
       editorFactory.deletePresentation();
       
       expect(editorFactory.loadingPresentation).to.be.true;
@@ -492,6 +494,7 @@ describe('service: editorFactory:', function() {
         expect(editorFactory.apiError).to.not.be.ok;
         expect(trackerCalled).to.equal('Presentation Deleted');
         expect(currentState).to.equal('apps.editor.list');
+        broadcastSpy.should.have.been.calledWith('presentationDeleted');
         done();
       },10);
     });
