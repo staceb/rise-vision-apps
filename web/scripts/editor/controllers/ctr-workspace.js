@@ -45,6 +45,10 @@ angular.module('risevision.editor.controllers')
         });
       });
 
+      $scope.$on('presentationDeleted', function () {
+        $scope.hasUnsavedChanges = false;
+      });
+
       var _bypass = false;
       $scope.$on('$stateChangeStart', function (event, toState, toParams) {
         if (_bypass) {
