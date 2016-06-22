@@ -14,6 +14,11 @@ describe('app:', function() {
             return deferred.promise;
           }
         });
+        $provide.service('displayFactory',function(){
+          return {
+            addDisplayModal: function(){}
+          };
+        });
       });
 
       inject(function ($injector) {
@@ -21,11 +26,13 @@ describe('app:', function() {
         supportFactory = $injector.get('supportFactory');
         canAccessApps = $injector.get('canAccessApps');
         editorFactory = $injector.get('editorFactory');
+        displayFactory = $injector.get('displayFactory');
+        $rootScope = $injector.get('$rootScope');
       });
   });
 
   
-  var $state, supportFactory, canAccessApps, editorFactory;
+  var $state, supportFactory, canAccessApps, editorFactory, displayFactory, $rootScope;
 
   describe('state apps.launcher.support:',function(){
     
@@ -82,5 +89,14 @@ describe('app:', function() {
         done();
       }, 10);
     });
+  });
+
+
+  it('should open add display modal when addDisplay event is sent',function(){
+    var spy = sinon.spy(displayFactory,'addDisplayModal');
+
+    $rootScope.$broadcast('distributionSelector.addDisplay');
+
+    spy.should.have.been.called;
   });
 });

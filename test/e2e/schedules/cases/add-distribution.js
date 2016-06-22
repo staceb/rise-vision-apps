@@ -68,13 +68,14 @@ var AddDistributionScenarios = function() {
         });
 
         it('should show a table for listing displays', function () {
-          expect(distributionModalPage.getDistributionListTable().isDisplayed()).to.eventually.be.true;
+          helper.waitDisappear(distributionModalPage.getDistributionListLoader()).then(function () {
+            expect(distributionModalPage.getDistributionListTable().isDisplayed()).to.eventually.be.true;
+          });
+          
         });
 
         it('should show displays', function () {
-          helper.waitDisappear(distributionModalPage.getDistributionListLoader()).then(function () {
-            expect(distributionModalPage.getDistributionItems().count()).to.eventually.be.above(0);
-          });
+          expect(distributionModalPage.getDistributionItems().count()).to.eventually.be.above(0);
         });
 
         describe('Given the user chooses a display', function () {
@@ -84,7 +85,7 @@ var AddDistributionScenarios = function() {
             distributionModalPage.getApplyButton().click();
           });
           it('should add the display item to the distribution', function () {
-            var expectResult = "1 Display";
+            var expectResult = "1 Display Selected";
             expect(scheduleAddPage.getDistributionFieldText().getText()).to.eventually.equal(expectResult);
           });
         });
@@ -102,7 +103,7 @@ var AddDistributionScenarios = function() {
             });
           });
           it('should add two display items to the distribution', function () {
-            var expectResult = "2 Displays";
+            var expectResult = "2 Displays Selected";
             expect(scheduleAddPage.getDistributionFieldText().getText()).to.eventually.equal(expectResult);
           });
         });
@@ -119,7 +120,7 @@ var AddDistributionScenarios = function() {
             });
           });
           it('should not add any display items to the distribution', function () {
-            var expectResult = "2 Displays";
+            var expectResult = "2 Displays Selected";
             expect(scheduleAddPage.getDistributionFieldText().getText()).to.eventually.equal(expectResult);
           });
         });
