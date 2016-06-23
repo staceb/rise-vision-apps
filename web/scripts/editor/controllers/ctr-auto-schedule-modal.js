@@ -2,10 +2,10 @@
 
 angular.module('risevision.editor.controllers')
   .controller('AutoScheduleModalController', ['$scope', 'presentationName',
-    '$modalInstance', 'launcherTracker',
-    function ($scope, presentationName, $modalInstance, launcherTracker) {
+    '$modalInstance', 'displayFactory',
+    function ($scope, presentationName, $modalInstance, displayFactory) {
       $scope.presentationName = presentationName;
-      $scope.launcherTracker = launcherTracker;
+      $scope.displayFactory = displayFactory;
 
       $scope.dismiss = function () {
         $modalInstance.dismiss();

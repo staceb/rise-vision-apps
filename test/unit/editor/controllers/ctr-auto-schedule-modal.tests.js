@@ -8,11 +8,11 @@ describe('controller: AutoScheduleModalController', function() {
         dismiss : function(){}
       }
     });  
-    $provide.service('launcherTracker',function(){
-      return launcherTracker = {}
+    $provide.service('displayFactory',function(){
+      return displayFactory = {}
     });    
   }));
-  var $scope, $modalInstance, $modalInstanceDismissSpy, presentationName, launcherTracker;
+  var $scope, $modalInstance, $modalInstanceDismissSpy, presentationName, displayFactory;
 
   beforeEach(function(){
 
@@ -35,7 +35,7 @@ describe('controller: AutoScheduleModalController', function() {
     expect($scope).to.be.ok;
     expect($scope.dismiss).to.be.a('function');
     expect($scope.presentationName).to.equal(presentationName);
-    expect($scope.launcherTracker).to.equal(launcherTracker);
+    expect($scope.displayFactory).to.equal(displayFactory);
   });
 
   it('should dismiss modal',function(){
