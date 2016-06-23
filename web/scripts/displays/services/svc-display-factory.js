@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('risevision.displays.services')
-  .factory('displayFactory', ['$q', '$state', '$modal', 'display',
-    'displayTracker', 'displayEmail',
-    function ($q, $state, $modal, display, displayTracker, displayEmail) {
+  .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal', 
+    'display', 'displayTracker', 'displayEmail',
+    function ($rootScope, $q, $state, $modal, display, displayTracker, 
+      displayEmail) {
       var factory = {};
       var _displayId;
 
@@ -96,6 +97,8 @@ angular.module('risevision.displays.services')
                 .name);
 
               displayEmail.send(resp.item.id, resp.item.name);
+              
+              $rootScope.$broadcast('displayCreated');
 
               deferred.resolve();
             } else {

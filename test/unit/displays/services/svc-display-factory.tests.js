@@ -82,7 +82,7 @@ describe('service: displayFactory:', function() {
     });
 
   }));
-  var displayFactory, $modal, trackerCalled, emailSent, updateDisplay, currentState, returnList, displayListSpy, displayAddSpy;
+  var displayFactory, $rootScope, $modal, trackerCalled, emailSent, updateDisplay, currentState, returnList, displayListSpy, displayAddSpy;
   beforeEach(function(){
     trackerCalled = undefined;
     emailSent = undefined;
@@ -94,6 +94,7 @@ describe('service: displayFactory:', function() {
       displayFactory = $injector.get('displayFactory');
       var display = $injector.get('display');
       $modal = $injector.get('$modal');
+      $rootScope = $injector.get('$rootScope');
       displayListSpy = sinon.spy(display,'list');
       displayAddSpy = sinon.spy(display,'add');
     });
@@ -219,6 +220,7 @@ describe('service: displayFactory:', function() {
   describe('addDisplay:',function(){
     it('should add the display',function(done){
       updateDisplay = true;
+      var broadcastSpy = sinon.spy($rootScope,'$broadcast');
 
       displayFactory.addDisplay();
       
@@ -228,6 +230,8 @@ describe('service: displayFactory:', function() {
       setTimeout(function(){
         expect(trackerCalled).to.equal('Display Created');
         expect(emailSent).to.be.true;
+        broadcastSpy.should.have.been.calledWith('displayCreated');
+
         expect(displayFactory.savingDisplay).to.be.false;
         expect(displayFactory.loadingDisplay).to.be.false;
         expect(displayFactory.errorMessage).to.not.be.ok;
