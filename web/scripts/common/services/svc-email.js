@@ -2,9 +2,10 @@
 
 angular.module('risevision.apps.services')
   .constant('EMAIL_FROM', 'support@risevision.com')
+  .constant('EMAIL_FROM_NAME', 'Rise Vision Support')
   .service('email', ['$q', '$log', 'riseAPILoader',
-    'EMAIL_FROM',
-    function ($q, $log, riseAPILoader, EMAIL_FROM) {
+    'EMAIL_FROM', 'EMAIL_FROM_NAME',
+    function ($q, $log, riseAPILoader, EMAIL_FROM, EMAIL_FROM_NAME) {
 
       var service = {
         send: function (recipients, subject, text) {
@@ -12,6 +13,7 @@ angular.module('risevision.apps.services')
 
           var obj = {
             'from': EMAIL_FROM,
+            'fromName': EMAIL_FROM_NAME,
             'recipients': recipients,
             'subject': subject,
             'data': {'text': text}
