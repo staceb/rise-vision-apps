@@ -52,10 +52,13 @@ describe('service: email:', function() {
       .then(function(result){
         expect(result).to.be.ok;
         expect(result.item).to.be.ok;
-        expect(result.item.from).to.equal('support@risevision.com');
-        expect(result.item.recipients).to.deep.equal(['user@gmail.com']);
-        expect(result.item.subject).to.equal('email subject');
-        expect(result.item.data).to.deep.equal({text: 'email body'});
+        expect(result.item).to.deep.equal({
+          from: 'support@risevision.com',
+          fromName: 'Rise Vision Support',
+          recipients: ['user@gmail.com'],
+          subject: 'email subject',
+          data: {text: 'email body'}
+        });
         
         done();
       })
