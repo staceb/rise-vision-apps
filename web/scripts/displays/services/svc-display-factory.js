@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('risevision.displays.services')
-  .factory('displayFactory', ['$q', '$state', 'display', 'displayTracker',
-    'displayEmail',
-    function ($q, $state, display, displayTracker, displayEmail) {
+  .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal', 
+    'display', 'displayTracker', 'displayEmail',
+    function ($rootScope, $q, $state, $modal, display, displayTracker, 
+      displayEmail) {
       var factory = {};
       var _displayId;
 
@@ -33,11 +34,17 @@ angular.module('risevision.displays.services')
 
       _init();
 
-      factory.newDisplay = function () {
+      factory.addDisplayModal = function () {
         displayTracker('Add Display');
 
         _init();
-      };
+
+        $modal.open({
+          templateUrl: 'partials/displays/display-add-modal.html',
+          size: 'md',
+          controller: 'displayAddModal'
+        });
+      }
 
       factory.getDisplay = function (displayId) {
         var deferred = $q.defer();
@@ -73,6 +80,8 @@ angular.module('risevision.displays.services')
       };
 
       factory.addDisplay = function () {
+        var deferred = $q.defer();
+
         _clearMessages();
 
         //show loading spinner
@@ -82,23 +91,31 @@ angular.module('risevision.displays.services')
         display.add(factory.display)
           .then(function (resp) {
             if (resp && resp.item && resp.item.id) {
+              factory.display = resp.item;
+
               displayTracker('Display Created', resp.item.id, resp.item
                 .name);
 
               displayEmail.send(resp.item.id, resp.item.name);
+              
+              $rootScope.$broadcast('displayCreated');
 
-              $state.go('apps.displays.details', {
-                displayId: resp.item.id
-              });
+              deferred.resolve();
+            } else {
+              deferred.reject();
             }
           })
           .then(null, function (e) {
             _showErrorMessage('add', e);
+
+            deferred.reject();
           })
           .finally(function () {
             factory.loadingDisplay = false;
             factory.savingDisplay = false;
           });
+          
+        return deferred.promise;
       };
 
       factory.updateDisplay = function () {

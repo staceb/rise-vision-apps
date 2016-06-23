@@ -8,7 +8,7 @@ var DisplaysListPage = function() {
   var tableHeaderName = element(by.id('tableHeaderName'));
   var tableHeaderStatus = element(by.id('tableHeaderStatus'));
   var tableHeaderActivity = element(by.id('tableHeaderActivity'));
-  var displayItems = element.all(by.repeater('display in displays.list'));
+  var displayItems = element.all(by.repeater('display in displays.items.list'));
   var displaysLoader = element(by.xpath('//div[@spinner-key="displays-list-loader"]'));
 
   this.getDisplaysAppContainer = function() {

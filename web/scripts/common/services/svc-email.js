@@ -16,7 +16,9 @@ angular.module('risevision.apps.services')
             'fromName': EMAIL_FROM_NAME,
             'recipients': recipients,
             'subject': subject,
-            'data': {'text': text}
+            'data': {
+              'text': text
+            }
           };
           riseAPILoader().then(function (riseApi) {
               return riseApi.email.send(obj);

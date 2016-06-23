@@ -1,0 +1,70 @@
+<div id="display-add-modal">
+  <div class="modal-header">
+    <button id="dismissButton" type="button" class="close" ng-click="dismiss()">
+      <i class="fa fa-times"></i>
+    </button>
+    <h3 class="modal-title" translate="displays-app.add.title"></h3>
+  </div>
+  <div class="modal-body text-center">
+  	<div class="video-box add-bottom">
+      <img style="width: auto" src="https://s3.amazonaws.com/Rise-Images/Animations/addadisplay.gif">
+    </div>
+
+    <form id="displayAdd" role="form" name="displayAdd" novalidate>
+
+      <div class="add-top" ng-hide="display.id">
+        <div class="form-group" ng-class="{'has-error': !displayAdd.name.$pristine && displayAdd.name.$invalid}" show-errors>
+          <label class="control-label">{{'displays-app.add.name.name' | translate}} *</label>
+          <input type="text" class="form-control" placeholder="{{ 'displays-app.add.name.name' | translate}}" id="name" name="name" ng-model="display.name" required focus-me="true">
+          <p class="text-danger" ng-show="!displayAdd.name.$pristine && displayAdd.name.$error.required" translate>
+            displays-app.fields.name.required
+          </p>
+        </div>
+      
+        <div ng-show="factory.apiError" class="alert alert-danger" role="alert">
+          <strong>{{factory.errorMessage}}</strong> {{factory.apiError}}
+        </div>
+        
+        <button id="nextButton" class="btn btn-primary add-top" ng-click="save()" translate="displays-app.add.next" ng-disabled="displayAdd.$invalid || factory.savingDisplay" require-role="da"></button>
+      </div>
+    </form>
+
+    <div ng-show="display.id && !sendEmail" class="text-center add-top" >
+      <h4 translate="displays-app.add.instructions.title" translate-values='{ displayName: display.name}'></h4>
+      <p translate="displays-app.add.instructions.step1"></p>
+      
+      <div class="row sm-gutter">
+        <div class="col-xs-6">
+            <a class="btn btn-sm btn-primary btn-block" href="http://install-versions.risevision.com/installer-win-32.exe" target="_blank" ng-click="displayTracker('Player Download', display.id, display.name, 'Windows 32bit')" translate="displays-app.download.win32"></a>
+            <a id="downloadWindows64" class="btn btn-sm btn-primary btn-block half-top" href="http://install-versions.risevision.com/installer-win-64.exe" target="_blank" ng-click="displayTracker('Player Download', display.id, display.name, 'Windows 64bit')" translate="displays-app.download.win64"></a>
+        </div>
+        <div class="col-xs-6">
+          <a class="btn btn-sm btn-primary btn-block" href="http://install-versions.risevision.com/installer-lnx-32.sh" target="_blank" ng-click="displayTracker('Player Download', display.id, display.name, 'Linux 32bit')" translate="displays-app.download.linux32"></a>
+          <a class="btn btn-sm btn-primary btn-block half-top" href="http://install-versions.risevision.com/installer-lnx-64.sh" target="_blank" ng-click="displayTracker('Player Download', display.id, display.name, 'Linux 64bit')" translate="displays-app.download.linux64"></a>
+        </div>
+      </div>
+
+      <p class="half-top text-center" translate="displays-app.add.instructions.step2"></p>
+      <div class="panel panel-success display-panel">
+          <div class="panel-body ng-binding">{{display.id}}</div>
+      </div>
+    
+      <p class="half-top text-center"> 
+        <p>{{'displays-app.add.instructions.emailInfo' | translate}} <b>{{userEmail}}</b></p>
+        <button class="btn btn-default half-top" ng-click="sendEmail = true" translate="displays-app.add.instructions.anotherEmail" ng-hide="true"></button>
+      </p>
+    </div>
+
+    <div class="add-top" ng-show="sendEmail" >
+
+      <h4 class="text-center" translate="displays-app.add.instructions.anotherEmail"></h4>
+      <div class="form-group text-center">
+       
+        <input type="email" class="form-control" placeholder="{{ 'displays-app.add.instructions.emailPlaceholder' | translate}}" id="email" name="email">
+        <button class="btn btn-default add-top" translate="common.cancel"></button>
+        <button class="btn btn-primary add-top" ng-click="displayType = 'showID'" translate="common.send"></button>
+      </div>
+    </div>
+
+  </div>
+</div>

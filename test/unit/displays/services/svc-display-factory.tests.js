@@ -82,7 +82,7 @@ describe('service: displayFactory:', function() {
     });
 
   }));
-  var displayFactory, trackerCalled, emailSent, updateDisplay, currentState, returnList, displayListSpy, displayAddSpy;
+  var displayFactory, $rootScope, $modal, trackerCalled, emailSent, updateDisplay, currentState, returnList, displayListSpy, displayAddSpy;
   beforeEach(function(){
     trackerCalled = undefined;
     emailSent = undefined;
@@ -93,6 +93,8 @@ describe('service: displayFactory:', function() {
     inject(function($injector){
       displayFactory = $injector.get('displayFactory');
       var display = $injector.get('display');
+      $modal = $injector.get('$modal');
+      $rootScope = $injector.get('$rootScope');
       displayListSpy = sinon.spy(display,'list');
       displayAddSpy = sinon.spy(display,'add');
     });
@@ -106,7 +108,7 @@ describe('service: displayFactory:', function() {
     expect(displayFactory.savingDisplay).to.be.false;
     expect(displayFactory.apiError).to.not.be.truely;
     
-    expect(displayFactory.newDisplay).to.be.a('function');
+    expect(displayFactory.addDisplayModal).to.be.a('function');
     expect(displayFactory.getDisplay).to.be.a('function');
     expect(displayFactory.addDisplay).to.be.a('function');
     expect(displayFactory.updateDisplay).to.be.a('function');
@@ -126,24 +128,38 @@ describe('service: displayFactory:', function() {
     expect(displayFactory.displayId).to.not.be.truely;
   });
   
-  it('newDisplay: should reset the display',function(){
-    displayFactory.display.id = 'displayId';
-    displayFactory.displayId = 'displayId';
-    
-    displayFactory.newDisplay();
-    
-    expect(trackerCalled).to.equal('Add Display');
-    
-    expect(displayFactory.display).to.deep.equal({      
-      'width': 1920,
-      'height': 1080,
-      'status': 1,
-      'restartEnabled': true,
-      'restartTime': '02:00',
-      'monitoringEnabled': true,
-      'useCompanyAddress': true
+  describe('addDisplayModal: ', function() {
+    it('should open modal', function() {
+      var $modalSpy = sinon.spy($modal, 'open');
+      
+      displayFactory.addDisplayModal();      
+      
+      $modalSpy.should.have.been.calledWith({
+    	  controller: "displayAddModal",
+    	  size: "md",
+    	  templateUrl: "partials/displays/display-add-modal.html"
+    	});
     });
-    expect(displayFactory.displayId).to.not.be.truely;
+
+    it('should reset the display',function(){
+      displayFactory.display.id = 'displayId';
+      displayFactory.displayId = 'displayId';
+      
+      displayFactory.addDisplayModal();
+      
+      expect(trackerCalled).to.equal('Add Display');
+      
+      expect(displayFactory.display).to.deep.equal({      
+        'width': 1920,
+        'height': 1080,
+        'status': 1,
+        'restartEnabled': true,
+        'restartTime': '02:00',
+        'monitoringEnabled': true,
+        'useCompanyAddress': true
+      });
+      expect(displayFactory.displayId).to.not.be.truely;
+    });
   });
     
   describe('getDisplay:',function(){
@@ -204,6 +220,7 @@ describe('service: displayFactory:', function() {
   describe('addDisplay:',function(){
     it('should add the display',function(done){
       updateDisplay = true;
+      var broadcastSpy = sinon.spy($rootScope,'$broadcast');
 
       displayFactory.addDisplay();
       
@@ -211,9 +228,10 @@ describe('service: displayFactory:', function() {
       expect(displayFactory.loadingDisplay).to.be.true;
 
       setTimeout(function(){
-        expect(currentState).to.equal('apps.displays.details');
         expect(trackerCalled).to.equal('Display Created');
         expect(emailSent).to.be.true;
+        broadcastSpy.should.have.been.calledWith('displayCreated');
+
         expect(displayFactory.savingDisplay).to.be.false;
         expect(displayFactory.loadingDisplay).to.be.false;
         expect(displayFactory.errorMessage).to.not.be.ok;
@@ -222,26 +240,44 @@ describe('service: displayFactory:', function() {
         done();
       },10);
     });
+    
+    it('should return a promise', function(done) {
+      updateDisplay = true;
+
+      displayFactory.addDisplay().then(function() {
+        setTimeout(function() {
+          expect(displayFactory.loadingDisplay).to.be.false;
+
+          done();
+        }, 10);
+      })
+      .then(null, function() {
+        done("error");
+      })
+      .then(null,done);
+    });
 
     it('should show an error if fails to create display',function(done){
       updateDisplay = false;
 
-      displayFactory.addDisplay();
-      
-      expect(displayFactory.savingDisplay).to.be.true;
-      expect(displayFactory.loadingDisplay).to.be.true;
+      displayFactory.addDisplay()
+      .then(function(result) {
+        done(result);
+      })
+      .then(null, function() {
+        setTimeout(function(){
+          expect(currentState).to.be.empty;
+          expect(trackerCalled).to.not.be.ok;
+          expect(emailSent).to.not.be.ok;
+          expect(displayFactory.savingDisplay).to.be.false;
+          expect(displayFactory.loadingDisplay).to.be.false;
 
-      setTimeout(function(){
-        expect(currentState).to.be.empty;
-        expect(trackerCalled).to.not.be.ok;
-        expect(emailSent).to.not.be.ok;
-        expect(displayFactory.savingDisplay).to.be.false;
-        expect(displayFactory.loadingDisplay).to.be.false;
-
-        expect(displayFactory.errorMessage).to.be.ok;
-        expect(displayFactory.apiError).to.be.ok;
-        done();
-      },10);
+          expect(displayFactory.errorMessage).to.be.ok;
+          expect(displayFactory.apiError).to.be.ok;
+          done();
+        },10);
+      })
+      .then(null,done);
     });
   });
   

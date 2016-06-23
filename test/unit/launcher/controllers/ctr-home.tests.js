@@ -21,6 +21,9 @@ describe('controller: Home', function() {
           presentations: { loadingItems: true }
         };
       });      
+      $provide.service('displayFactory', function() {
+        return {};
+      });
     })
     inject(function($injector,$rootScope, $controller, localStorageService, $loading) {
       localStorageGetSpy = sinon.spy(localStorageService,'get');
@@ -38,6 +41,7 @@ describe('controller: Home', function() {
     expect($scope).to.be.ok;
     expect($scope.launcherTracker).to.be.ok;
     expect($scope.editorFactory).to.be.ok;
+    expect($scope.displayFactory).to.be.ok;
     expect($scope.showHelp).to.be.false;
 
     expect($scope.toggleHelp).to.be.a('function');

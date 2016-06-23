@@ -3,7 +3,7 @@
 node_modules
 web/bower_components
 reports
-.log
+*.log
 dist
 tmp
 web/tmp
