@@ -430,8 +430,12 @@ angular.module('risevision.apps', [
 
     }
   ])
-  .run(['$rootScope', '$state', '$modalStack',
-    function ($rootScope, $state, $modalStack) {
+  .run(['$rootScope', '$state', '$modalStack', 'displayFactory',
+    function ($rootScope, $state, $modalStack, displayFactory) {
+     
+      $rootScope.$on('distributionSelector.addDisplay', function () {
+        displayFactory.addDisplayModal();
+      });
 
       $rootScope.$on('$stateChangeStart', function () {
         $modalStack.dismissAll();
