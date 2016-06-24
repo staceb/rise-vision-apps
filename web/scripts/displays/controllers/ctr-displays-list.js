@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.displays.controllers')
-  .controller('displaysList', ['$scope', 'userState', 'display', 
-    'ScrollingListService', '$loading', '$filter', 'displayFactory', 
+  .controller('displaysList', ['$scope', 'userState', 'display',
+    'ScrollingListService', '$loading', '$filter', 'displayFactory',
     'displayTracker',
     function ($scope, userState, display, ScrollingListService, $loading,
       $filter, displayFactory, displayTracker) {
@@ -30,7 +30,7 @@ angular.module('risevision.displays.controllers')
           $loading.stop('displays-list-loader');
         }
       });
-      
+
       $scope.$on('displayCreated', function () {
         // use doSearch because it clears the list
         $scope.displays.doSearch();

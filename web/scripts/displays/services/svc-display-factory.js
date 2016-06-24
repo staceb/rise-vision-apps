@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('risevision.displays.services')
-  .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal', 
+  .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal',
     'display', 'displayTracker', 'displayEmail',
-    function ($rootScope, $q, $state, $modal, display, displayTracker, 
+    function ($rootScope, $q, $state, $modal, display, displayTracker,
       displayEmail) {
       var factory = {};
       var _displayId;
@@ -44,7 +44,7 @@ angular.module('risevision.displays.services')
           size: 'md',
           controller: 'displayAddModal'
         });
-      }
+      };
 
       factory.getDisplay = function (displayId) {
         var deferred = $q.defer();
@@ -97,7 +97,7 @@ angular.module('risevision.displays.services')
                 .name);
 
               displayEmail.send(resp.item.id, resp.item.name);
-              
+
               $rootScope.$broadcast('displayCreated');
 
               deferred.resolve();
@@ -114,7 +114,7 @@ angular.module('risevision.displays.services')
             factory.loadingDisplay = false;
             factory.savingDisplay = false;
           });
-          
+
         return deferred.promise;
       };
 
