@@ -3,7 +3,7 @@
 angular.module('risevision.apps.launcher.controllers')
   .controller('HomeCtrl', ['$scope', 'launcherTracker', 'editorFactory',
     'displayFactory', 'localStorageService', '$loading',
-    function ($scope, launcherTracker, editorFactory, displayFactory, 
+    function ($scope, launcherTracker, editorFactory, displayFactory,
       localStorageService, $loading) {
       $scope.launcherTracker = launcherTracker;
       $scope.editorFactory = editorFactory;

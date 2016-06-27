@@ -6,6 +6,7 @@ describe('service: displayEmail:', function() {
     $provide.service('email', function() {
       return {
         send: function() {
+          return Q.resolve();
         }
       }
     })
@@ -40,19 +41,26 @@ describe('service: displayEmail:', function() {
 
   it('should exist',function(){
     expect(displayEmail).to.be.truely;
+    expect(displayEmail.sendingEmail).to.be.false;
     expect(displayEmail.send).to.be.a('function');
   });
   
-  it('should send email',function(){
+  it('should send email',function(done){
     displayEmail.send('displayId', 'displayName');
+    expect(displayEmail.sendingEmail).to.be.true;
     sendSpy.should.have.been.calledWith('user@gmail.com',
       'Set Up Your Display With Rise Vision',
       'email template w/ displayId & displayName');
+
+    setTimeout(function() {
+      expect(displayEmail.sendingEmail).to.be.false;
+      done()
+    }, 10);
   });
 
   it('should not call w/ missing parameters',function(){
     displayEmail.send();
-
+    expect(displayEmail.sendingEmail).to.be.false;
     sendSpy.should.not.have.been.called;
   });
 

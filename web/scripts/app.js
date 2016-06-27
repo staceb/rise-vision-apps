@@ -432,7 +432,7 @@ angular.module('risevision.apps', [
   ])
   .run(['$rootScope', '$state', '$modalStack', 'displayFactory',
     function ($rootScope, $state, $modalStack, displayFactory) {
-     
+
       $rootScope.$on('distributionSelector.addDisplay', function () {
         displayFactory.addDisplayModal();
       });

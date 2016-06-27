@@ -1,12 +1,21 @@
 'use strict';
 
 angular.module('risevision.displays.controllers')
-  .controller('displayAddModal', ['$scope', '$modalInstance', 'displayFactory', 
-  'userState', '$log',
-    function ($scope, $modalInstance, displayFactory, userState, $log) {
+  .controller('displayAddModal', ['$scope', '$modalInstance', 'displayFactory',
+    'userState', '$log', 'displayEmail', '$filter',
+    function ($scope, $modalInstance, displayFactory, userState, $log,
+      displayEmail, $filter) {
       $scope.factory = displayFactory;
       $scope.display = displayFactory.display;
       $scope.userEmail = userState.getUserEmail();
+      $scope.displayEmail = displayEmail;
+      $scope.showEmailForm = false;
+      $scope.anotherEmail = null;
+      $scope.errorMessage = null;
+
+      $scope.toggleEmailForm = function () {
+        $scope.showEmailForm = !$scope.showEmailForm;
+      };
 
       $scope.save = function () {
         if (!$scope.displayAdd.$valid) {
@@ -18,7 +27,18 @@ angular.module('risevision.displays.controllers')
           $scope.display = displayFactory.display;
         });
       };
-      
+
+      $scope.sendToAnotherEmail = function () {
+        $scope.errorMessage = null;
+        displayEmail.send($scope.display.id, $scope.display.name, $scope.anotherEmail)
+          .then(function () {
+            $modalInstance.dismiss();
+          }, function (error) {
+            $scope.errorMessage = $filter('translate')(
+              'displays-app.fields.email.failed');
+          });
+      };
+
       $scope.dismiss = function () {
         $modalInstance.dismiss();
       };

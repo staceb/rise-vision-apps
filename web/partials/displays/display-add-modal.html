@@ -29,7 +29,7 @@
       </div>
     </form>
 
-    <div ng-show="display.id && !sendEmail" class="text-center add-top" >
+    <div ng-show="display.id && !showEmailForm" class="text-center add-top" >
       <h4 translate="displays-app.add.instructions.title" translate-values='{ displayName: display.name}'></h4>
       <p translate="displays-app.add.instructions.step1"></p>
       
@@ -51,20 +51,30 @@
     
       <p class="half-top text-center"> 
         <p>{{'displays-app.add.instructions.emailInfo' | translate}} <b>{{userEmail}}</b></p>
-        <button class="btn btn-default half-top" ng-click="sendEmail = true" translate="displays-app.add.instructions.anotherEmail" ng-hide="true"></button>
+        <button class="btn btn-default half-top" ng-click="toggleEmailForm()" translate="displays-app.add.instructions.anotherEmail"></button>
       </p>
     </div>
 
-    <div class="add-top" ng-show="sendEmail" >
+    <form id="anotherEmailForm" role="form" name="anotherEmailForm" novalidate>
+      <div class="add-top" ng-show="display.id && showEmailForm" >
 
-      <h4 class="text-center" translate="displays-app.add.instructions.anotherEmail"></h4>
-      <div class="form-group text-center">
-       
-        <input type="email" class="form-control" placeholder="{{ 'displays-app.add.instructions.emailPlaceholder' | translate}}" id="email" name="email">
-        <button class="btn btn-default add-top" translate="common.cancel"></button>
-        <button class="btn btn-primary add-top" ng-click="displayType = 'showID'" translate="common.send"></button>
+        <h4 class="text-center" translate="displays-app.add.instructions.anotherEmail"></h4>
+        <div class="form-group text-center" ng-class="{'has-error': !anotherEmailForm.anotherEmail.$pristine && anotherEmailForm.anotherEmail.$invalid}" show-errors>
+         
+          <input type="email" class="form-control" placeholder="{{ 'displays-app.add.instructions.emailPlaceholder' | translate}}" id="anotherEmail" name="anotherEmail" ng-model="anotherEmail" required focus-me="true">
+          <p class="text-danger" ng-show="!anotherEmailForm.anotherEmail.$pristine && anotherEmailForm.anotherEmail.$invalid" translate>
+            displays-app.fields.email.invalid
+          </p>
+
+          <div ng-show="errorMessage" class="alert alert-danger" role="alert">
+            <strong>{{errorMessage}}</strong>
+          </div>
+
+          <button class="btn btn-default add-top" ng-click="toggleEmailForm()" translate="common.cancel"></button>
+          <button class="btn btn-primary add-top" ng-click="sendToAnotherEmail()" ng-disabled="anotherEmailForm.$invalid || displayEmail.sendingEmail" translate="common.send"></button>
+        </div>
       </div>
-    </div>
+    </form>
 
   </div>
 </div>
