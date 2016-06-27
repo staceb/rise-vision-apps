@@ -105,6 +105,22 @@ describe('controller: Workspace', function() {
     expect($scope.hasUnsavedChanges).to.be.false;
   });
 
+  it('should not flag unsaved changes for playlist item statusMessage',function(){    
+    editorFactory.presentation.placeholders = [
+      {
+        items: [
+          {type: 'widget'}
+        ]
+      }
+    ];
+    $scope.$apply();
+    $scope.hasUnsavedChanges = false;
+    editorFactory.presentation.placeholders[0].items[0].statusMessage = 'Free';
+    $scope.$apply();
+
+    expect($scope.hasUnsavedChanges).to.be.false;
+  });
+
   it('should notify unsaved changes when changing URL',function(){
     editorFactory.presentation.name = "New Name";
     $scope.$apply();
