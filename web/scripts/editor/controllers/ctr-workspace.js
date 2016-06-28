@@ -14,6 +14,25 @@ angular.module('risevision.editor.controllers')
       $scope.isTestCompanySelected = userState.isTestCompanySelected;
       $scope.hasUnsavedChanges = false;
 
+      var isEqualIgnoringFields = function (o1, o2, whitelist) {
+        if (typeof o1 === 'object') {
+          if (typeof o2 === 'object') {
+            for (var k in o1) {
+              if (whitelist.indexOf(k) === -1 && k.charAt(0) !== '$') {
+                if (!isEqualIgnoringFields(o1[k], o2[k], whitelist)) {
+                  return false;
+                }
+              }
+            }
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return angular.equals(o1, o2);
+        }
+      };
+
       var _initializing = true;
       $scope.$watch('factory.presentation', function (newValue, oldValue) {
         if ($scope.hasUnsavedChanges) {
@@ -24,16 +43,11 @@ angular.module('risevision.editor.controllers')
             _initializing = false;
           });
         } else {
-          var newObject = angular.copy(newValue);
-          var oldObject = angular.copy(oldValue);
           var ignoreFields = ['revisionStatusName', 'changeDate',
-            'changedBy', 'backgroundStyle', 'backgroundScaleToFit'
+            'changedBy', 'backgroundStyle', 'backgroundScaleToFit',
+            'statusMessage', 'subscriptionStatus'
           ];
-          for (var k in ignoreFields) {
-            delete newObject[ignoreFields[k]];
-            delete oldObject[ignoreFields[k]];
-          }
-          if (!angular.equals(newObject, oldObject)) {
+          if (!isEqualIgnoringFields(newValue, oldValue, ignoreFields)) {
             $scope.hasUnsavedChanges = true;
           }
         }

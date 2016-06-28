@@ -4,7 +4,7 @@ angular.module('risevision.displays.services')
   .service('displayEmail', ['$templateCache', 'userState', 'email', '$q',
     function ($templateCache, userState, email, $q) {
       var factory = {};
-      
+
       factory.sendingEmail = false;
 
       factory.send = function (displayId, displayName, emailAddress) {
