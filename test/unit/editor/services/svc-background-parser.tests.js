@@ -73,6 +73,18 @@ describe('service: backgroundParser:', function() {
       expect(backgroundParser.getScaleToFit(background)).to.be.true;
 
     });
+
+    it('should escape apostrophe in image filename', function() {
+      var background = {'useImage':true,'image':{'url':'/images/b\'g\'.jpg','position':'top-left', repeat: 'no-repeat','scale':true}};
+
+      expect(backgroundParser.getStyle(background)).to.equal('url(\'/images/b\\\'g\\\'.jpg\') no-repeat left top');
+    });
+
+    it('should unescape apostrophe in filename', function() {
+      var background = {'useImage':true,'image':{'url':'/images/b\'g\'.jpg', repeat: 'no-repeat','position':'top-left','scale':true}};
+
+      expect(backgroundParser.parseBackground('url(\'/images/b\\\'g\\\'.jpg\') no-repeat left top', true)).to.deep.equal(background);
+    });
     
     it('should get image & clor background', function() {
       var backgroundString = 'rgb(170, 170, 170) url(\'https://storage.googleapis.com/risemedialibrary-b428b4e8-c8b9-41d5-8a10-b4193c789443/image-1.png\') no-repeat center center';
