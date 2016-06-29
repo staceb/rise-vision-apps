@@ -58,7 +58,7 @@ angular.module('risevision.editor.services')
               '\')', urlTokenPosition);
             background.image.url = backgroundStyle.substring(
               openingParenthesesPosition + 2,
-              closingParenthesesPosition);
+              closingParenthesesPosition).replace(/\\'/g,'\'');
 
             for (var i = 0; i < POSITION_OPTIONS.length; i++) {
               if (backgroundStyle.indexOf(POSITION_OPTIONS[i][0]) !== -1) {
@@ -90,7 +90,7 @@ angular.module('risevision.editor.services')
 
         if (background && background.useImage) {
           backgroundStyle += backgroundStyle ? ' ' : '';
-          backgroundStyle += 'url(\'' + background.image.url +
+          backgroundStyle += 'url(\'' + background.image.url.replace(/'/g,'\\\'') +
             '\')';
 
           if (background.image.repeat && !background.image.scale) {
