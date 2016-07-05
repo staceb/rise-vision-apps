@@ -12,6 +12,10 @@ var HomePage = function() {
   var helpContainer = element(by.id('helpContainer'));
   var helpToggleButton = element(by.id('helpToggleButton'));
 
+  var prioritySupportBanner = element(by.id('prioritySupportBanner'));
+  var presentationCTA = element(by.id('presentationCTA'));
+  var presentationCTAButton = element(by.id('presentationCTAButton'));
+
   var presentationAddButton = element(by.id('presentationAddButton'));
   var presentationsList = element(by.id('presentationsList'));
   var presentationsViewAll = element(by.id('presentationsViewAll'));
@@ -80,6 +84,18 @@ var HomePage = function() {
 
   this.getHelpToggleButton = function() {
     return helpToggleButton;
+  };
+
+  this.getPrioritySupportBanner = function() {
+    return prioritySupportBanner;
+  };
+
+  this.getPresentationCTA = function() {
+    return presentationCTA;
+  };
+
+  this.getPresentationCTAButton = function() {
+    return presentationCTAButton;
   };
 
   this.getPresentationAddButton = function() {
