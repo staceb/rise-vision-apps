@@ -121,6 +121,41 @@ describe('controller: Workspace', function() {
     expect($scope.hasUnsavedChanges).to.be.false;
   });
 
+  it('should flag unsaved changes when removing playlist items',function(){    
+    editorFactory.presentation.placeholders = [
+      {
+        items: [
+          {type: 'widget'},
+          {type: 'widget'}
+        ]
+      }
+    ];
+    $scope.$apply();
+    $scope.hasUnsavedChanges = false;
+    delete editorFactory.presentation.placeholders[0].items[0];
+    $scope.$apply();
+
+    expect($scope.hasUnsavedChanges).to.be.true;
+  });
+
+    it('should flag unsaved changes when playlist items changed',function(){    
+    editorFactory.presentation.placeholders = [
+      {
+        items: [
+          {type: 'widget'},
+          {type: 'widget'}
+        ]
+      }
+    ];
+    $scope.$apply();
+    $scope.hasUnsavedChanges = false;
+    editorFactory.presentation.placeholders[0].items[1].type = 'gadget';
+    editorFactory.presentation.placeholders[0].items[1].url = 'http://url.com';
+    $scope.$apply();
+
+    expect($scope.hasUnsavedChanges).to.be.true;
+  });
+
   it('should notify unsaved changes when changing URL',function(){
     editorFactory.presentation.name = "New Name";
     $scope.$apply();

@@ -17,14 +17,23 @@ angular.module('risevision.editor.controllers')
       var isEqualIgnoringFields = function (o1, o2, whitelist) {
         if (typeof o1 === 'object') {
           if (typeof o2 === 'object') {
-            for (var k in o1) {
-              if (whitelist.indexOf(k) === -1 && k.charAt(0) !== '$') {
-                if (!isEqualIgnoringFields(o1[k], o2[k], whitelist)) {
-                  return false;
+            if (angular.isArray(o1)) {
+              if (!angular.isArray(o2)) return false;
+              if (o1.length !== o2.length) return false;
+              for (var k = 0; k < o1.length; k++) {
+                if (!isEqualIgnoringFields(o1[k], o2[k], whitelist)) return false;
+              }
+              return true;
+            } else {
+              for (var k in o1) {
+                if (whitelist.indexOf(k) === -1 && k.charAt(0) !== '$') {
+                  if (!isEqualIgnoringFields(o1[k], o2[k], whitelist)) {
+                    return false;
+                  }
                 }
               }
+              return true;
             }
-            return true;
           } else {
             return false;
           }
