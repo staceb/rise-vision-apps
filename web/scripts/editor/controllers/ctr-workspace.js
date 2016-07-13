@@ -1,33 +1,40 @@
 'use strict';
 
 angular.module('risevision.editor.controllers')
+  .value('IGNORE_FIELDS', [
+    'revisionStatusName', 
+    'changeDate',
+    'changedBy', 
+    'statusMessage', 
+    'subscriptionStatus'
+  ])
   .controller('WorkspaceController', ['$scope', 'editorFactory',
     'placeholderFactory', 'userState', '$modal', '$templateCache',
-    '$location', '$stateParams', '$window', 'RVA_URL', '$timeout', '$state',
-    '$filter',
+    '$location', '$stateParams', '$window', 'RVA_URL', 'IGNORE_FIELDS', 
+    '$timeout', '$state', '$filter',
     function ($scope, editorFactory, placeholderFactory, userState, $modal,
-      $templateCache, $location, $stateParams, $window, RVA_URL, $timeout,
-      $state, $filter) {
+      $templateCache, $location, $stateParams, $window, RVA_URL, 
+      IGNORE_FIELDS, $timeout, $state, $filter) {
       $scope.factory = editorFactory;
       $scope.placeholderFactory = placeholderFactory;
       $scope.isSubcompanySelected = userState.isSubcompanySelected;
       $scope.isTestCompanySelected = userState.isTestCompanySelected;
       $scope.hasUnsavedChanges = false;
 
-      var isEqualIgnoringFields = function (o1, o2, whitelist) {
+      var _isEqualIgnoringFields = function (o1, o2) {
         if (typeof o1 === 'object') {
           if (typeof o2 === 'object') {
             if (angular.isArray(o1)) {
               if (!angular.isArray(o2)) return false;
               if (o1.length !== o2.length) return false;
               for (var k = 0; k < o1.length; k++) {
-                if (!isEqualIgnoringFields(o1[k], o2[k], whitelist)) return false;
+                if (!_isEqualIgnoringFields(o1[k], o2[k])) return false;
               }
               return true;
             } else {
               for (var k in o1) {
-                if (whitelist.indexOf(k) === -1 && k.charAt(0) !== '$') {
-                  if (!isEqualIgnoringFields(o1[k], o2[k], whitelist)) {
+                if (IGNORE_FIELDS.indexOf(k) === -1 && k.charAt(0) !== '$') {
+                  if (!_isEqualIgnoringFields(o1[k], o2[k])) {
                     return false;
                   }
                 }
@@ -52,11 +59,7 @@ angular.module('risevision.editor.controllers')
             _initializing = false;
           });
         } else {
-          var ignoreFields = ['revisionStatusName', 'changeDate',
-            'changedBy', 'backgroundStyle', 'backgroundScaleToFit',
-            'statusMessage', 'subscriptionStatus'
-          ];
-          if (!isEqualIgnoringFields(newValue, oldValue, ignoreFields)) {
+          if (!_isEqualIgnoringFields(newValue, oldValue)) {
             $scope.hasUnsavedChanges = true;
           }
         }
