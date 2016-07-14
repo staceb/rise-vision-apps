@@ -54,6 +54,14 @@ var ArtboardPlaceholdersScenarios = function() {
         it('should select placeholder after adding it', function () {
           expect(artboardPage.getPlaceholderContainer().getAttribute('class')).to.eventually.contain('edit-mode');
         });
+        
+        it('placeholder should be offset (centered) on the artboard', function(done) {
+          artboardPage.getPlaceholderContainer().getLocation().then(function (location) {
+            expect(location.x).to.be.greaterThan(100);
+            expect(location.y).to.be.greaterThan(100);
+            done();
+          });
+        });
 
         it('should deselect by clicking outside the placeholder', function (done) {
           artboardPage.getPlaceholderContainer().getSize().then(function (size) {

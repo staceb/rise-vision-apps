@@ -31,10 +31,61 @@ angular.module('risevision.editor.services')
         };
       };
 
+      var _centerPlaceholder = function (placeholder) {
+        if (!factory.getWorkspaceElement) {
+          return;
+        }
+
+        var leftPadding = 12;
+        var topPadding = 60 + 12;
+        var workspaceElement = factory.getWorkspaceElement();
+        var width = editorFactory.presentation.width;
+        var height = editorFactory.presentation.height;
+        if (placeholder.width > width) {
+          placeholder.width = width;
+          placeholder.left = 0;
+        } else {
+          var totalWidth = Math.min(width, workspaceElement.clientWidth -
+            leftPadding);
+          var scrollLeft = workspaceElement.scrollLeft;
+
+          placeholder.left = _getCenterPosition(placeholder.width,
+            totalWidth, width, scrollLeft);
+        }
+
+        if (placeholder.height > height) {
+          placeholder.height = height;
+          placeholder.top = 0;
+        } else {
+          var totalHeight = Math.min(height, workspaceElement.clientHeight -
+            topPadding);
+          var scrollTop = workspaceElement.scrollTop;
+
+          placeholder.top = _getCenterPosition(placeholder.height,
+            totalHeight, height, scrollTop);
+        }
+      };
+
+      var _getCenterPosition = function (widgetSize, artboardSize,
+        totalPixelSize, scroll) {
+        var center = (artboardSize / 2) + scroll;
+        var position = center - (widgetSize / 2);
+
+        if (position < 0) {
+          position = 0;
+        } else if (position + widgetSize > totalPixelSize) {
+          position = totalPixelSize - widgetSize;
+        }
+
+        return parseInt(position, 10);
+      };
+
       factory.addNewPlaceholder = function (placeholder) {
         presentationTracker('Add Placeholder', editorFactory.presentation.id,
           editorFactory.presentation.name);
         placeholder = placeholder || _newPlaceholder();
+
+        _centerPlaceholder(placeholder);
 
         factory.getPlaceholders().push(placeholder);
 

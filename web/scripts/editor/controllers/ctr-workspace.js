@@ -2,18 +2,18 @@
 
 angular.module('risevision.editor.controllers')
   .value('IGNORE_FIELDS', [
-    'revisionStatusName', 
+    'revisionStatusName',
     'changeDate',
-    'changedBy', 
-    'statusMessage', 
+    'changedBy',
+    'statusMessage',
     'subscriptionStatus'
   ])
   .controller('WorkspaceController', ['$scope', 'editorFactory',
     'placeholderFactory', 'userState', '$modal', '$templateCache',
-    '$location', '$stateParams', '$window', 'RVA_URL', 'IGNORE_FIELDS', 
+    '$location', '$stateParams', '$window', 'RVA_URL', 'IGNORE_FIELDS',
     '$timeout', '$state', '$filter',
     function ($scope, editorFactory, placeholderFactory, userState, $modal,
-      $templateCache, $location, $stateParams, $window, RVA_URL, 
+      $templateCache, $location, $stateParams, $window, RVA_URL,
       IGNORE_FIELDS, $timeout, $state, $filter) {
       $scope.factory = editorFactory;
       $scope.placeholderFactory = placeholderFactory;
@@ -25,16 +25,22 @@ angular.module('risevision.editor.controllers')
         if (typeof o1 === 'object') {
           if (typeof o2 === 'object') {
             if (angular.isArray(o1)) {
-              if (!angular.isArray(o2)) return false;
-              if (o1.length !== o2.length) return false;
+              if (!angular.isArray(o2)) {
+                return false;
+              }
+              if (o1.length !== o2.length) {
+                return false;
+              }
               for (var k = 0; k < o1.length; k++) {
-                if (!_isEqualIgnoringFields(o1[k], o2[k])) return false;
+                if (!_isEqualIgnoringFields(o1[k], o2[k])) {
+                  return false;
+                }
               }
               return true;
             } else {
-              for (var k in o1) {
-                if (IGNORE_FIELDS.indexOf(k) === -1 && k.charAt(0) !== '$') {
-                  if (!_isEqualIgnoringFields(o1[k], o2[k])) {
+              for (var j in o1) {
+                if (IGNORE_FIELDS.indexOf(j) === -1 && j.charAt(0) !== '$') {
+                  if (!_isEqualIgnoringFields(o1[j], o2[j])) {
                     return false;
                   }
                 }
