@@ -19,7 +19,9 @@ describe('service: placeholdersFactory:', function() {
 
     editorFactory = {
       presentation: {
-        placeholders: placeholders
+        placeholders: placeholders,
+        width: 1920,
+        height: 1080
       }
     };
     
@@ -122,6 +124,219 @@ describe('service: placeholdersFactory:', function() {
     expect(placeholders[3].transition).to.equal('none');
 
     setPlaceholderSpy.should.have.been.calledWith(placeholders[3]);
+  });
+  
+  describe('centerPlaceholder: ', function() {
+    it('should default to 0,0', function() {
+      placeholdersFactory.addNewPlaceholder();
+
+      expect(placeholders[3].left).to.equal(0);
+      expect(placeholders[3].top).to.equal(0);
+    });
+    
+    it('should center placeholder', function() {
+      placeholdersFactory.getWorkspaceElement = function() {
+        return {
+          clientWidth: 1000,
+          clientHeight: 1000,
+          scrollLeft: 0,
+          scrollTop: 0
+        };
+      };
+      
+      placeholdersFactory.addNewPlaceholder();
+      expect(placeholders[3].left).to.equal((1000 - 12 - 400)/2);
+      expect(placeholders[3].top).to.equal((1000 - 60 - 12 - 200)/2);
+    });
+    
+    it('should take scroll into account and center placeholder', function() {
+      placeholdersFactory.getWorkspaceElement = function() {
+        return {
+          clientWidth: 1000,
+          clientHeight: 1000,
+          scrollLeft: 300,
+          scrollTop: 300
+        };
+      };
+      
+      placeholdersFactory.addNewPlaceholder();
+      expect(placeholders[3].left).to.equal((1000 - 12 - 400)/2 + 300);
+      expect(placeholders[3].top).to.equal((1000 - 60 - 12 - 200)/2 + 300);
+    });
+    
+    it('should use presentation resolution values if smaller than artboard', function() {
+      editorFactory.presentation.height = 1000;
+      editorFactory.presentation.width = 1000;
+      placeholdersFactory.getWorkspaceElement = function() {
+        return {
+          clientWidth: 2000,
+          clientHeight: 2000,
+          scrollLeft: 0,
+          scrollTop: 0
+        };
+      };
+      
+      placeholdersFactory.addNewPlaceholder();
+      expect(placeholders[3].left).to.equal((1000 - 400)/2);
+      expect(placeholders[3].top).to.equal((1000 - 200)/2);      
+    });
+    
+    it('should not place placeholder past edge of artboard', function() {
+      placeholdersFactory.getWorkspaceElement = function() {
+        return {
+          clientWidth: 500,
+          clientHeight: 500,
+          scrollLeft: 1700,
+          scrollTop: 900
+        };
+      };
+      
+      placeholdersFactory.addNewPlaceholder();
+      expect(placeholders[3].left).to.equal(1920 - 400);
+      expect(placeholders[3].top).to.equal(1080 - 200);      
+    });
+    
+    it('should place placeholder at top left corner for small artboard', function() {
+      placeholdersFactory.getWorkspaceElement = function() {
+        return {
+          clientWidth: 200,
+          clientHeight: 200,
+          scrollLeft: 0,
+          scrollTop: 0
+        };
+      };
+      
+      placeholdersFactory.addNewPlaceholder();
+      expect(placeholders[3].left).to.equal(0);
+      expect(placeholders[3].top).to.equal(0);
+    });
+    
+    it('should reposition and readjust size of full screen placeholder', function() {
+      placeholdersFactory.getWorkspaceElement = function() {
+        return {
+        };
+      };
+      
+      placeholdersFactory.addNewPlaceholder({
+        width: 5000,
+        height: 5000,
+        top: 50,
+        left: 50
+      });
+      expect(placeholders[3].width).to.equal(1920);
+      expect(placeholders[3].height).to.equal(1080);
+      expect(placeholders[3].left).to.equal(0);
+      expect(placeholders[3].top).to.equal(0);
+    });
+    
+    describe('offsetPlaceholder: ', function() {
+      describe('bottom first: ', function() {
+        var top, left;
+        beforeEach(function() {
+          placeholdersFactory.getWorkspaceElement = function() {
+            return {
+              clientWidth: 600,
+              clientHeight: 335,
+              scrollLeft: 1350,
+              scrollTop: 820
+            };
+          };
+          
+          placeholdersFactory.addNewPlaceholder();
+          top = placeholders[3].top;
+          left = placeholders[3].left;
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should offset second placeholder', function(){
+          expect(placeholders[4].left).to.equal(left + 20);
+          expect(placeholders[4].top).to.equal(top + 20);
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should offset third placeholder at the bottom', function(){
+          expect(placeholders[5].left).to.equal(left + 40);
+          expect(placeholders[5].top).to.equal(1080 - 200);
+        });
+
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should move fourth placeholder sideways', function(){
+          expect(placeholders[6].left).to.equal(left + 60);
+          expect(placeholders[6].top).to.equal(1080 - 200);
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+
+        it('should offset fifth placeholder to the right edge', function(){
+          expect(placeholders[7].left).to.equal(1920 - 400);
+          expect(placeholders[7].top).to.equal(1080 - 200);
+        });
+        
+        it('should overlap placeholders at the bottom right', function(){
+          placeholdersFactory.addNewPlaceholder();
+
+          expect(placeholders[7].left).to.equal(1920 - 400);
+          expect(placeholders[7].top).to.equal(1080 - 200);
+        });
+      });
+
+      describe('right first: ', function() {
+        var top, left;
+        beforeEach(function() {
+          placeholdersFactory.getWorkspaceElement = function() {
+            return {
+              clientWidth: 485,
+              clientHeight: 1000,
+              scrollLeft: 1460,
+              scrollTop: 0
+            };
+          };
+          
+          placeholdersFactory.addNewPlaceholder();
+          top = placeholders[3].top;
+          left = placeholders[3].left;
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+
+        it('should offset second placeholder', function(){
+          expect(placeholders[4].left).to.equal(left + 20);
+          expect(placeholders[4].top).to.equal(top + 20);
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should offset third placeholder to the right edge', function(){
+          expect(placeholders[5].left).to.equal(1920 - 400);
+          expect(placeholders[5].top).to.equal(top + 40);
+        });
+
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should move fourth placeholder downwards', function(){
+          expect(placeholders[6].left).to.equal(1920 - 400);
+          expect(placeholders[6].top).to.equal(top + 60);
+        });
+
+      });
+    });
   });
 
   describe('removePlaceholder: ',function(){

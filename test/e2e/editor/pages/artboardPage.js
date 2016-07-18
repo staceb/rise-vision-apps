@@ -12,8 +12,8 @@ var ArtboardPage = function() {
     return overlayContainer;
   };
 
-  this.getPlaceholderContainer  = function() {
-  	return this.getArtboardContainer().element(by.css('artboard-placeholder'));
+  this.getPlaceholderContainers = function() {
+  	return this.getArtboardContainer().all(by.css('artboard-placeholder'));
   };
 
 };
