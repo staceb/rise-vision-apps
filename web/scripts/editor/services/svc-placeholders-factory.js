@@ -31,6 +31,53 @@ angular.module('risevision.editor.services')
         };
       };
 
+      var _getCenterPosition = function (widgetSize, artboardSize,
+        totalPixelSize, scroll) {
+        var center = (artboardSize / 2) + scroll;
+        var position = center - (widgetSize / 2);
+
+        if (position < 0) {
+          position = 0;
+        } else if (position + widgetSize > totalPixelSize) {
+          position = totalPixelSize - widgetSize;
+        }
+
+        return parseInt(position, 10);
+      };
+
+      var _offsetPlaceholder = function (placeholder) {
+        var placeholders = factory.getPlaceholders();
+
+        for (var i = 0; i < placeholders.length; i++) {
+          if (placeholders[i].top === placeholder.top && placeholders[i].left ===
+            placeholder.left) {
+            var cornersFound = 0;
+
+            var rightPadding = editorFactory.presentation.width -
+              (placeholder.left + placeholder.width);
+            var bottomPadding = editorFactory.presentation.height -
+              (placeholder.top + placeholder.height);
+            if (rightPadding > 0) {
+              placeholder.left += Math.min(20, rightPadding);
+            } else {
+              cornersFound++;
+            }
+
+            if (bottomPadding > 0) {
+              placeholder.top += Math.min(20, bottomPadding);
+            } else {
+              cornersFound++;
+            }
+
+            if (cornersFound < 2) {
+              _offsetPlaceholder(placeholder);
+            }
+
+            break;
+          }
+        }
+      };
+
       var _centerPlaceholder = function (placeholder) {
         if (!factory.getWorkspaceElement) {
           return;
@@ -64,20 +111,8 @@ angular.module('risevision.editor.services')
           placeholder.top = _getCenterPosition(placeholder.height,
             totalHeight, height, scrollTop);
         }
-      };
 
-      var _getCenterPosition = function (widgetSize, artboardSize,
-        totalPixelSize, scroll) {
-        var center = (artboardSize / 2) + scroll;
-        var position = center - (widgetSize / 2);
-
-        if (position < 0) {
-          position = 0;
-        } else if (position + widgetSize > totalPixelSize) {
-          position = totalPixelSize - widgetSize;
-        }
-
-        return parseInt(position, 10);
+        _offsetPlaceholder(placeholder);
       };
 
       factory.addNewPlaceholder = function (placeholder) {

@@ -228,6 +228,115 @@ describe('service: placeholdersFactory:', function() {
       expect(placeholders[3].left).to.equal(0);
       expect(placeholders[3].top).to.equal(0);
     });
+    
+    describe('offsetPlaceholder: ', function() {
+      describe('bottom first: ', function() {
+        var top, left;
+        beforeEach(function() {
+          placeholdersFactory.getWorkspaceElement = function() {
+            return {
+              clientWidth: 600,
+              clientHeight: 335,
+              scrollLeft: 1350,
+              scrollTop: 820
+            };
+          };
+          
+          placeholdersFactory.addNewPlaceholder();
+          top = placeholders[3].top;
+          left = placeholders[3].left;
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should offset second placeholder', function(){
+          expect(placeholders[4].left).to.equal(left + 20);
+          expect(placeholders[4].top).to.equal(top + 20);
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should offset third placeholder at the bottom', function(){
+          expect(placeholders[5].left).to.equal(left + 40);
+          expect(placeholders[5].top).to.equal(1080 - 200);
+        });
+
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should move fourth placeholder sideways', function(){
+          expect(placeholders[6].left).to.equal(left + 60);
+          expect(placeholders[6].top).to.equal(1080 - 200);
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+
+        it('should offset fifth placeholder to the right edge', function(){
+          expect(placeholders[7].left).to.equal(1920 - 400);
+          expect(placeholders[7].top).to.equal(1080 - 200);
+        });
+        
+        it('should overlap placeholders at the bottom right', function(){
+          placeholdersFactory.addNewPlaceholder();
+
+          expect(placeholders[7].left).to.equal(1920 - 400);
+          expect(placeholders[7].top).to.equal(1080 - 200);
+        });
+      });
+
+      describe('right first: ', function() {
+        var top, left;
+        beforeEach(function() {
+          placeholdersFactory.getWorkspaceElement = function() {
+            return {
+              clientWidth: 485,
+              clientHeight: 1000,
+              scrollLeft: 1460,
+              scrollTop: 0
+            };
+          };
+          
+          placeholdersFactory.addNewPlaceholder();
+          top = placeholders[3].top;
+          left = placeholders[3].left;
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+
+        it('should offset second placeholder', function(){
+          expect(placeholders[4].left).to.equal(left + 20);
+          expect(placeholders[4].top).to.equal(top + 20);
+        });
+        
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should offset third placeholder to the right edge', function(){
+          expect(placeholders[5].left).to.equal(1920 - 400);
+          expect(placeholders[5].top).to.equal(top + 40);
+        });
+
+        beforeEach(function() {        
+          placeholdersFactory.addNewPlaceholder();
+        });
+        
+        it('should move fourth placeholder downwards', function(){
+          expect(placeholders[6].left).to.equal(1920 - 400);
+          expect(placeholders[6].top).to.equal(top + 60);
+        });
+
+      });
+    });
   });
 
   describe('removePlaceholder: ',function(){
