@@ -31,6 +31,7 @@
     .value('ALERTS_WS_URL',
       'https://rvacore-test.appspot.com/alerts/cap')
     .value('SEGMENT_API_KEY', null)
+    .value('TEXT_WIDGET_ID', '64cc543c-c2c6-49ab-a4e9-40ceba48a253')
 
   .value('STORAGE_ENDPOINT_URL',
     'https://storage-dot-rvacore-test.appspot.com/_ah/api');

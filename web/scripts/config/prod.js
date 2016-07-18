@@ -21,6 +21,7 @@
     .value('VIEWER_URL', 'http://preview.risevision.com')
     .value('ALERTS_WS_URL',
       'https://rvaserver2.appspot.com/alerts/cap')
+    .value('TEXT_WIDGET_ID', '32d460d1-a727-4765-a8e9-587f7915ab05')
 
   .value('STORAGE_ENDPOINT_URL',
     'https://storage-dot-rvaserver2.appspot.com/_ah/api');

@@ -44,6 +44,18 @@ describe('service: playlistItemFactory:', function() {
     
     $provide.service('gadgetFactory', function() {
       return {
+        getGadget: function(gadgetId) {
+          var deferred = Q.defer();
+
+          deferred.resolve({
+            id: gadgetId,
+            name: 'gadgetName',
+            url: 'http://someurl.com/gadget.html',
+            gadgetType: 'Widget'
+          });
+          
+          return deferred.promise;
+        },
         getGadgetByProduct: function() {
           var deferred = Q.defer();
 
@@ -70,6 +82,8 @@ describe('service: playlistItemFactory:', function() {
         presentation: {}
       };
     });
+    
+    $provide.value('TEXT_WIDGET_ID', 'textWidgetId');
 
   }));
   var item, playlistItemFactory, openModal, currentItem, trackedEvent;
@@ -88,7 +102,7 @@ describe('service: playlistItemFactory:', function() {
     expect(playlistItemFactory).to.be.truely;
 
     expect(playlistItemFactory.addContent).to.be.a('function');
-
+    expect(playlistItemFactory.addTextWidget).to.be.a('function');
     expect(playlistItemFactory.edit).to.be.a('function');
 
   });
@@ -124,6 +138,29 @@ describe('service: playlistItemFactory:', function() {
         done();
       }, 10);
     });
+  });
+  
+  it('addTextWidget:', function(done) {
+    playlistItemFactory.addTextWidget();
+
+    expect(trackedEvent).to.equal('Add Text Widget');
+    expect(currentItem).to.not.be.ok;
+
+    setTimeout(function() {
+      expect(openModal).to.equal('PlaylistItemModalController');
+      expect(currentItem).to.deep.equal({
+        duration: 10,
+        distributeToAll: true,
+        timeDefined: false,
+        additionalParams: null,
+        type: 'widget',
+        objectReference: 'textWidgetId',
+        name: 'gadgetName',
+        objectData: 'http://someurl.com/gadget.html'
+      });
+      
+      done();
+    }, 10);
   });
 
   describe('add widget by url: ', function() {
