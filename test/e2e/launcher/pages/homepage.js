@@ -10,7 +10,8 @@ var HomePage = function() {
 
   var appLauncherContainer = element(by.id('appLauncherContainer'));
   var helpContainer = element(by.id('helpContainer'));
-  var helpToggleButton = element(by.id('helpToggleButton'));
+  var showHelpButton = element(by.id('showHelpButton'));
+  var hideHelpButton = element(by.id('hideHelpButton'));
 
   var prioritySupportBanner = element(by.id('prioritySupportBanner'));
   var presentationCTA = element(by.id('presentationCTA'));
@@ -82,8 +83,12 @@ var HomePage = function() {
     return helpContainer;
   };
 
-  this.getHelpToggleButton = function() {
-    return helpToggleButton;
+  this.getShowHelpButton = function() {
+    return showHelpButton;
+  };
+
+  this.getHideHelpButton = function() {
+    return hideHelpButton;
   };
 
   this.getPrioritySupportBanner = function() {

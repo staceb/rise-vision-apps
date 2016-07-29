@@ -5,7 +5,8 @@
   
   <div ng-show="editorFactory.presentations.items.list.length > 0">
     <div class="text-right add-top add-bottom">
-      <button id="helpToggleButton" class="btn btn-link" ng-click="toggleHelp()">{{'launcher.howToShow'|translate}}</button>
+      <button id="showHelpButton" class="btn btn-link" ng-click="toggleHelp()" ng-hide="showHelp">{{'launcher.howToShow'|translate}}</button>
+      <button id="hideHelpButton" class="btn btn-link" ng-click="toggleHelp()" ng-show="showHelp">{{'launcher.hideAnimation'|translate}}</button>
     </div>
 
     <div id="helpContainer" class="video-box add-bottom" ng-show="showHelp">

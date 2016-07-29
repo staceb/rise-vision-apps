@@ -92,12 +92,12 @@ var HomepageScenarios = function() {
       });
 
       it("should show animation when clicking help text",function(){
-        homepage.getHelpToggleButton().click();
+        homepage.getShowHelpButton().click();
         expect(homepage.getHelpContainer().isDisplayed()).to.eventually.be.true;
       });
 
-      it("should hide animation when clicking help text again",function(){
-        homepage.getHelpToggleButton().click();
+      it("should hide animation when clicking Hide Animation",function(){
+        homepage.getHideHelpButton().click();
         expect(homepage.getHelpContainer().isDisplayed()).to.eventually.be.false;
       });
     });
