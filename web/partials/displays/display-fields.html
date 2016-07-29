@@ -18,7 +18,8 @@
 <div ng-show="display.id && !display.lastActivityDate">
 
   <div class="text-right add-top add-bottom">
-    <button class="btn btn-link" ng-click="showHelp = !showHelp">{{ 'displays-app.fields.controls.howtoInstall' | translate }}</button>
+    <button class="btn btn-link" ng-click="showHelp = !showHelp" ng-hide="showHelp">{{ 'displays-app.fields.controls.howtoInstall' | translate }}</button>
+    <button class="btn btn-link" ng-click="showHelp = !showHelp" ng-show="showHelp">{{ 'launcher.hideAnimation' | translate }}</button>
   </div>
 
   <div class="video-box add-bottom text-center" ng-show="showHelp">

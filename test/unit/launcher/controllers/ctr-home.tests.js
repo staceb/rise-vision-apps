@@ -1,7 +1,7 @@
 'use strict';
 describe('controller: Home', function() {
   beforeEach(module('risevision.apps.launcher.controllers'));
-  var $scope, localStorageService, localStorageGetSpy, startGlobalSpy, stopGlobalSpy;
+  var $scope, localStorageService, localStorageGetSpy, startGlobalSpy, stopGlobalSpy, lsGetReturn;
   beforeEach(function(){
     module(function ($provide) {
       $provide.service('$loading', function() {
@@ -12,13 +12,13 @@ describe('controller: Home', function() {
       });    
       $provide.service('localStorageService', function() {
         return localStorageService = {
-          get: function() { return false; },
+          get: function() { return lsGetReturn; },
           set: function(){}
         };
       }); 
       $provide.service('editorFactory', function() {
         return {
-          presentations: { loadingItems: true }
+          presentations: { loadingItems: true , items: { list: [ ] } }
         };
       });      
       $provide.service('displayFactory', function() {
@@ -26,6 +26,7 @@ describe('controller: Home', function() {
       });
     })
     inject(function($injector,$rootScope, $controller, localStorageService, $loading) {
+      lsGetReturn = false;
       localStorageGetSpy = sinon.spy(localStorageService,'get');
       startGlobalSpy = sinon.spy($loading,'startGlobal');
       stopGlobalSpy = sinon.spy($loading,'stopGlobal');
@@ -65,6 +66,31 @@ describe('controller: Home', function() {
       $scope.$apply();
       stopGlobalSpy.should.have.been.calledWith("launcher.loading");
     });
+
+    it("should not flag help if user has presentations",function(){
+      var spy = sinon.spy(localStorageService,'set');
+
+      $scope.editorFactory.presentations.loadingItems = false;
+      $scope.editorFactory.presentations.items.list = [{id:'id'}];
+
+      $scope.$apply();
+
+      spy.should.not.have.been.called;
+    });
+
+    it("should flag help if user has 0 presentations and has not set visbility of Help",function(){
+      var spy = sinon.spy(localStorageService,'set');
+
+      $scope.editorFactory.presentations.loadingItems = false;
+      $scope.editorFactory.presentations.items.list = [];
+      lsGetReturn = null
+
+      $scope.$apply();
+      
+      spy.should.have.been.calledWith("launcher.showHelp",true);
+    });
+
+    
   });
 
   describe("toggleHelp:",function(){
