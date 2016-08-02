@@ -181,7 +181,7 @@ angular.module('risevision.editor.services')
 
         return _getItemByWidgetId(RENDER_WIDGETS.IMAGE_WIDGET)
           .then(function (item) {
-            item.name = file ? file.name : item.name;
+            item.name = file ? _getFileName(file.name) : item.name;
 
             item.additionalParams = _populateAdditionalParams(
               IMAGE_ADDITIONAL_PARAMS, fileUrl, file);
@@ -196,7 +196,7 @@ angular.module('risevision.editor.services')
 
         return _getItemByWidgetId(VIDEO_WIDGET)
           .then(function (item) {
-            item.name = file ? file.name : item.name;
+            item.name = file ? _getFileName(file.name) : item.name;
             item.playUntilDone = true;
 
             item.additionalParams = _populateAdditionalParams(
