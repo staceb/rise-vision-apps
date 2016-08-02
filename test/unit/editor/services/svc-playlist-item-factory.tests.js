@@ -88,7 +88,7 @@ describe('service: playlistItemFactory:', function() {
       return fileSelectorFactory = {
         openSelector: function(type) {
           if (returnFiles) {
-            return Q.resolve(['file1', 'file2']);
+            return Q.resolve(['folder/file1', 'file2']);
           }
           else {
             return Q.resolve();
@@ -96,8 +96,8 @@ describe('service: playlistItemFactory:', function() {
         },
         getSelectedFiles: function() {
           return [
-            {name:'name1'},
-            {}
+            {name:'folder/file1'},
+            {name:'file2'}
           ];
         }
       };
@@ -251,15 +251,16 @@ describe('service: playlistItemFactory:', function() {
         expect(trackedEvent).to.equal('Add Image Widget');
 
         expect(placeholderPlaylistFactory.items).to.have.length(2);
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('name');
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('additionalParams');
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('objectData');
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('objectReference');
 
-        expect(placeholderPlaylistFactory.items[0].name).to.equal('name1');
-        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"name1","url":"file1"},"storage":{"companyId":null,"fileName":"name1"},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
+        expect(placeholderPlaylistFactory.items[0].name).to.equal('folder/file1');
+        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder/file1","url":"folder/file1"},"storage":{"companyId":null,"fileName":"file1","folder":"folder/"},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
         expect(placeholderPlaylistFactory.items[0].objectData).to.equal('http://someurl.com/gadget.html');
         expect(placeholderPlaylistFactory.items[0].objectReference).to.equal('2707fc05-5051-4d7b-bcde-01fafd6eaa5e');
+
+        expect(placeholderPlaylistFactory.items[1].name).to.equal('file2');
+        expect(placeholderPlaylistFactory.items[1].additionalParams).to.equal('{"selector":{"storageName":"file2","url":"file2"},"storage":{"companyId":null,"fileName":"file2","folder":""},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
+        expect(placeholderPlaylistFactory.items[1].objectData).to.equal('http://someurl.com/gadget.html');
+        expect(placeholderPlaylistFactory.items[1].objectReference).to.equal('2707fc05-5051-4d7b-bcde-01fafd6eaa5e');
 
         done();
       }, 10);
@@ -281,7 +282,7 @@ describe('service: playlistItemFactory:', function() {
         expect(placeholderPlaylistFactory.items[0]).to.have.property('objectReference');
 
         expect(placeholderPlaylistFactory.items[0].name).to.equal('folder');
-        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder","url":"file1"},"storage":{"companyId":null,"folder":"folder"},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
+        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder","url":"folder/file1"},"storage":{"companyId":null,"folder":"folder"},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
         expect(placeholderPlaylistFactory.items[0].objectData).to.equal('http://someurl.com/gadget.html');
         expect(placeholderPlaylistFactory.items[0].objectReference).to.equal('2707fc05-5051-4d7b-bcde-01fafd6eaa5e');
 
@@ -319,16 +320,18 @@ describe('service: playlistItemFactory:', function() {
         expect(trackedEvent).to.equal('Add Video Widget');
 
         expect(placeholderPlaylistFactory.items).to.have.length(2);
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('name');
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('additionalParams');
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('objectData');
-        expect(placeholderPlaylistFactory.items[0]).to.have.property('objectReference');
 
-        expect(placeholderPlaylistFactory.items[0].name).to.equal('name1');
+        expect(placeholderPlaylistFactory.items[0].name).to.equal('folder/file1');
         expect(placeholderPlaylistFactory.items[0].playUntilDone).to.be.true;
-        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"name1","url":"file1"},"url":"","storage":{"companyId":null,"fileName":"name1"},"video":{"scaleToFit":true,"volume":50,"controls":true,"autoplay":true,"resume":true,"pause":5}}');
+        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder/file1","url":"folder/file1"},"url":"","storage":{"companyId":null,"fileName":"file1","folder":"folder/"},"video":{"scaleToFit":true,"volume":50,"controls":true,"autoplay":true,"resume":true,"pause":5}}');
         expect(placeholderPlaylistFactory.items[0].objectData).to.equal('http://someurl.com/gadget.html');
         expect(placeholderPlaylistFactory.items[0].objectReference).to.equal('4bf6fb3d-1ead-4bfb-b66f-ae1fcfa3c0c6');
+
+        expect(placeholderPlaylistFactory.items[1].name).to.equal('file2');
+        expect(placeholderPlaylistFactory.items[1].playUntilDone).to.be.true;
+        expect(placeholderPlaylistFactory.items[1].additionalParams).to.equal('{"selector":{"storageName":"file2","url":"file2"},"url":"","storage":{"companyId":null,"fileName":"file2","folder":""},"video":{"scaleToFit":true,"volume":50,"controls":true,"autoplay":true,"resume":true,"pause":5}}');
+        expect(placeholderPlaylistFactory.items[1].objectData).to.equal('http://someurl.com/gadget.html');
+        expect(placeholderPlaylistFactory.items[1].objectReference).to.equal('4bf6fb3d-1ead-4bfb-b66f-ae1fcfa3c0c6');
 
         done();
       }, 10);

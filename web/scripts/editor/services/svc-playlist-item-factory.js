@@ -125,6 +125,32 @@ angular.module('risevision.editor.services')
           });
       };
 
+      var _getFileName = function (file) {
+        if (!file) {
+          return '';
+        }
+
+        var index = file.lastIndexOf('/');
+        if (index === -1) {
+          return file;
+        } else {
+          return file.substr(index + 1, file.length);
+        }
+      };
+
+      var _getFolder = function (file) {
+        if (!file) {
+          return '';
+        }
+
+        var index = file.lastIndexOf('/');
+        if (index === -1) {
+          return '';
+        } else {
+          return file.substr(0, index + 1);
+        }
+      };
+
       var _populateAdditionalParams = function (additionalParams, fileUrl,
         file) {
         additionalParams = angular.copy(additionalParams);
@@ -138,7 +164,8 @@ angular.module('risevision.editor.services')
             additionalParams.storage.folder = file.name;
           } else {
             additionalParams.selector.selection = SELECTOR_TYPES.SINGLE_FILE;
-            additionalParams.storage.fileName = file.name;
+            additionalParams.storage.fileName = _getFileName(file.name);
+            additionalParams.storage.folder = _getFolder(file.name);
           }
         } else {
           additionalParams.selector.selection = 'custom';

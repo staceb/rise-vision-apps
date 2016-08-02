@@ -17,7 +17,7 @@ angular.module('risevision.apps.launcher.controllers')
         if (loadingItems === false) {
           $loading.stopGlobal('launcher.loading');
           if (editorFactory.presentations.items.list.length === 0 &&
-            localStorageService.get('launcher.showHelp') == null) {
+            localStorageService.get('launcher.showHelp') === null) {
             localStorageService.set('launcher.showHelp', true);
           }
         }
