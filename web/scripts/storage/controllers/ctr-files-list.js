@@ -59,7 +59,9 @@ angular.module('risevision.storage.controllers')
           if (currentTime - lastClickTime < dblClickDelay) {
             lastClickTime = 0;
 
-            fileSelectorFactory.changeFolder(file);
+            if (storageFactory.fileIsFolder(file)) {
+              fileSelectorFactory.onFileSelect(file);
+            }
           } else {
             lastClickTime = currentTime;
 
@@ -68,8 +70,9 @@ angular.module('risevision.storage.controllers')
               var currentTime = (new Date()).getTime();
 
               if (lastClickTime !== 0 && currentTime - lastClickTime >=
-                dblClickDelay) {
-                fileSelectorFactory.onFileSelect(file);
+                dblClickDelay && !file.currentFolder &&
+                !storageFactory.fileIsTrash(file)) {
+                fileSelectorFactory.folderSelect(file);
               }
             }, dblClickDelay);
           }
@@ -80,7 +83,11 @@ angular.module('risevision.storage.controllers')
             return;
           }
 
-          fileSelectorFactory.onFileSelect(file);
+          if (storageFactory.isSingleFileSelector()) {
+            fileSelectorFactory.onFileSelect(file);
+          } else if (!storageFactory.isSingleFolderSelector()) {
+            fileSelectorFactory.fileCheckToggled(file);
+          }
         }
       };
 
@@ -121,6 +128,17 @@ angular.module('risevision.storage.controllers')
         } else {
           return true;
         }
+      };
+
+      $scope.isNoSelectRow = function (file) {
+        var isFileCases = !storageFactory.fileIsFolder(file) &&
+          storageFactory.isSingleFolderSelector();
+        var isFolderCases = storageFactory.fileIsFolder(file) &&
+          !storageFactory.isSingleFolderSelector() &&
+          !storageFactory.storageFull;
+
+        return file.currentFolder || storageFactory.fileIsTrash(file) ||
+          (isFileCases) || (isFolderCases);
       };
 
     }
