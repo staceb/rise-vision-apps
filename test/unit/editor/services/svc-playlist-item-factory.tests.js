@@ -252,7 +252,7 @@ describe('service: playlistItemFactory:', function() {
 
         expect(placeholderPlaylistFactory.items).to.have.length(2);
 
-        expect(placeholderPlaylistFactory.items[0].name).to.equal('folder/file1');
+        expect(placeholderPlaylistFactory.items[0].name).to.equal('file1');
         expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder/file1","url":"folder/file1"},"storage":{"companyId":null,"fileName":"file1","folder":"folder/"},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
         expect(placeholderPlaylistFactory.items[0].objectData).to.equal('http://someurl.com/gadget.html');
         expect(placeholderPlaylistFactory.items[0].objectReference).to.equal('2707fc05-5051-4d7b-bcde-01fafd6eaa5e');
@@ -321,7 +321,7 @@ describe('service: playlistItemFactory:', function() {
 
         expect(placeholderPlaylistFactory.items).to.have.length(2);
 
-        expect(placeholderPlaylistFactory.items[0].name).to.equal('folder/file1');
+        expect(placeholderPlaylistFactory.items[0].name).to.equal('file1');
         expect(placeholderPlaylistFactory.items[0].playUntilDone).to.be.true;
         expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder/file1","url":"folder/file1"},"url":"","storage":{"companyId":null,"fileName":"file1","folder":"folder/"},"video":{"scaleToFit":true,"volume":50,"controls":true,"autoplay":true,"resume":true,"pause":5}}');
         expect(placeholderPlaylistFactory.items[0].objectData).to.equal('http://someurl.com/gadget.html');
