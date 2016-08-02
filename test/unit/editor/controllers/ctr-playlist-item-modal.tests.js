@@ -39,6 +39,14 @@ describe('controller: playlist item modal', function() {
       }
     });
 
+    $provide.service('placeholderFactory',function(){
+      return {
+        updateSubscriptionStatus: function() {
+          updateSubscriptionStatusCalled = true;
+        }
+      }
+    });
+    
     $provide.service('widgetModalFactory',function(){
       return {
         showWidgetModal: function() {}
@@ -63,7 +71,7 @@ describe('controller: playlist item modal', function() {
 
   }));
   var $scope, $modalInstance, $modalInstanceDismissSpy, itemProperties, itemType, 
-  itemUpdated, presentation;
+  itemUpdated, updateSubscriptionStatusCalled, presentation, showWidgetModalSpy;
 
   describe('Normal checks', function () {
     beforeEach(function(){
@@ -74,6 +82,7 @@ describe('controller: playlist item modal', function() {
       inject(function($injector,$rootScope, $controller){
         itemUpdated = null;
         itemType = 'widget';
+        updateSubscriptionStatusCalled = false;
         $scope = $rootScope.$new();
         $modalInstance = $injector.get('$modalInstance');
 
@@ -83,6 +92,7 @@ describe('controller: playlist item modal', function() {
           $scope: $scope,
           $modalInstance : $modalInstance,
           item: itemProperties,
+          showWidgetModal: false,
           editorFactory: $injector.get('editorFactory')
         });
         $scope.$digest();
@@ -116,6 +126,22 @@ describe('controller: playlist item modal', function() {
       $modalInstanceDismissSpy.should.have.been.called;
     });
 
+    it('should update subscription status on apply',function(){
+      $scope.save();
+
+      expect(updateSubscriptionStatusCalled).to.be.true;
+
+      $modalInstanceDismissSpy.should.have.been.called;
+    });
+
+    it('should update subscription status on apply',function(){
+      $scope.save();
+
+      expect(updateSubscriptionStatusCalled).to.be.true;
+
+      $modalInstanceDismissSpy.should.have.been.called;
+    });
+
     it('should dismiss modal when cancel',function(){
       $scope.dismiss();
       expect(itemUpdated).to.not.be.ok;
@@ -138,6 +164,7 @@ describe('controller: playlist item modal', function() {
       inject(function($injector,$rootScope, $controller){
         itemUpdated = null;
         itemProperties.type = 'gadget';
+        updateSubscriptionStatusCalled = false;
         $scope = $rootScope.$new();
 
         $controller('PlaylistItemModalController', {
@@ -218,5 +245,42 @@ describe('controller: playlist item modal', function() {
       }, 10);
     });
   });
+
+  describe('Widget modal on init: ',function(){
+
+    var _createController = function(showWidgetModal) {
+      inject(function($injector,$rootScope, $controller){
+        $scope = $rootScope.$new();
+
+        var widgetModalFactory = $injector.get('widgetModalFactory');
+        showWidgetModalSpy = sinon.spy(widgetModalFactory, 'showWidgetModal');
+
+        $controller('PlaylistItemModalController', {
+          $scope: $scope,
+          $modalInstance : $modalInstance,
+          item: itemProperties,
+          showWidgetModal: showWidgetModal,
+          editorFactory: $injector.get('editorFactory')
+        });
+      });
+    }
+
+    it('should open widget modal on init if requested', function() {
+      _createController(true);
+      showWidgetModalSpy.should.have.been.called;
+    });
+
+    it('should not open widget modal if not requested', function() {
+      _createController(false);
+      showWidgetModalSpy.should.not.have.been.called;
+    });
+
+    it('should not open widget modal for gadgets', function() {
+      itemProperties.type = 'gadget';
+      _createController(false);
+      showWidgetModalSpy.should.not.have.been.called;
+    });
+  });
+
 
 });

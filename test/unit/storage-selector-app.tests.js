@@ -8,30 +8,27 @@ describe('app: storage-selector-app:', function() {
             $provide.factory('storageFactory', function() {
               return {
                 storageIFrame: false,
-                storageFull: true,
-                setSelectorType: function() {
-                  selectorInitialized = true;
-                }
+                storageFull: true
               };
             });
         });
         inject(function ($injector) {
-            storageFactory = $injector.get('storageFactory');            
+            storageFactory = $injector.get('storageFactory');
         });
     });
 
-  var storageFactory, selectorInitialized;
+  var storageFactory;
   
-  it('should set flag it is an iframe',function (){
+  it('should set flag it is an iframe',function(){
     expect(storageFactory.storageIFrame).to.be.true;
   });
   
-  it('should set flag it is a modal',function (){
+  it('should set flag it is a modal',function(){
     expect(storageFactory.storageFull).to.be.false;
   });
 
-  it('should setSelectorType', function (){
-    expect(selectorInitialized).to.be.true;
+  it('should default to single file selector', function(){
+    expect(storageFactory.selectorType).to.equal('single-file');
   }); 
 
 });
