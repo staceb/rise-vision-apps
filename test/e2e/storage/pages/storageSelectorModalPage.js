@@ -9,6 +9,8 @@ var StorageSelectorModalPage = function() {
   var uploadFolderButton = element(by.id('uploadFolderButton'));
   var uploadInput = element(by.id('upload-files'));
   var uploadPanel = element(by.css('.upload-panel'));
+  var selectFilesButton = element(by.id('selectFilesButton'));
+  var byURLButton = element(by.id('byURLButton'));
   var closeButton = element(by.id('closeButton'));
 
   this.getStorageSelectorModal = function() {
@@ -41,6 +43,14 @@ var StorageSelectorModalPage = function() {
 
   this.getUploadInput = function() {
     return uploadInput;
+  };
+  
+  this.getSelectFilesButton = function() {
+    return selectFilesButton;
+  };
+
+  this.getByURLButton = function() {
+    return byURLButton;
   };
 
   this.getUploadPanel = function() {
