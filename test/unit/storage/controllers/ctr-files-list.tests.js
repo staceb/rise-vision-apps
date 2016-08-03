@@ -244,4 +244,35 @@ describe('controller: Files List', function() {
 
   });
 
+  describe('isEmptyState:', function(){
+
+    beforeEach(function() {
+      $scope.storageFactory.folderPath = '';
+      $scope.storageFactory.storageFull = false;
+      $scope.trialAvailable = false;
+      $scope.fileUploader.queue = [];
+    });
+
+    it('should be true if list is empty',function(){     
+      expect($scope.isEmptyState()).to.be.true;
+    });
+
+    it('should hide empty state when uploading files',function(){
+      $scope.fileUploader.queue = [{}];
+      expect($scope.isEmptyState()).to.be.false;
+    });
+
+    it('should be false if trial is available',function(){
+      $scope.trialAvailable = true;
+      expect($scope.isEmptyState()).to.be.false;
+    });
+
+    it('should be false if file list is not empty',function(){
+      $scope.filesDetails.files.push({name: 'aa'});
+      expect($scope.isEmptyState()).to.be.false;
+    });
+
+
+  });
+
 });

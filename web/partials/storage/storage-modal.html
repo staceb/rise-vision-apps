@@ -8,50 +8,35 @@
 
   <div class="modal-body storage-full" stop-event="touchend">
     <div class="padding-large-horizontal padding-large-bottom">
-      <div class="app-header">
-        <div ng-controller="SubscriptionStatusController" class="add-left add-right">
-          <div id="subscription-status" subscription-status
-               product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
-               ng-model="subscriptionStatus.result" show-store-modal="showStoreModal" expanded-format="true">
-          </div>
+
+      <ng-include src="'partials/storage/global-actions.html'"></ng-include>	  
+
+      <div ng-controller="SubscriptionStatusController" class="add-top">
+        <div id="subscription-status" subscription-status
+             product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
+             ng-model="subscriptionStatus.result" show-store-modal="showStoreModal" expanded-format="true">
         </div>
-        
-        <div class="title-block"></div>
-        <ng-include src="'partials/storage/global-actions.html'"></ng-include>	  
-
-        <ng-include src="'partials/storage/upload-panel.html'"></ng-include>
-
-    	</div><!--app-header-->
-
-      <div class="container ng-scope" id="fileinspector_noFiles" ng-show="statusDetails.code!==202 && !isFileListVisible() && !trialAvailable && fileUploader.queue.length === 0">    
-        <div class="product-graphic">
-          <svg-icon p="riseStorage"></svg-icon>
-        </div>
-        <div class="file-empty-state">
-          <br/>
-          <p>You haven't added files yet!</p>
-          <br>
-          <span> Select 
-            <button type="button" class="btn btn-link" title="Upload" disabled="disabled">
-              <i class="fa fa-cloud-upload fa-2x"></i>
-            </button>
-            above to upload a file,<br>
-            or 
-            <button type="button" class="btn btn-link" title="Add Folder" disabled="disabled">
-              <svg-icon p="iconNewFolder"></svg-icon>
-            </button>
-            to create a folder.
-          </span>
-        </div>    
       </div>
 
-      <search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable && isFileListVisible()"></search-filter>
+      <ng-include src="'partials/storage/upload-panel.html'"></ng-include>
+
+      <div class="row add-top" ng-show="!trialAvailable && isFileListVisible()">
+        <div class="col-sm-6">
+          <ng-include src="'partials/storage/breadcrumb.html'"></ng-include>
+        </div>
+        <div class="col-sm-6">
+          <search-filter filter-config="filterConfig" search="search" do-search="search.doSearch"></search-filter>
+        </div>
+      </div>
 
       <ng-include src="'partials/storage/files-list.html'" ng-show="isFileListVisible()"></ng-include>
+
+      <ng-include src="'partials/storage/empty-state.html'" ng-show="isEmptyState()"></ng-include>
     	
       <ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
   	</div><!--padding-->
   </div><!--modal-body-->
+
   <div class="modal-footer padding-large">
     <div ng-show="storageFactory.isMultipleSelector()">
       <button type="button" id="byURLButton" title="select" class="btn btn-primary pull-left" ng-show="enableByURL" ng-click="select()">

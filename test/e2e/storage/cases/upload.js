@@ -14,16 +14,9 @@ var UploadScenarios = function() {
   
     var describeUpload = function () {
 
-      it('should show upload dropdown', function() {
-        helper.wait(storageSelectorModalPage.getUploadDropdown(), 'Upload dropdown');
-        browser.sleep(500);
-        storageSelectorModalPage.getUploadDropdown().click();
-        helper.wait(storageSelectorModalPage.getUploadButton(), 'Upload Button');
-        
+      it('should show upload button', function() {
         expect(storageSelectorModalPage.getUploadButton().isDisplayed()).to.eventually.be.true;
         expect(storageSelectorModalPage.getUploadFolderButton().isDisplayed()).to.eventually.be.true;
-        
-        storageSelectorModalPage.getUploadDropdown().click();
       });
 
       it('should upload file', function(){

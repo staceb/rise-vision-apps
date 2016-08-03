@@ -123,5 +123,10 @@ angular.module('risevision.storage.controllers')
         }
       };
 
+      $scope.isEmptyState = function () {
+        return $scope.statusDetails.code !== 202 && !$scope.isFileListVisible() &&
+          !$scope.trialAvailable && $scope.fileUploader.queue.length === 0;
+      };
+
     }
   ]);

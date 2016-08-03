@@ -3,8 +3,8 @@ var StorageHomePage = function() {
   var storageAppContainer = element(by.css('.storage-app'));
 
   var newFolderButton = element(by.id('newFolderButton'));
-  var uploadDropdown = element(by.id('uploadDropdown'));
   var uploadButton = element(by.id('uploadButton'));
+  var uploadFolderButton = element(by.id('uploadFolderButton'));
   var uploadInput = element(by.id('upload-files'));
   var uploadPanel = element(by.css('.upload-panel'));
   
@@ -29,12 +29,12 @@ var StorageHomePage = function() {
     return newFolderButton;
   };  
 
-  this.getUploadDropdown = function() {
-    return uploadDropdown;
-  };
-
   this.getUploadButton = function() {
     return uploadButton;
+  };
+
+  this.getUploadFolderButton = function() {
+    return uploadFolderButton;
   };
 
   this.getUploadInput = function() {

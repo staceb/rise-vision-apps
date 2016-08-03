@@ -48,7 +48,8 @@ var HomeScenarios = function() {
 
       it('should show action buttons',function(){
         expect(storageHomePage.getNewFolderButton().isDisplayed()).to.eventually.be.true;
-        expect(storageHomePage.getUploadDropdown().isDisplayed()).to.eventually.be.true;
+        expect(storageHomePage.getUploadButton().isDisplayed()).to.eventually.be.true;
+        expect(storageHomePage.getUploadFolderButton().isDisplayed()).to.eventually.be.true;
       });
 
       it('should show search input',function(){
