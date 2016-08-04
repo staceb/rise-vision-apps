@@ -1,0 +1,4 @@
+<div class="btn-group pull-right" ng-init="gridView=true">
+	<a class="btn btn-default" ng-class="{active: gridView}" ng-click="gridView=true" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed"><i class="fa fa-lg fa-th-large"></i></a>
+	<a class="btn btn-default" ng-class="{active: !gridView}" ng-click="gridView=false" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed"><i class="fa fa-lg fa-th-list"></i></a>
+</div>

@@ -9,7 +9,11 @@
   <div class="modal-body storage-full" stop-event="touchend">
     <div class="padding-large-horizontal padding-large-bottom">
 
-      <ng-include src="'partials/storage/global-actions.html'"></ng-include>	  
+      <div ng-show="!trialAvailable">
+        <ng-include src="'partials/storage/global-actions.html'"></ng-include>
+        <ng-include src="'partials/storage/list-grid-toggle.html'"></ng-include>
+      </div>
+
 
       <div ng-controller="SubscriptionStatusController" class="add-top">
         <div id="subscription-status" subscription-status

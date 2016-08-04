@@ -1,20 +1,13 @@
-<div ng-show="!trialAvailable">
-  <button id="newFolderButton" class="btn btn-default" ng-click="storageFactory.addFolder()" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
-    <span translate>storage-client.new-folder</span>
-  </button>
 
-  <label id="uploadButton" class="btn btn-primary" for="upload-files" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
-    <span translate>storage-client.upload-files</span>
-  </label>
+<button id="newFolderButton" class="btn btn-default" ng-click="storageFactory.addFolder()" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
+  <span translate>storage-client.new-folder</span>
+</button>
 
-  <label id="uploadFolderButton" class="btn btn-primary"  for="upload-folder" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
-    <span translate>storage-client.upload-folder</span>
-    <i class="fa fa-folder icon-right"></i>
-  </label>
+<label id="uploadButton" class="btn btn-primary" for="upload-files" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
+  <span translate>storage-client.upload-files</span>
+</label>
 
-  <div class="btn-group pull-right" ng-init="gridView=true">
-    <a class="btn btn-default" ng-class="{active: gridView}" ng-click="gridView=true" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed"><i class="fa fa-lg fa-th-large"></i></a>
-    <a class="btn btn-default" ng-class="{active: !gridView}" ng-click="gridView=false" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed"><i class="fa fa-lg fa-th-list"></i></a>
-  </div>
-  
-</div>
+<label id="uploadFolderButton" class="btn btn-primary"  for="upload-folder" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
+  <span translate>storage-client.upload-folder</span>
+  <i class="fa fa-folder icon-right"></i>
+</label>
