@@ -26,15 +26,15 @@
 
 	<div ng-controller="FileActionsController">
 		<div class="row add-top" ng-show="!trialAvailable && isFileListVisible()">
-			<div class="col-sm-7">
-			  <ng-include src="'partials/storage/breadcrumb.html'"></ng-include>
+			<div class="col-sm-8">
+			  <!-- <ng-include src="'partials/storage/list-grid-toggle.html'"></ng-include> -->
+          	  <storage-breadcrumb></storage-breadcrumb>
 			</div>
-			<div class="col-sm-5" ng-show="filesDetails.bucketExists">
+			<div class="col-sm-4" ng-show="filesDetails.bucketExists">
 				<div id="files-toolbar" ng-hide="fileListStatus.code === 404">
 					<div class="pull-right">
 						<div class="icon-nav">
 					        <ng-include src="'partials/storage/file-actions.html'"></ng-include>
-					        <ng-include src="'partials/storage/list-grid-toggle.html'"></ng-include>
 			      		</div>
 			   	 	</div>
 			  	</div>

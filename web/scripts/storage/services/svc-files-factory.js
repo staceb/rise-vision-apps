@@ -68,30 +68,20 @@ angular.module('risevision.storage.services')
         function processFilesResponse(resp) {
           var TRASH = '--TRASH--/';
           var parentFolder = decodeURIComponent(storageFactory.folderPath);
-          var parentFolderFound = false;
+          var parentFolderIndex = null;
 
           resp.files = resp.files || [];
-          resp.empty = resp.files.length === 0;
 
           for (var i = 0; i < resp.files.length; i++) {
             var file = resp.files[i];
 
             if (file.name === parentFolder) {
-              parentFolderFound = true;
-              file.currentFolder = true;
-              delete file.size;
-              delete file.updated;
+              parentFolderIndex = i;
               break;
             }
           }
-
-          if (!parentFolderFound && storageFactory.folderPath) {
-            resp.files.unshift({
-              name: parentFolder,
-              currentFolder: true,
-              size: '',
-              updated: null
-            });
+          if (parentFolderIndex !== null) {
+            resp.files.splice(parentFolderIndex, 1);
           }
 
           svc.filesDetails.bucketExists = resp.bucketExists;

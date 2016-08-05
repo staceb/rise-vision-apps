@@ -15,6 +15,8 @@ var StorageHomePage = function() {
   var deleteForeverButton = element(by.id('deleteForeverButton'));
   var confirmDeleteButton = element(by.id('confirmForm')).element(by.buttonText('Delete Forever'));
 
+  var breadcrumbs = element.all(by.css('.breadcrumb li a'));
+
   var pendingOperationsPanel = element(by.id('pendingOperationsPanel'));
 
   this.getStorageAppContainer = function() {
@@ -28,6 +30,10 @@ var StorageHomePage = function() {
   this.getNewFolderButton = function() {
     return newFolderButton;
   };  
+
+  this.getBreadcrumbs = function() {
+    return breadcrumbs;
+  }
 
   this.getUploadButton = function() {
     return uploadButton;

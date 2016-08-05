@@ -44,7 +44,6 @@ describe('service: storageFactory:', function() {
     expect(storageFactory.isFolderSelector).to.be.a('function');
     expect(storageFactory.canSelect).to.be.a('function');
     expect(storageFactory.isDisabled).to.be.a('function');
-    expect(storageFactory.fileIsCurrentFolder).to.be.a('function');
     expect(storageFactory.fileIsFolder).to.be.a('function');
     expect(storageFactory.fileIsTrash).to.be.a('function');
     expect(storageFactory.isTrashFolder).to.be.a('function');
@@ -178,19 +177,12 @@ describe('service: storageFactory:', function() {
     expect(storageFactory.getFolderSelfLinkUrl()).to.equal('https://www.googleapis.com/storage/v1/b/risemedialibrary-companyId/o?prefix=');
   });
 
-  it('fileIsCurrentFolder: ', function() {
-    storageFactory.folderPath = '';
-    expect(storageFactory.fileIsCurrentFolder({name: 'someFolder/'})).to.be.false;
-    
-    storageFactory.folderPath = 'someFolder/';
-    expect(storageFactory.fileIsCurrentFolder({name: 'someFolder/'})).to.be.true;
-  });
-
   it('fileIsFolder: ', function() {
     expect(storageFactory.fileIsFolder({name: '--TRASH--/'})).to.be.true;
     expect(storageFactory.fileIsFolder({name: 'someFolder/'})).to.be.true;
     expect(storageFactory.fileIsFolder({name: 'someFolder/image.jpg'})).to.be.false;
     expect(storageFactory.fileIsFolder({name: 'image.jpg'})).to.be.false;
+    expect(storageFactory.fileIsFolder({name: ''})).to.be.true;
   });
   
   it('fileIsTrash: ', function() {
