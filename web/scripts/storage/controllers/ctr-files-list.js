@@ -115,12 +115,16 @@ angular.module('risevision.storage.controllers')
         if (!storageFactory.storageFull && (!$scope.currentDecodedFolder() ||
             $scope.currentDecodedFolder() === '/')) {
           return $scope.filesDetails.files.filter(function (f) {
-            return !storageFactory.fileIsTrash(f) &&
-              !storageFactory.fileIsCurrentFolder(f);
+            return !storageFactory.fileIsTrash(f);
           }).length > 0;
         } else {
           return true;
         }
+      };
+
+      $scope.isEmptyState = function () {
+        return $scope.statusDetails.code !== 202 && !$scope.isFileListVisible() &&
+          !$scope.trialAvailable && $scope.fileUploader.queue.length === 0;
       };
 
     }

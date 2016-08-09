@@ -104,10 +104,7 @@ var TrashScenarios = function() {
       it('should show restored file in files list',function(){
         filesListPage.getSearchInput().clear();
         // go back to root folder
-        browser.actions()
-        .click(filesListPage.getFileItems().get(0))
-        .click(filesListPage.getFileItems().get(0))
-        .perform();
+        storageHomePage.getBreadcrumbs().get(0).click();
 
         helper.waitDisappear(filesListPage.getFilesListLoader(), 'Files Loader');
 

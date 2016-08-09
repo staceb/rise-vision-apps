@@ -7,11 +7,11 @@
 
     <div class="content-box-body ng-scope">
       <div class="product-intro">
-        <h1>Storage</h1>
-        <p class="lead"><strong>Manage and deliver media to your digital signage displays, anywhere, anytime.</strong></p>
-        <p class="lead">Free 30 days trial. No credit card required.</p>
-        <p class="lead">$10 per Company per Month.</p>
-        <button type="button" class="btn btn-hg btn-primary" ng-click="filesFactory.startTrial()">Start Your Free Trial</button>
+        <h1 translate>storage-client.header</h1>
+        <p class="lead"><strong translate>storage-client.start-trial.tagline</strong></p>
+        <p class="lead" translate>storage-client.start-trial.free-30-days</p>
+        <p class="lead" translate>storage-client.start-trial.price</p>
+        <button type="button" class="btn btn-hg btn-primary" ng-click="filesFactory.startTrial()">{{ 'storage-client.start-trial.cta' | translate}}</button>
       </div>
     </div>    
   </div>

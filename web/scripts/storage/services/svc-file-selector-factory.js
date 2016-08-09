@@ -38,8 +38,7 @@ angular.module('risevision.storage.services')
         for (var i = 0; i < filesFactory.filesDetails.files.length; ++i) {
           var file = filesFactory.filesDetails.files[i];
 
-          if (storageFactory.fileIsCurrentFolder(file) ||
-            storageFactory.fileIsTrash(file) ||
+          if (storageFactory.fileIsTrash(file) ||
             (storageFactory.fileIsFolder(file) &&
               !storageFactory.isFolderSelector())) {
             continue;
@@ -115,18 +114,9 @@ angular.module('risevision.storage.services')
         if (storageFactory.fileIsFolder(folder)) {
           factory.resetSelections();
 
-          if (storageFactory.fileIsCurrentFolder(folder)) {
-            var folderPath = storageFactory.folderPath.split('/');
-            folderPath = folderPath.length > 2 ?
-              folderPath.slice(0, -2).join('/') + '/' : '';
-
-            storageFactory.folderPath = folderPath;
-          } else {
-            storageFactory.folderPath = folder.name;
-          }
+          storageFactory.folderPath = folder.name;
 
           filesFactory.refreshFilesList();
-
         }
       };
 

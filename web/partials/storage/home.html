@@ -1,33 +1,53 @@
 <div class="container storage-full" ng-controller="FilesListController">
-	<div class="app-header" ng-show="!trialAvailable">		
-		<div class="title-block">
-			<h1 id="title" translate>storage-client.header</h1>
+
+	<div class="app-header row" ng-show="!trialAvailable">
+		<div class="col-sm-5">
+			<div class="title-block">
+				<h1 id="title" translate>storage-client.header</h1>
+			</div>	
 		</div>
-
-		<ng-include src="'partials/storage/global-actions.html'"></ng-include>
-
-		<div style="clear: both;"></div>
-		<div ng-controller="SubscriptionStatusController" class="add-left add-right half-top">
-			<div id="subscription-status" subscription-status
-			product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
-			ng-model="subscriptionStatus.result" show-store-modal="showStoreModal" expanded-format="true"></div>
+		<div class="col-sm-7">
+			<div class="pull-right">
+				<ng-include src="'partials/storage/global-actions.html'"></ng-include>	
+			</div>			
 		</div>
-
-
-		<ng-include src="'partials/storage/upload-panel.html'"></ng-include>
-
-	</div>  <!--app-header-->
-
-	<search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable"></search-filter>
-
-	<div ng-show="filesDetails.bucketExists">
-    <ng-include src="'partials/storage/file-actions.html'"></ng-include>
-  </div>
-
-	<ng-include src="'partials/storage/files-list.html'"></ng-include>
-
-	<div ng-show="trialAvailable">
-		<ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
+	</div>
+	
+	<div ng-controller="SubscriptionStatusController">
+		<div id="subscription-status" subscription-status
+		product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
+		ng-model="subscriptionStatus.result" show-store-modal="showStoreModal" expanded-format="true"></div>
 	</div>
 
-</div><!--padding-->
+	<ng-include src="'partials/storage/upload-panel.html'"></ng-include>
+	
+	<search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable && isFileListVisible()"></search-filter>
+
+
+	<div ng-controller="FileActionsController">
+		<div class="row add-top" ng-show="!trialAvailable && isFileListVisible()">
+			<div class="col-sm-8">
+			  <!-- <ng-include src="'partials/storage/list-grid-toggle.html'"></ng-include> -->
+          	  <storage-breadcrumb></storage-breadcrumb>
+			</div>
+			<div class="col-sm-4" ng-show="filesDetails.bucketExists">
+				<div id="files-toolbar" ng-hide="fileListStatus.code === 404">
+					<div class="pull-right">
+						<div class="icon-nav">
+					        <ng-include src="'partials/storage/file-actions.html'"></ng-include>
+			      		</div>
+			   	 	</div>
+			  	</div>
+			</div>
+		</div>
+		<ng-include src="'partials/storage/pending-operations-panel.html'"></ng-include>
+	</div>
+
+
+	<ng-include src="'partials/storage/files-list.html'" ng-show="isFileListVisible()"></ng-include>
+
+	<ng-include src="'partials/storage/empty-state.html'" ng-show="isEmptyState()"></ng-include>
+
+	<ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
+
+</div>

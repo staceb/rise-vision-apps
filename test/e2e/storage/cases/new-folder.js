@@ -19,7 +19,7 @@ var NewFolderScenarios = function() {
         helper.wait(newFolderModalPage.getNewFolderModal(), 'New Folder Modal');
 
         expect(newFolderModalPage.getNewFolderModal().isDisplayed()).to.eventually.be.true;
-        expect(newFolderModalPage.getModalTitle().getText()).to.eventually.equal('Add Folder');
+        expect(newFolderModalPage.getModalTitle().getText()).to.eventually.equal('Create Folder');
       });
 
       it('should contain new folder form', function(){

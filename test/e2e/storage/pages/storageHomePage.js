@@ -3,8 +3,8 @@ var StorageHomePage = function() {
   var storageAppContainer = element(by.css('.storage-app'));
 
   var newFolderButton = element(by.id('newFolderButton'));
-  var uploadDropdown = element(by.id('uploadDropdown'));
   var uploadButton = element(by.id('uploadButton'));
+  var uploadFolderButton = element(by.id('uploadFolderButton'));
   var uploadInput = element(by.id('upload-files'));
   var uploadPanel = element(by.css('.upload-panel'));
   
@@ -14,6 +14,8 @@ var StorageHomePage = function() {
   var restoreFromTrashButton = element(by.id('restoreFromTrashButton'));
   var deleteForeverButton = element(by.id('deleteForeverButton'));
   var confirmDeleteButton = element(by.id('confirmForm')).element(by.buttonText('Delete Forever'));
+
+  var breadcrumbs = element.all(by.css('.breadcrumb li a'));
 
   var pendingOperationsPanel = element(by.id('pendingOperationsPanel'));
 
@@ -29,12 +31,16 @@ var StorageHomePage = function() {
     return newFolderButton;
   };  
 
-  this.getUploadDropdown = function() {
-    return uploadDropdown;
-  };
+  this.getBreadcrumbs = function() {
+    return breadcrumbs;
+  }
 
   this.getUploadButton = function() {
     return uploadButton;
+  };
+
+  this.getUploadFolderButton = function() {
+    return uploadFolderButton;
   };
 
   this.getUploadInput = function() {

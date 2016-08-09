@@ -224,9 +224,8 @@ describe('controller: Files List', function() {
       expect($scope.isFileListVisible()).to.be.false;
     });
     
-    it('hidden if Trash & current folder are only files', function() {
+    it('hidden if Trash is the only file', function() {
       $scope.filesDetails.files.push({name: '--TRASH--/'});
-      $scope.filesDetails.files.push({name: ''});
       expect($scope.isFileListVisible()).to.be.false;
     });
 
@@ -241,6 +240,37 @@ describe('controller: Files List', function() {
 
       expect($scope.isFileListVisible()).to.be.true;
     });
+
+  });
+
+  describe('isEmptyState:', function(){
+
+    beforeEach(function() {
+      $scope.storageFactory.folderPath = '';
+      $scope.storageFactory.storageFull = false;
+      $scope.trialAvailable = false;
+      $scope.fileUploader.queue = [];
+    });
+
+    it('should be true if list is empty',function(){     
+      expect($scope.isEmptyState()).to.be.true;
+    });
+
+    it('should hide empty state when uploading files',function(){
+      $scope.fileUploader.queue = [{}];
+      expect($scope.isEmptyState()).to.be.false;
+    });
+
+    it('should be false if trial is available',function(){
+      $scope.trialAvailable = true;
+      expect($scope.isEmptyState()).to.be.false;
+    });
+
+    it('should be false if file list is not empty',function(){
+      $scope.filesDetails.files.push({name: 'aa'});
+      expect($scope.isEmptyState()).to.be.false;
+    });
+
 
   });
 

@@ -1,25 +1,13 @@
-<div class="global-actions" ng-show="!trialAvailable">
-  <button id="newFolderButton" class="btn btn-lg btn-default" ng-click="storageFactory.addFolder()" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
-    <span translate>storage-client.new-folder</span>
-    <svg-icon p="iconNewFolder"></svg-icon>
-  </button>
-  
-  <!-- Simple dropdown -->
-  <div id="uploadDropdown" class="btn-group" dropdown on-toggle="toggled(open)">
-    <label class="btn btn-primary btn-lg dropdown-toggle" dropdown-toggle ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed || statusDetails.code !== 200">
-      <span translate="storage-client.upload"></span> <i class="fa fa-cloud-upload fa-lg icon-right"></i>
-    </label>
-    <ul class="dropdown-menu">
-      <li>
-        <label id="uploadButton" for="upload-files">
-          <span translate="storage-client.upload-files"></span>
-        </label>
-      </li>
-      <li>
-        <label id="uploadFolderButton" for="upload-folder">
-          <span translate="storage-client.upload-folder"></span>
-        </label>
-      </li>
-    </ul>
-  </div>
-</div>
+
+<button id="newFolderButton" class="btn btn-default" ng-click="storageFactory.addFolder()" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
+  <span translate>storage-client.new-folder</span>
+</button>
+
+<label id="uploadButton" class="btn btn-primary" for="upload-files" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
+  <span translate>storage-client.upload-files</span>
+</label>
+
+<label id="uploadFolderButton" class="btn btn-primary"  for="upload-folder" ng-disabled="storageFactory.isTrashFolder() || !subscriptionStatus.subscribed">
+  <span translate>storage-client.upload-folder</span>
+  <i class="fa fa-folder icon-right"></i>
+</label>

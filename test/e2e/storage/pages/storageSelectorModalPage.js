@@ -4,7 +4,6 @@ var StorageSelectorModalPage = function() {
   var modalTitle = element(by.css('.modal-title'));
 
   var newFolderButton = element(by.id('newFolderButton'));
-  var uploadDropdown = element(by.id('uploadDropdown'));
   var uploadButton = element(by.id('uploadButton'));
   var uploadFolderButton = element(by.id('uploadFolderButton'));
   var uploadInput = element(by.id('upload-files'));
@@ -28,10 +27,6 @@ var StorageSelectorModalPage = function() {
   this.getNewFolderButton = function() {
     return newFolderButton;
   };  
-
-  this.getUploadDropdown = function() {
-    return uploadDropdown;
-  };
 
   this.getUploadButton = function() {
     return uploadButton;
