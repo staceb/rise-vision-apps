@@ -115,8 +115,7 @@ angular.module('risevision.storage.controllers')
         if (!storageFactory.storageFull && (!$scope.currentDecodedFolder() ||
             $scope.currentDecodedFolder() === '/')) {
           return $scope.filesDetails.files.filter(function (f) {
-            return !storageFactory.fileIsTrash(f) &&
-              !storageFactory.fileIsCurrentFolder(f);
+            return !storageFactory.fileIsTrash(f);
           }).length > 0;
         } else {
           return true;

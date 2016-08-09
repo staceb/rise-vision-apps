@@ -224,9 +224,8 @@ describe('controller: Files List', function() {
       expect($scope.isFileListVisible()).to.be.false;
     });
     
-    it('hidden if Trash & current folder are only files', function() {
+    it('hidden if Trash is the only file', function() {
       $scope.filesDetails.files.push({name: '--TRASH--/'});
-      $scope.filesDetails.files.push({name: ''});
       expect($scope.isFileListVisible()).to.be.false;
     });
 

@@ -74,7 +74,7 @@ describe('service: filesFactory:', function() {
       });
     });
     
-    it('should load sub-folder files', function(done) {
+    it('should load sub-folder files and not list current folder', function(done) {
       storageFactory.folderPath = 'folder/';
       filesResponse.files = [{name: 'folder/'},
         { name: 'folder/file1.txt' },
@@ -84,15 +84,15 @@ describe('service: filesFactory:', function() {
       filesFactory.refreshFilesList();
 
       setTimeout(function() {
-        expect(filesFactory.filesDetails.files.length).to.equal(4);
-        expect(filesFactory.filesDetails.files[0].name).to.equal('folder/');
-        expect(filesFactory.filesDetails.files[0].currentFolder).to.be.true;
+        expect(filesFactory.filesDetails.files.length).to.equal(3);
+        expect(filesFactory.filesDetails.files[0].name).to.equal('folder/file1.txt');
+        expect(filesFactory.filesDetails.files[0].currentFolder).to.be.undefined;
         
         done();
       })
     });
     
-    it('should add parent folder to sub-folder files', function(done) {
+    it('should not add parent folder to sub-folder files', function(done) {
       storageFactory.folderPath = 'folder/';
       filesResponse.files = [{ name: 'folder/file1.txt' },
         { name: 'folder/file2.txt' },
@@ -101,9 +101,9 @@ describe('service: filesFactory:', function() {
       filesFactory.refreshFilesList();
 
       setTimeout(function() {
-        expect(filesFactory.filesDetails.files.length).to.equal(4);
-        expect(filesFactory.filesDetails.files[0].name).to.equal('folder/');
-        expect(filesFactory.filesDetails.files[0].currentFolder).to.be.true;
+        expect(filesFactory.filesDetails.files.length).to.equal(3);
+        expect(filesFactory.filesDetails.files[0].name).to.equal('folder/file1.txt');
+        expect(filesFactory.filesDetails.files[0].currentFolder).to.be.undefined;
         
         done();
       })

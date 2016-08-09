@@ -225,7 +225,7 @@ describe('service: fileSelectorFactory:', function() {
     
     it('should navigate to parent folder', function() {
       storageFactory.folderPath = filesFactory.filesDetails.files[3].name;
-      fileSelectorFactory.changeFolder(filesFactory.filesDetails.files[3]);
+      fileSelectorFactory.changeFolder({name:''});
 
       expect(storageFactory.folderPath).to.be.equal('');
     });

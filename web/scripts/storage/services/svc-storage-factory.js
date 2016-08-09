@@ -103,7 +103,7 @@ angular.module('risevision.storage.services')
       };
 
       factory.canSelect = function (file) {
-        return !file.currentFolder && !factory.fileIsTrash(file) &&
+        return !factory.fileIsTrash(file) &&
           (factory.fileIsFolder(file) && factory.isFolderSelector() ||
             !factory.fileIsFolder(file) && factory.isFileSelector()) &&
           !_isFilteredFile(file);
@@ -114,12 +114,8 @@ angular.module('risevision.storage.services')
           !factory.fileIsFolder(file) && !factory.isFileSelector();
       };
 
-      factory.fileIsCurrentFolder = function (file) {
-        return file.name === factory.folderPath;
-      };
-
       factory.fileIsFolder = function (file) {
-        return file.name.substr(-1) === '/';
+        return file.name.substr(-1) === '/' || file.name === '';
       };
 
       factory.fileIsTrash = function (file) {
