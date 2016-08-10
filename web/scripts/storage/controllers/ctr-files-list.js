@@ -13,6 +13,11 @@ angular.module('risevision.storage.controllers')
       $scope.fileSelectorFactory = fileSelectorFactory;
       $scope.filesFactory = filesFactory;
       $scope.fileUploader = FileUploader;
+      $scope.isListView = false;
+
+      $scope.toggleListView = function () {
+        $scope.isListView = !$scope.isListView;
+      }
 
       $scope.filterConfig = {
         placeholder: 'Search for files or folders',

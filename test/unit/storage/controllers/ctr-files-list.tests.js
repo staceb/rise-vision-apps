@@ -33,7 +33,7 @@ describe('controller: Files List', function() {
           return file.name.substr(-1) === '/';
         },
         fileIsTrash: function (file) {
-          return file.name === '--TRASH--/';
+          return file.name === '--TRASH--/';       
         }
       };
     });
@@ -85,6 +85,7 @@ describe('controller: Files List', function() {
     expect($scope.fileSelectorFactory).to.be.ok;
     expect($scope.filterConfig).to.be.ok;
     expect($scope.fileUploader).to.be.ok;    
+    expect($scope.isListView).to.be.false;
 
     expect($scope.filesDetails).to.be.ok;
     expect($scope.bucketCreationStatus).to.be.ok;
@@ -210,7 +211,15 @@ describe('controller: Files List', function() {
     expect($scope.fileSizeOrderFunction({size: 20})).to.equal(20);
     expect($scope.fileSizeOrderFunction({size: 'i'})).to.be.NaN;
     expect($scope.fileSizeOrderFunction({})).to.equal(0);
-  })
+  });
+
+  it('toggleListView:' ,function(){
+    expect($scope.isListView).to.be.false;
+    $scope.toggleListView();
+    expect($scope.isListView).to.be.true;
+    $scope.toggleListView();
+    expect($scope.isListView).to.be.false;
+  });
 
   describe('isFileListVisible: ', function() {
     beforeEach(function() {

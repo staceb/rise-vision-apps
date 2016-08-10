@@ -116,8 +116,6 @@ angular.module('risevision.apps.controllers', []);
 angular.module('risevision.storage.services', [
   'risevision.common.components.userstate'
 ]);
-angular.module('risevision.storage.directives', [
-  'ui.bootstrap'
-]);
+angular.module('risevision.storage.directives', []);
 angular.module('risevision.storage.controllers', []);
 angular.module('risevision.storage.filters', ['risevision.common.i18n']);

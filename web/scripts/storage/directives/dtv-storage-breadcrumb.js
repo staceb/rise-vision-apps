@@ -2,7 +2,6 @@
 
   'use strict';
 
-  angular.module('risevision.widget.common.storage-selector', []);
   angular.module('risevision.storage.directives')
     .directive('storageBreadcrumb', ['fileSelectorFactory', 'storageFactory',
       '$filter', '$window',

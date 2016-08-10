@@ -3,7 +3,7 @@
 /* global sinon */
 
 describe("controller: Upload", function() {
-    var UploadController, scope, storageFactory;
+    var UploadController, scope, storageFactory, storage;
     var FileUploader = {}, UploadURIService = {};
     var $stateParams = { folderPath: "" };
     
@@ -37,6 +37,16 @@ describe("controller: Upload", function() {
         $provide.factory("storageFactory", function() {
           return {}
         });
+
+        $provide.factory("storage", function() {
+          return {
+            files: {
+              get: function() {
+                return Q.when({file:"file.jpg"})
+              }
+            }
+          }
+        });
         
         $provide.factory("XHRFactory", function() {
           return {
@@ -66,6 +76,7 @@ describe("controller: Upload", function() {
 
         $httpBackend.whenGET(/\.*/).respond(200, {});
         FileUploader = $injector.get("FileUploader");
+        storage = $injector.get("storage");
         storageFactory = $injector.get("storageFactory");
         $stateParams = {};
 
@@ -189,8 +200,18 @@ describe("controller: Upload", function() {
     });
 
     describe('onCompleteItem:',function(){
+      it('should request file metadata',function(){
+        var spy = sinon.spy(storage.files,'get');
+        var file1 = { name: 'fileName' };
+        var item = {isSuccess: true, file:file1};
 
-      it('should remove item on completed',function(){
+        scope.activeUploadCount = function() {return 1};
+        FileUploader.onCompleteItem(item);
+        
+        spy.should.have.been.calledWith({file:file1.name});      
+      });
+
+      it('should remove item on completed',function(done){
         var spy = sinon.spy(FileUploader,'removeFromQueue');
         var file1 = { name: 'fileName' };
         var item = {isSuccess: true, file:file1};
@@ -198,8 +219,11 @@ describe("controller: Upload", function() {
         scope.activeUploadCount = function() {return 1};
         FileUploader.onCompleteItem(item);
 
-        spy.should.have.been.calledWith(item);
-        expect(scope.completed).to.contain(item.file.name);        
+        setTimeout(function() {
+          spy.should.have.been.calledWith(item);
+          expect(scope.completed).to.contain(item.file.name); 
+          done();
+        }, 10);               
       });      
     });
 });

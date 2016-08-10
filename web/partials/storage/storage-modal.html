@@ -24,7 +24,7 @@
       
       <div class="row add-top" ng-show="isFileListVisible()">
         <div class="col-xs-12 col-md-8">
-          <!-- <ng-include src="'partials/storage/list-grid-toggle.html'"></ng-include> -->
+          <ng-include src="'partials/storage/list-grid-toggle.html'"></ng-include>
           <storage-breadcrumb></storage-breadcrumb>
         </div>
         <div class="col-xs-12 col-md-4">
@@ -33,7 +33,7 @@
       </div>
 
       <ng-include src="'partials/storage/files-list.html'"></ng-include>
-      
+   	
       <ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
   	</div><!--padding-->
   </div><!--modal-body-->
