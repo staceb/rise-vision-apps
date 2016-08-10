@@ -38,7 +38,6 @@ angular.module('risevision.storage.controllers')
       var lastClickTime = 0;
 
       $scope.filesDetails = filesFactory.filesDetails;
-      $scope.statusDetails = filesFactory.statusDetails;
       $scope.bucketCreationStatus = {
         code: 202
       };
@@ -110,21 +109,19 @@ angular.module('risevision.storage.controllers')
         return file.size ? Number(file.size) : 0;
       };
 
-      // Hide file list for in app selector when no files and folders exist in root
       $scope.isFileListVisible = function () {
-        if (!storageFactory.storageFull && (!$scope.currentDecodedFolder() ||
-            $scope.currentDecodedFolder() === '/')) {
-          return $scope.filesDetails.files.filter(function (f) {
-            return !storageFactory.fileIsTrash(f);
-          }).length > 0;
-        } else {
-          return true;
-        }
+        return !(filesFactory.loadingItems ||
+          $scope.filesDetails.code === 202 || $scope.trialAvailable ||
+          $scope.isEmptyState());
       };
 
       $scope.isEmptyState = function () {
-        return $scope.statusDetails.code !== 202 && !$scope.isFileListVisible() &&
-          !$scope.trialAvailable && $scope.fileUploader.queue.length === 0;
+        return !$scope.currentDecodedFolder() &&
+          $scope.currentDecodedFolder() !== '/' &&
+          $scope.fileUploader.queue.length === 0 &&
+          $scope.filesDetails.files.filter(function (f) {
+            return !storageFactory.fileIsTrash(f);
+          }).length === 0;
       };
 
     }

@@ -1,23 +1,22 @@
 'use strict';
-describe('controller: Storage', function() {
+describe('controller: Empty State', function() {
   beforeEach(module('risevision.storage.controllers'));
   beforeEach(module(function ($provide) {
     $provide.service('storageFactory',function(){
       return storageFactory = {
-          storageFull: false,
-          setSelectorType: function() {
-            selectorTypeSet = true;
-          }
+        selectorType: 'multiple-files-folders'
         }
     });
+    $provide.value('SELECTOR_TYPES', {
+      MULTIPLE_FILES_FOLDERS: 'multiple-files-folders'
+    });
   }));
-  var $scope, storageFactory, selectorTypeSet;
+  var $scope, storageFactory;
   beforeEach(function(){
-    selectorTypeSet = false;
     inject(function($injector,$rootScope, $controller){
 
       $scope = $rootScope.$new();
-      $controller('StorageController', {
+      $controller('EmptyStateController', {
         $scope : $scope
       });
       $scope.$digest();
@@ -28,9 +27,8 @@ describe('controller: Storage', function() {
     expect($scope).to.be.ok;
   });
 
-  it('should set storageFull',function(){
-    expect(storageFactory.storageFull).to.be.true;
-    expect(selectorTypeSet).to.be.true;
+  it('should not default to MULTIPLE_FILES_FOLDERS',function(){
+    expect($scope.isMultipleFilesFoldersSelector).to.be.true;
   });
 
 });

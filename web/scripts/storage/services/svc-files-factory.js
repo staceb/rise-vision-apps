@@ -5,9 +5,7 @@ angular.module('risevision.storage.services')
       var svc = {
         startTrial: storage.startTrial,
         filesDetails: {
-          files: []
-        },
-        statusDetails: {
+          files: [],
           code: 202
         }
       };
@@ -86,7 +84,7 @@ angular.module('risevision.storage.services')
 
           svc.filesDetails.bucketExists = resp.bucketExists;
           svc.filesDetails.files = resp.files || [];
-          svc.statusDetails.code = resp.code;
+          svc.filesDetails.code = resp.code;
 
           if (!storageFactory.folderPath || !parentFolder || parentFolder ===
             '/') {
@@ -105,14 +103,11 @@ angular.module('risevision.storage.services')
         var params = {};
         if (storageFactory.folderPath) {
           params.folderPath = decodeURIComponent(storageFactory.folderPath);
-          svc.statusDetails.folder = params.folderPath;
         } else {
           params.folderPath = undefined;
-          svc.statusDetails.folder = '/';
         }
 
-        svc.statusDetails.code = 202;
-
+        svc.filesDetails.code = 202;
         svc.loadingItems = true;
 
         return storage.files.get(params)

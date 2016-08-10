@@ -27,8 +27,8 @@
                 var width = element[0].parentNode.clientWidth;
                 var steps = Math.min(_originalTree.length - 1, Math.floor(
                   width / spacePerFolder));
-                var tree = []
-                tree.push(_originalTree[0])
+                var tree = [];
+                tree.push(_originalTree[0]);
                 if (steps < _originalTree.length - 1) {
                   tree.push({
                     name: '...'
@@ -41,19 +41,19 @@
               } else {
                 $scope.tree = _originalTree;
               }
-            }
+            };
 
             $scope.$watch('storageFactory.folderPath', function () {
               _originalTree = [{
-                path: "",
+                path: '',
                 name: 'My Storage'
               }];
               var folders = storageFactory.folderPath.split('/');
-              var path = ""
+              var path = '';
               for (var i = 0; i < folders.length; i++) {
                 var folder = folders[i];
                 if (folder !== '') {
-                  path += folder + "/";
+                  path += folder + '/';
                   var name = folder === '--TRASH--' ? $filter(
                     'translate')('storage-client.trash') : folder;
                   name = name.length > 20 ? name.substr(0, 20) +
