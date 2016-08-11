@@ -131,5 +131,168 @@ describe('service: subscriptionStatusFactory:', function() {
     });
 
   });
+  
+  describe('isSubscribed: ', function() {
+    it('should default to TRUE',function(done){
+      response = {
+        items: [
+        {pc:'pc1'}
+        ]
+      };
+
+      subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+        expect(status.isSubscribed).to.be.true;
+        done();
+      });
+    });
+
+    it('should default TRUE if status is empty',function(done){
+      response = {
+        items: [
+        {pc:'pc1',status:''}
+        ]
+      };
+
+      subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+        expect(status.isSubscribed).to.be.true;
+        done();
+      });
+    });
+
+    describe('TRUE:',function(){
+      it('should return TRUE if status is Free',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:''}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.true;
+          done();
+        });
+
+      });
+
+      it('should return TRUE if status is On Trial',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'On Trial'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.true;
+          done();
+        });
+      });
+
+      it('should return TRUE if status is Subscribed',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Subscribed'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.true;
+          done();
+        });
+      });
+    });
+
+    describe('FALSE:',function(){
+      it('should return FALSE if status is Not Subscribed',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Not Subscribed'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.false;
+          done();
+        });
+      });
+
+      it('should return FALSE if status is Trial Expired',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Trial Expired'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.false;
+          done();
+        });
+      });
+
+      it('should return FALSE if status is Cancelled',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Cancelled'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.false;
+          done();
+        });
+      });
+
+      it('should return FALSE if status is Suspended',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Suspended'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.false;
+          done();
+        });
+      });
+
+      it('should return FALSE if status is Product Not Found',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Product Not Found'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.false;
+          done();
+        });
+      });
+
+      it('should return FALSE if status is Company Not Found',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Company Not Found'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.false;
+          done();
+        });
+      });
+
+      it('should return FALSE if status is Error',function(done){
+        response = {
+          items: [
+          {pc:'pc1',status:'Error'}
+          ]
+        };
+
+        subscriptionStatusFactory.checkProductCode('pc1').then(function(status){
+          expect(status.isSubscribed).to.be.false;
+          done();
+        });
+      });
+    });
+  });
 
 });

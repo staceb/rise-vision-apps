@@ -44,12 +44,12 @@ angular.module('risevision.editor.services')
   })
   .factory('playlistItemFactory', ['$modal', '$log', 'userState',
     'gadgetFactory', 'editorFactory', 'placeholderPlaylistFactory',
-    'widgetModalFactory', 'fileSelectorFactory', 'presentationTracker',
-    'RENDER_WIDGETS', 'VIDEO_WIDGET', 'SELECTOR_TYPES',
-    'IMAGE_ADDITIONAL_PARAMS', 'VIDEO_ADDITIONAL_PARAMS',
+    'widgetModalFactory', 'widgetUtils', 'fileSelectorFactory',
+    'presentationTracker',
+    'SELECTOR_TYPES', 'IMAGE_ADDITIONAL_PARAMS', 'VIDEO_ADDITIONAL_PARAMS',
     function ($modal, $log, userState, gadgetFactory, editorFactory,
-      placeholderPlaylistFactory, widgetModalFactory, fileSelectorFactory,
-      presentationTracker, RENDER_WIDGETS, VIDEO_WIDGET, SELECTOR_TYPES,
+      placeholderPlaylistFactory, widgetModalFactory, widgetUtils,
+      fileSelectorFactory, presentationTracker, SELECTOR_TYPES,
       IMAGE_ADDITIONAL_PARAMS, VIDEO_ADDITIONAL_PARAMS) {
       var factory = {};
 
@@ -119,7 +119,7 @@ angular.module('risevision.editor.services')
         presentationTracker('Add Text Widget', editorFactory.presentation.id,
           editorFactory.presentation.name);
 
-        _getItemByWidgetId(RENDER_WIDGETS.TEXT_WIDGET)
+        _getItemByWidgetId(widgetUtils.getWidgetId('text'))
           .then(function (item) {
             widgetModalFactory.showWidgetModal(item);
           });
@@ -181,7 +181,7 @@ angular.module('risevision.editor.services')
         presentationTracker('Add Image Widget', editorFactory.presentation.id,
           editorFactory.presentation.name);
 
-        return _getItemByWidgetId(RENDER_WIDGETS.IMAGE_WIDGET)
+        return _getItemByWidgetId(widgetUtils.getWidgetId('image'))
           .then(function (item) {
             item.name = file ? _getFileName(file.name) : item.name;
 
@@ -196,7 +196,7 @@ angular.module('risevision.editor.services')
         presentationTracker('Add Video Widget', editorFactory.presentation.id,
           editorFactory.presentation.name);
 
-        return _getItemByWidgetId(VIDEO_WIDGET)
+        return _getItemByWidgetId(widgetUtils.getWidgetId('video'))
           .then(function (item) {
             item.name = file ? _getFileName(file.name) : item.name;
             item.playUntilDone = true;

@@ -2,23 +2,20 @@
 
 angular.module('risevision.editor.services')
   .value('IFRAME_PREFIX', 'if_')
-  .value('CUSTOM_WIDGET_ICONS', {
-    '2d407395-d1ae-452c-bc27-78124a47132b': 'ph-video-item', // Video Widget - Prod
-    '4bf6fb3d-1ead-4bfb-b66f-ae1fcfa3c0c6': 'ph-video-item' // Video Widget - Test
-  })
   .factory('widgetRenderer', ['gadgetsApi', '$window', 'IFRAME_PREFIX',
-    'RENDER_WIDGETS', 'userState', 'CUSTOM_WIDGET_ICONS',
-    function (gadgetsApi, $window, IFRAME_PREFIX, RENDER_WIDGETS, userState,
-      CUSTOM_WIDGET_ICONS) {
+    'userState', 'widgetUtils',
+    function (gadgetsApi, $window, IFRAME_PREFIX, userState, widgetUtils) {
       var factory = {};
 
       factory._placeholders = {};
 
-      var _isRenderingAllowed = function (playlistItem) {
-        var objectReference = playlistItem.objectReference;
-        for (var k in RENDER_WIDGETS) {
-          if (RENDER_WIDGETS[k] === objectReference) {
-            if (objectReference === RENDER_WIDGETS.WEB_PAGE_WIDGET) {
+      var _isRenderingAllowed = function (placeholder) {
+        if (placeholder.items && placeholder.items[0]) {
+          var playlistItem = placeholder.items[0];
+          var objectReference = playlistItem.objectReference;
+
+          if (widgetUtils.isRenderingAllowed(objectReference)) {
+            if (widgetUtils.isWebpageWidget(objectReference)) {
               var params = JSON.parse(playlistItem.additionalParams);
               return params && ((params.url && params.url.slice(0, 8) ===
                 'https://') || (params.selector && params.selector.url &&
@@ -31,23 +28,17 @@ angular.module('risevision.editor.services')
       };
 
       var _setPlaceholderIcon = function (placeholder) {
+        placeholder.className = '';
+
         if (placeholder.items && placeholder.items[0]) {
           var objectReference = placeholder.items[0].objectReference;
-          if (Object.keys(CUSTOM_WIDGET_ICONS).indexOf(objectReference) >=
-            0) {
-            placeholder.className = 'ph-item-icon ' + CUSTOM_WIDGET_ICONS[
-              objectReference];
-          } else {
-            placeholder.className = 'ph-item-icon';
-          }
-        } else {
-          placeholder.className = '';
+
+          placeholder.className = widgetUtils.getIconClass(objectReference);
         }
       };
 
       factory.register = function (placeholder, element) {
-        if (placeholder.items && placeholder.items[0] &&
-          _isRenderingAllowed(placeholder.items[0])) {
+        if (_isRenderingAllowed(placeholder)) {
           placeholder.className = '';
           factory._placeholders[placeholder.id] = placeholder;
           _createIframe(placeholder, element);
@@ -73,8 +64,7 @@ angular.module('risevision.editor.services')
 
       factory.notifyChanges = function (placeholder, element) {
         if (factory._placeholders[placeholder.id]) {
-          if (!placeholder.items || !placeholder.items[0] || !
-            _isRenderingAllowed(placeholder.items[0])) {
+          if (!_isRenderingAllowed(placeholder)) {
             factory.unregister(placeholder, element);
           } else {
             gadgetsApi.rpc.call(IFRAME_PREFIX + placeholder.id,

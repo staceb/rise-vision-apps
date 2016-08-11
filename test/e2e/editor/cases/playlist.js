@@ -160,8 +160,8 @@ var PlaylistScenarios = function() {
         expect(placeholderPlaylistPage.getPlaylistItems().count()).to.eventually.equal(1);
       });
 
-      it('should display store status in playlist', function () {
-        expect(placeholderPlaylistPage.getItemStatusCells().get(0).getText()).to.eventually.equal('Free');
+      it('should not display store status for Free items', function () {
+        expect(placeholderPlaylistPage.getItemStatusCells().count()).to.eventually.equal(0);
       });
 
     });
@@ -283,11 +283,6 @@ var PlaylistScenarios = function() {
         expect(placeholderPlaylistPage.getPlaylistItems().count()).to.eventually.equal(3);
         expect(placeholderPlaylistPage.getItemNameCells().get(0).getText()).to.eventually.contain('Image Widget');
         expect(placeholderPlaylistPage.getItemNameCells().get(1).getText()).to.eventually.contain('Image Widget (1)');
-      });
-      
-      it('should display store status for both items', function () {
-        expect(placeholderPlaylistPage.getItemStatusCells().get(0).getText()).to.eventually.equal('Free');
-        expect(placeholderPlaylistPage.getItemStatusCells().get(1).getText()).to.eventually.equal('Free');
       });
 
       it('arrows should be disabled', function () {
