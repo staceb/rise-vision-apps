@@ -2,7 +2,7 @@
   <div class="scrollable-list" 
   rv-spinner rv-spinner-key="storage-selector-loader"
   rv-spinner-start-active="1" >
-    <table id="storageFileList" class="table-2 table-hover table-selector" ng-class="storageFactory.isMultipleSelector() ? 'multiple-selector' : 'single-selector'" ng-show="statusDetails.code!==202 && statusDetails.code!==404 && isFileListVisible()">
+    <table id="storageFileList" class="table-2 table-hover table-selector" ng-class="storageFactory.isMultipleSelector() ? 'multiple-selector' : 'single-selector'" ng-show="filesDetails.code!==202 && filesDetails.code!==404 && isFileListVisible()">
       <thead>
         <tr>
           <th class="col-sm-6">
@@ -92,5 +92,7 @@
         </tr>
       </tbody>
     </table>
+    
+    <ng-include src="'partials/storage/empty-state.html'" ng-show="!filesFactory.loadingItems && isEmptyState()"></ng-include>
   </div>	
 </div>

@@ -53,8 +53,7 @@ describe('controller: Files List', function() {
         },
         filesDetails: {
           files: []
-        },
-        statusDetails: {}
+        }
       }
     });
     $provide.service('FileUploader',function(){
@@ -88,7 +87,6 @@ describe('controller: Files List', function() {
     expect($scope.fileUploader).to.be.ok;    
 
     expect($scope.filesDetails).to.be.ok;
-    expect($scope.statusDetails).to.be.ok;
     expect($scope.bucketCreationStatus).to.be.ok;
 
     expect($scope.fileClick).to.be.a('function');
@@ -217,27 +215,26 @@ describe('controller: Files List', function() {
   describe('isFileListVisible: ', function() {
     beforeEach(function() {
       $scope.storageFactory.folderPath = '';
-      $scope.storageFactory.storageFull = false;
+      $scope.trialAvailable = false;
+      $scope.fileUploader.queue = [];
     });
 
-    it('hidden for no files', function() {
-      expect($scope.isFileListVisible()).to.be.false;
-    });
-    
-    it('hidden if Trash is the only file', function() {
-      $scope.filesDetails.files.push({name: '--TRASH--/'});
+    it('should be hidden for no files', function() {
       expect($scope.isFileListVisible()).to.be.false;
     });
 
-    it('always visible for full screen storage', function() {
-      $scope.storageFactory.storageFull = true;
-
-      expect($scope.isFileListVisible()).to.be.true;
+    it('should be hidden if loading', function() {
+      $scope.storageFactory.loadingItems = true;
+      expect($scope.isFileListVisible()).to.be.false;
     });
 
-    it('show for subfolders', function() {
-      $scope.storageFactory.folderPath = 'someFolder/';
+    it('should be hidden if trial is available',function(){
+      $scope.trialAvailable = true;
+      expect($scope.isFileListVisible()).to.be.false;
+    });
 
+    it('should show if file list is not empty',function(){
+      $scope.filesDetails.files.push({name: 'aa'});
       expect($scope.isFileListVisible()).to.be.true;
     });
 
@@ -247,8 +244,6 @@ describe('controller: Files List', function() {
 
     beforeEach(function() {
       $scope.storageFactory.folderPath = '';
-      $scope.storageFactory.storageFull = false;
-      $scope.trialAvailable = false;
       $scope.fileUploader.queue = [];
     });
 
@@ -260,9 +255,9 @@ describe('controller: Files List', function() {
       $scope.fileUploader.queue = [{}];
       expect($scope.isEmptyState()).to.be.false;
     });
-
-    it('should be false if trial is available',function(){
-      $scope.trialAvailable = true;
+    
+    it('show be false for subfolders', function() {
+      $scope.storageFactory.folderPath = 'someFolder/';
       expect($scope.isEmptyState()).to.be.false;
     });
 
@@ -271,6 +266,10 @@ describe('controller: Files List', function() {
       expect($scope.isEmptyState()).to.be.false;
     });
 
+    it('should be true if Trash is the only file', function() {
+      $scope.filesDetails.files.push({name: '--TRASH--/'});
+      expect($scope.isEmptyState()).to.be.true;
+    });
 
   });
 

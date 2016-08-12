@@ -58,11 +58,11 @@
           <td class="col-sm-1 hidden-xs nowrap text-right"><a ui-sref="apps.displays.change({displayId: display.id, companyId: display.companyId})"><span class="text-muted">{{display.lastActivityDate | date:'d-MMM-yyyy h:mm a'}}</span></a></td>
         </tr>
         <!-- If no displays available -->
-        <tr ng-show="displays.list.length === 0 && !search.query">
+        <tr ng-show="displays.items.list.length === 0 && !search.query">
           <td colspan="4" class="text-center"><span translate>displays-app.list.empty</span></td>
         </tr>
         <!-- If no search results -->
-        <tr ng-show="displays.list.length === 0 && search.query">
+        <tr ng-show="displays.items.list.length === 0 && search.query">
           <td colspan="4" class="text-center"><span translate>displays-app.list.no-results</span></td>
         </tr>
         

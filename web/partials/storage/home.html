@@ -21,11 +21,11 @@
 
 	<ng-include src="'partials/storage/upload-panel.html'"></ng-include>
 	
-	<search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="!trialAvailable && isFileListVisible()"></search-filter>
+	<search-filter filter-config="filterConfig" search="search" do-search="search.doSearch" ng-show="isFileListVisible()"></search-filter>
 
 
 	<div ng-controller="FileActionsController">
-		<div class="row add-top" ng-show="!trialAvailable && isFileListVisible()">
+		<div class="row add-top" ng-show="isFileListVisible()">
 			<div class="col-sm-8">
 			  <!-- <ng-include src="'partials/storage/list-grid-toggle.html'"></ng-include> -->
           	  <storage-breadcrumb></storage-breadcrumb>
@@ -44,9 +44,7 @@
 	</div>
 
 
-	<ng-include src="'partials/storage/files-list.html'" ng-show="isFileListVisible()"></ng-include>
-
-	<ng-include src="'partials/storage/empty-state.html'" ng-show="isEmptyState()"></ng-include>
+	<ng-include src="'partials/storage/files-list.html'"></ng-include>
 
 	<ng-include src="'partials/storage/start-trial.html'" ng-show="trialAvailable"></ng-include>
 

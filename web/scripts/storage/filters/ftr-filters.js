@@ -1,7 +1,7 @@
 'use strict';
 
 /* Filters */
-angular.module('risevision.storage.filters', ['risevision.common.i18n'])
+angular.module('risevision.storage.filters')
   .filter('fileTypeFilter', ['$translate', function ($translate) {
     var folderLabel = '';
 

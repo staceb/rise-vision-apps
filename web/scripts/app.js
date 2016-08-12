@@ -515,4 +515,4 @@ angular.module('risevision.storage.directives', [
   'ui.bootstrap'
 ]);
 angular.module('risevision.storage.controllers', []);
-angular.module('risevision.storage.filters', []);
+angular.module('risevision.storage.filters', ['risevision.common.i18n']);
