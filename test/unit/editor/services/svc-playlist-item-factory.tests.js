@@ -268,7 +268,7 @@ describe('service: playlistItemFactory:', function() {
     
     it('should add a folder of images', function(done) {
       fileSelectorFactory.getSelectedFiles = function() {
-        return [{name: 'folder', kind: 'folder'}, {}];
+        return [{name: 'folder/folder1/', kind: 'folder'}, {}];
       };
       playlistItemFactory.selectFiles('images');
       
@@ -281,8 +281,8 @@ describe('service: playlistItemFactory:', function() {
         expect(placeholderPlaylistFactory.items[0]).to.have.property('objectData');
         expect(placeholderPlaylistFactory.items[0]).to.have.property('objectReference');
 
-        expect(placeholderPlaylistFactory.items[0].name).to.equal('folder');
-        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder","url":"folder/file1"},"storage":{"companyId":null,"folder":"folder"},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
+        expect(placeholderPlaylistFactory.items[0].name).to.equal('folder1');
+        expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('{"selector":{"storageName":"folder/folder1/","url":"folder/file1"},"storage":{"companyId":null,"folder":"folder/folder1/"},"resume":true,"scaleToFit":true,"position":"middle-center","duration":10,"pause":10,"autoHide":false,"url":"","background":{}}');
         expect(placeholderPlaylistFactory.items[0].objectData).to.equal('http://someurl.com/gadget.html');
         expect(placeholderPlaylistFactory.items[0].objectReference).to.equal('2707fc05-5051-4d7b-bcde-01fafd6eaa5e');
 
