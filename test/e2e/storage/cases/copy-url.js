@@ -65,7 +65,7 @@ var HomeScenarios = function() {
         expect(copyUrlModalPage.getCopyUrlModal().isDisplayed()).to.eventually.be.true;
         expect(copyUrlModalPage.getCopyUrlInput().isDisplayed()).to.eventually.be.true;
         
-        expect(copyUrlModalPage.getCopyUrlInput().getAttribute('value')).to.eventually.equal('https://storage.googleapis.com/risemedialibrary-0424a41e-be47-411b-ac42-3b5a3c4e6b2e/package.json');
+        expect(copyUrlModalPage.getCopyUrlInput().getAttribute('value')).to.eventually.equal('https://storage.googleapis.com/risemedialibrary-17289e40-fd72-45b8-be96-095c168e0ef4/package.json');
       });
       
       it('should close modal', function() {
