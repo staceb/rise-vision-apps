@@ -278,24 +278,6 @@ describe('service: fileSelectorFactory:', function() {
         storageFactory.storageFull = false;
       });
 
-      it('should select a file', function() {
-        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
-        
-        expect(filesFactory.filesDetails.files[1].isChecked).to.be.true;
-        expect(filesFactory.filesDetails.checkedCount).to.be.equal(1);
-        expect(filesFactory.filesDetails.folderCheckedCount).to.be.equal(0);
-        expect(filesFactory.filesDetails.checkedItemsCount).to.be.equal(1);
-      });
-
-      it('should not select folder', function() {
-        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[3]);
-        
-        expect(filesFactory.filesDetails.files[3].isChecked).to.be.false;
-        expect(filesFactory.filesDetails.checkedCount).to.be.equal(0);
-        expect(filesFactory.filesDetails.folderCheckedCount).to.be.equal(0);
-        expect(filesFactory.filesDetails.checkedItemsCount).to.be.equal(0);
-      });
-      
       it('should select file', function() {
         fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
 
@@ -317,30 +299,27 @@ describe('service: fileSelectorFactory:', function() {
         postMessageSpy.should.have.been.calledWith(['https://storage.googleapis.com/risemedialibrary-companyId/test%2Ffile2'], '*');
         postMessageSpy.restore();
       });
+      
+      it('should clear selections', function() {
+        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
+        
+        expect(filesFactory.filesDetails.files[1].isChecked).to.be.false;
+        expect(filesFactory.filesDetails.checkedCount).to.be.equal(0);
+        expect(filesFactory.filesDetails.folderCheckedCount).to.be.equal(0);
+        expect(filesFactory.filesDetails.checkedItemsCount).to.be.equal(0);
+      });
+
+      it('should not select folder', function() {
+        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[3]);
+        
+        $broadcastSpy.should.not.have.been.called;
+      });
     });
 
     describe('single-folder: ', function() {
       beforeEach(function() {
         storageFactory.storageFull = false;
         storageFactory.selectorType = 'single-folder';
-      });
-
-      it('should select a folder', function() {
-        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[3]);
-        
-        expect(filesFactory.filesDetails.files[3].isChecked).to.be.true;
-        expect(filesFactory.filesDetails.checkedCount).to.be.equal(0);
-        expect(filesFactory.filesDetails.folderCheckedCount).to.be.equal(1);
-        expect(filesFactory.filesDetails.checkedItemsCount).to.be.equal(1);
-      });
-
-      it('should not select a file', function() {
-        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
-
-        expect(filesFactory.filesDetails.files[1].isChecked).to.be.false;
-        expect(filesFactory.filesDetails.checkedCount).to.be.equal(0);
-        expect(filesFactory.filesDetails.folderCheckedCount).to.be.equal(0);
-        expect(filesFactory.filesDetails.checkedItemsCount).to.be.equal(0);
       });
       
       it('should select folder', function() {
@@ -363,6 +342,21 @@ describe('service: fileSelectorFactory:', function() {
         // postMessage receives an array of file paths and a '*' as second parameter
         postMessageSpy.should.have.been.calledWith(['https://storage.googleapis.com/risemedialibrary-companyId/test%2F'], '*');
         postMessageSpy.restore();
+      });
+      
+      it('should clear selections', function() {
+        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[3]);
+        
+        expect(filesFactory.filesDetails.files[3].isChecked).to.be.false;
+        expect(filesFactory.filesDetails.checkedCount).to.be.equal(0);
+        expect(filesFactory.filesDetails.folderCheckedCount).to.be.equal(0);
+        expect(filesFactory.filesDetails.checkedItemsCount).to.be.equal(0);
+      });
+
+      it('should not select a file', function() {
+        fileSelectorFactory.onFileSelect(filesFactory.filesDetails.files[1]);
+
+        $broadcastSpy.should.not.have.been.called;
       });
     });
 
