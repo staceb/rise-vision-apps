@@ -142,6 +142,7 @@ angular.module('risevision.storage.services')
 
           if (!storageFactory.isMultipleSelector()) {
             factory.sendFiles();
+            _fileCheckToggled(file);
           }
         }
       };
