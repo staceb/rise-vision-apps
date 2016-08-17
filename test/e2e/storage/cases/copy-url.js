@@ -40,7 +40,9 @@ var HomeScenarios = function() {
 
       it('should show copy url button', function() {
         helper.waitDisappear(filesListPage.getFilesListLoader(), 'Storage Files Loader');
-        
+
+        filesListPage.getListViewSelector().click();
+
         expect(storageHomePage.getCopyUrlButton().isDisplayed()).to.eventually.be.true;
         expect(storageHomePage.getCopyUrlButton().isEnabled()).to.eventually.be.false;
       });

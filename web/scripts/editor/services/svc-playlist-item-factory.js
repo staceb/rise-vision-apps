@@ -133,8 +133,7 @@ angular.module('risevision.editor.services')
         var index = file.lastIndexOf('/');
         if (index === file.length - 1) {
           return _getFileName(file.substr(0, file.length - 1));
-        }
-        else if (index === -1) {
+        } else if (index === -1) {
           return file;
         } else {
           return file.substr(index + 1, file.length);

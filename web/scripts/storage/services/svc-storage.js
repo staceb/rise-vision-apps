@@ -18,6 +18,9 @@ angular.module('risevision.storage.services')
             if (search.folderPath) {
               obj.folder = decodeURIComponent(search.folderPath);
             }
+            if (search.file) {
+              obj.file = decodeURIComponent(search.file);
+            }
 
             $log.debug('Storage files get called with', obj);
 

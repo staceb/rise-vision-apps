@@ -50,7 +50,7 @@ var DownloadScenarios = function() {
 
         filesListPage.getFileItems().get(0).click();
         
-        expect(filesListPage.getFileItems().get(0).getAttribute('class')).to.eventually.contain('active');
+        expect(filesListPage.getFileItems().get(0).getAttribute('class')).to.eventually.contain('selected-border');
         expect(storageHomePage.getDownloadButton().isEnabled()).to.eventually.be.true;
       });
 

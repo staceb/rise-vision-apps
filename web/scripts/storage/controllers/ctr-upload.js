@@ -8,10 +8,9 @@ angular.module('risevision.storage.controllers')
 
 .controller('UploadController', ['$scope', '$rootScope', '$q', 'FileUploader',
   'UploadURIService', 'filesFactory', 'storageFactory',
-  '$translate', 'STORAGE_UPLOAD_CHUNK_SIZE',
+  '$translate', 'STORAGE_UPLOAD_CHUNK_SIZE', 'storage',
   function ($scope, $rootScope, $q, uploader, uriSvc, filesSvc,
-    storageFactory, $translate,
-    chunkSize) {
+    storageFactory, $translate, chunkSize, storage) {
     $scope.uploader = uploader;
     $scope.status = {};
     $scope.completed = [];
@@ -118,7 +117,7 @@ angular.module('risevision.storage.controllers')
         return;
       }
 
-      var file = {
+      var baseFile = {
         'name': item.file.name,
         'updated': {
           'value': new Date().valueOf().toString()
@@ -127,9 +126,20 @@ angular.module('risevision.storage.controllers')
         'type': item.file.type
       };
 
-      filesSvc.addFile(file);
-
-      uploader.removeFromQueue(item);
+      //retrieve to generate thumbnail
+      storage.files.get({
+          file: item.file.name
+        })
+        .then(function (resp) {
+          var file = resp && resp.files && resp.files[0] ? resp.files[0] :
+            baseFile;
+          filesSvc.addFile(file);
+        }, function (err) {
+          filesSvc.addFile(baseFile);
+        })
+        .finally(function () {
+          uploader.removeFromQueue(item);
+        });
     };
   }
 ]);

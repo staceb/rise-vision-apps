@@ -93,17 +93,19 @@ angular.module('risevision.storage.services')
         var filtered = false;
 
         if (factory.selectorFilter.extensions) {
-          var fileType = $filter('fileTypeFilter')(file.name);
-
-          filtered = factory.selectorFilter.extensions.indexOf(fileType.toLowerCase()) ===
-            -1;
+          filtered = !_fileHasExtension(file, factory.selectorFilter.extensions);
         }
 
         return filtered;
       };
 
+      var _fileHasExtension = function (file, allowedExtensions) {
+        var fileType = $filter('fileTypeFilter')(file.name);
+        return allowedExtensions.indexOf(fileType.toLowerCase()) !== -1;
+      }
+
       factory.canSelect = function (file) {
-        return !factory.fileIsTrash(file) &&
+        return !factory.fileIsTrash(file) && !file.isThrottled &&
           (factory.fileIsFolder(file) && factory.isFolderSelector() ||
             !factory.fileIsFolder(file) && factory.isFileSelector()) &&
           !_isFilteredFile(file);
@@ -121,6 +123,15 @@ angular.module('risevision.storage.services')
       factory.fileIsTrash = function (file) {
         return file.name === '--TRASH--/';
       };
+
+      factory.fileIsImage = function (file) {
+        return _fileHasExtension(file, SELECTOR_FILTERS.IMAGES.extensions);
+      }
+
+      factory.fileIsVideo = function (file) {
+        return _fileHasExtension(file, SELECTOR_FILTERS.VIDEOS.extensions);
+      }
+
 
       factory.isTrashFolder = function () {
         return factory.folderPath === '--TRASH--/';

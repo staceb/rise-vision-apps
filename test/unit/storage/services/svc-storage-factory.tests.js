@@ -134,6 +134,10 @@ describe('service: storageFactory:', function() {
       expect(storageFactory.canSelect({name: '--TRASH--/'})).to.be.false;
     });
 
+    it('false for throttled file ', function() {
+      expect(storageFactory.canSelect({name: 'file.jpg', isThrottled: true})).to.be.false;
+    });
+
     it('false for files in singleFolderSelector', function() {
       storageFactory.selectorType = 'single-folder';
 
@@ -199,6 +203,31 @@ describe('service: storageFactory:', function() {
 
     storageFactory.folderPath = '--TRASH--/';
     expect(storageFactory.isTrashFolder()).to.be.true;
+  });
+
+  it('fileIsImage:',function(){
+    expect(storageFactory.fileIsImage({name: 'f.jpg'})).to.be.true;
+    expect(storageFactory.fileIsImage({name: 'f.jpeg'})).to.be.true;
+    expect(storageFactory.fileIsImage({name: 'f.png'})).to.be.true;
+    expect(storageFactory.fileIsImage({name: 'f.bmp'})).to.be.true;
+    expect(storageFactory.fileIsImage({name: 'f.gif'})).to.be.true;
+    expect(storageFactory.fileIsImage({name: 'f.svg'})).to.be.true;
+    expect(storageFactory.fileIsImage({name: 'f.webp'})).to.be.true;
+
+    expect(storageFactory.fileIsImage({name: 'f.txt'})).to.be.false;
+    expect(storageFactory.fileIsImage({name: 'f.mp3'})).to.be.false;
+    expect(storageFactory.fileIsImage({name: 'f.mp4'})).to.be.false;
+  });
+
+  it('fileIsVideo:',function(){
+    expect(storageFactory.fileIsVideo({name: 'f.webm'})).to.be.true;
+    expect(storageFactory.fileIsVideo({name: 'f.mp4'})).to.be.true;
+    expect(storageFactory.fileIsVideo({name: 'f.ogg'})).to.be.true;
+    expect(storageFactory.fileIsVideo({name: 'f.ogv'})).to.be.true;
+
+    expect(storageFactory.fileIsVideo({name: 'f.txt'})).to.be.false;
+    expect(storageFactory.fileIsVideo({name: 'f.mp3'})).to.be.false;
+    expect(storageFactory.fileIsVideo({name: 'f.jpg'})).to.be.false;
   });
 
   describe('addFolder:', function(){
