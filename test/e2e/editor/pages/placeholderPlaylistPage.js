@@ -12,7 +12,7 @@ var PlaceholderPlaylistPage = function() {
   var removeItemButton = element(by.id('confirmForm')).element(by.buttonText('Remove'));
   var duplicateButtons = element.all(by.id('duplicateButton'));
   var duplicateItemButton = element.all(by.id('duplicateButton'));
-  var itemNameCells = element.all(by.css('.ph-playlist .editor-playlist-item .nameContainer:not(.ng-hide) .playlist-item-name'));
+  var itemNameCells = element.all(by.css('.ph-playlist .editor-playlist-item .name-container .playlist-item-name:not(.ng-hide)'));
   var itemStatusCells = element.all(by.css('.ph-playlist .editor-playlist-item .playlist-item-status'));
   var editPlaylistItemButtons = element.all(by.css('.ph-playlist .editor-playlist-item .editPlaylistItem'));
 

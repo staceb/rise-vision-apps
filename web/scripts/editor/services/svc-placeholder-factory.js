@@ -36,7 +36,7 @@ angular.module('risevision.editor.services')
                 var placeholderItems = gadgetsMap[gadget.id];
                 for (var u = 0; u < placeholderItems.length; u++) {
                   placeholderItems[u].statusMessage = gadget.statusMessage;
-                  placeholderItems[u].subscriptionStatus = gadget.subscriptionStatus;
+                  placeholderItems[u].isSubscribed = gadget.isSubscribed;
                 }
               }
             });

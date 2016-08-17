@@ -1,6 +1,5 @@
 'use strict';
 describe('service: widgetRenderer:', function() {
-  beforeEach(module('risevision.apps.config'));
   beforeEach(module('risevision.editor.services'));
   beforeEach(module(function ($provide) {
     $provide.service('gadgetsApi',function(){

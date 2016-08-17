@@ -29,6 +29,24 @@ angular.module('risevision.editor.services')
           return null;
         });
       };
+      
+      var _isSubscribed = function (subscriptionStatus) {
+        switch (subscriptionStatus) {
+        case 'On Trial':
+        case 'Subscribed':
+          return true;
+        case 'Not Subscribed':
+        case 'Trial Expired':
+        case 'Cancelled':
+        case 'Suspended':
+        case 'Product Not Found':
+        case 'Company Not Found':
+        case 'Error':
+          return false;
+        default:
+          return true;
+        }
+      };
 
       factory.checkProductCodes = function (productCodes) {
         var deferred = $q.defer();
@@ -48,6 +66,7 @@ angular.module('risevision.editor.services')
               if (result && result.items) {
                 for (var i = 0; i < result.items.length; i++) {
                   var statusItem = result.items[i];
+                  statusItem.isSubscribed = _isSubscribed(statusItem.status);
                   _updateStatusItemCache(statusItem);
                 }
                 deferred.resolve(result.items);
