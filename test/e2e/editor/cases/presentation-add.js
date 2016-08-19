@@ -104,7 +104,7 @@ var PresentationAddScenarios = function() {
 
     it('should enable Publish and Restore after revised', function () {     
       helper.clickWhenClickable(workspacePage.getSaveButton(), 'Save Button');
-      browser.sleep(500);
+      browser.sleep(1000);
       helper.wait(workspacePage.getPublishButton(), 'Publish Button');
 
       expect(workspacePage.getPublishButton().isEnabled()).to.eventually.be.true;
