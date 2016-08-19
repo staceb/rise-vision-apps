@@ -4,8 +4,10 @@ angular.module('risevision.editor.controllers')
   .controller('PresentationPropertiesModalController', ['$scope',
     '$modalInstance', 'presentationPropertiesFactory', 'editorFactory',
     'placeholdersFactory', 'userState', '$modal', '$templateCache',
+    '$rootScope',
     function ($scope, $modalInstance, presentationPropertiesFactory,
-      editorFactory, placeholdersFactory, userState, $modal, $templateCache) {
+      editorFactory, placeholdersFactory, userState, $modal, $templateCache,
+      $rootScope) {
 
       $scope.presentationProperties = presentationPropertiesFactory.getPresentationProperties();
       $scope.companyId = userState.getSelectedCompanyId();
@@ -24,6 +26,7 @@ angular.module('risevision.editor.controllers')
       };
 
       $scope.dismiss = function () {
+        $rootScope.$broadcast('presentationPropertiesDismissed');
         $modalInstance.dismiss();
       };
 

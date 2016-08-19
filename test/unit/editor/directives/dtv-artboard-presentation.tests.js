@@ -5,7 +5,8 @@ describe('directive: artboard-presentation', function() {
       widthIncrement,
       heightIncrement,
       $scope,
-      presentation;
+      presentation,
+      $stateParams;
 
   presentation = {
       height: 1080,
@@ -27,10 +28,12 @@ describe('directive: artboard-presentation', function() {
     });
   }));
 
-  beforeEach(inject(function(_$compile_, _$rootScope_, $templateCache, PRESENTATION_TOOLBAR_SIZE, PRESENTATION_BORDER_SIZE){
+  beforeEach(inject(function(_$compile_, _$rootScope_, $templateCache, PRESENTATION_TOOLBAR_SIZE,
+    PRESENTATION_BORDER_SIZE, _$stateParams_){
     $templateCache.put('partials/editor/artboard-presentation.html', '<p>mock</p>');
     $compile = _$compile_;
     $rootScope = _$rootScope_;
+    $stateParams = _$stateParams_;
     heightIncrement = PRESENTATION_TOOLBAR_SIZE + PRESENTATION_BORDER_SIZE;
     widthIncrement = 2 * PRESENTATION_BORDER_SIZE;
     $scope = $rootScope.$new();
@@ -76,5 +79,36 @@ describe('directive: artboard-presentation', function() {
       expect(element.css('background')).to.equal(presentation.backgroundStyle);  
       expect(element.css('backgroundSize')).to.equal('contain');  
     });
-  })
+  });
+
+  describe('show empty state:',function() {
+    it('should show empty state',function() {
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      expect(element.scope().showEmptyState()).to.be.true;
+    });
+
+    it('should not show empty state for existing presentations',function(){
+      presentation.id = '123';
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      expect(element.scope().showEmptyState()).to.be.false;
+    });
+
+
+    it('should not show empty state after changes',function(){
+      $scope.hasUnsavedChanges = true;
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      expect(element.scope().showEmptyState()).to.be.false;
+    });
+
+
+    it('should not show empty state for Templates',function(){
+      $stateParams.copyPresentation = true;
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      expect(element.scope().showEmptyState()).to.be.false;
+    });
+  });
 });

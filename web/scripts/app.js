@@ -48,8 +48,12 @@ angular.module('risevision.apps', [
   ])
   // Set up our mappings between URLs, templates, and controllers
   .config(['$urlRouterProvider', '$stateProvider', '$locationProvider',
+    '$tooltipProvider',
     function storeRouteConfig($urlRouterProvider, $stateProvider,
-      $locationProvider) {
+      $locationProvider, $tooltipProvider) {
+      $tooltipProvider.setTriggers({
+        'show': 'hide'
+      });
 
       $locationProvider.html5Mode(true);
 

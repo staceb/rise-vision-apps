@@ -29,7 +29,7 @@ angular.module('risevision.editor.services')
           return null;
         });
       };
-      
+
       var _isSubscribed = function (subscriptionStatus) {
         switch (subscriptionStatus) {
         case 'On Trial':

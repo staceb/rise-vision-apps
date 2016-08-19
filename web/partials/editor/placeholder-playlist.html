@@ -27,13 +27,13 @@
     </div>
     
     <div class="actions">
-      <button type="button" class="btn btn-xs btn-default editPlaylistItem" ng-click="playlistItemFactory.edit(item)">
+      <button type="button" class="btn btn-xs btn-default editPlaylistItem" ng-click="playlistItemFactory.edit(item)" tooltip-placement="left" tooltip-append-to-body="true" tooltip="{{getDurationTooltip(item)}}">
         <i class="fa fa-clock-o icon-sm-left"></i>
         <span class="playlist-item-duration" ng-if="item.playUntilDone" translate="editor-app.playlistItem.playUntilDone-short"></span>
         <span class="playlist-item-duration" ng-if="!item.playUntilDone">{{item.duration}}{{'editor-app.playlistItem.seconds-short' | translate}}</span>
       </button>
-      <button class="btn btn-xs btn-default" id="duplicateButton" ng-click="factory.duplicateItem(item)"><i class="fa fa-copy"></i></button>
-      <button class="btn btn-xs btn-default" id="removeButton" ng-click="remove(item)"><i class="fa fa-trash-o"></i></button>
+      <button class="btn btn-xs btn-default" id="duplicateButton" ng-click="factory.duplicateItem(item)" tooltip-placement="left"  tooltip-append-to-body="true" tooltip="{{'editor-app.playlistItem.duplicate' | translate}}"><i class="fa fa-copy"></i></button>
+      <button class="btn btn-xs btn-default" id="removeButton" ng-click="remove(item)" tooltip-placement="left" tooltip-append-to-body="true" tooltip="{{'editor-app.playlistItem.delete' | translate}}"><i class="fa fa-trash-o"></i></button>
     </div>
 
     <div class="name-container">

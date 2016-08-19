@@ -2,14 +2,16 @@
 
 angular.module('risevision.editor.directives')
   .directive('placeholdersList', ['$modal', '$templateCache',
-    'placeholdersFactory', 'placeholderFactory',
-    function ($modal, $templateCache, placeholdersFactory, placeholderFactory) {
+    'placeholdersFactory', 'placeholderFactory', 'editorFactory',
+    function ($modal, $templateCache, placeholdersFactory, placeholderFactory,
+      editorFactory) {
       return {
         restrict: 'E',
         scope: true,
         templateUrl: 'partials/editor/placeholders-list.html',
         link: function ($scope) {
             $scope.factory = placeholdersFactory;
+            $scope.editorFactory = editorFactory;
 
             $scope.manage = function (placeholder) {
               placeholderFactory.setPlaceholder(placeholder);

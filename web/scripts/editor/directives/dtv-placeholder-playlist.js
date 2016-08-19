@@ -3,9 +3,9 @@
 angular.module('risevision.editor.directives')
   .directive('placeholderPlaylist', ['placeholderPlaylistFactory',
     'playlistItemFactory', 'widgetModalFactory', 'widgetUtils', '$modal',
-    '$templateCache',
+    '$templateCache', '$filter',
     function (placeholderPlaylistFactory, playlistItemFactory,
-      widgetModalFactory, widgetUtils, $modal, $templateCache) {
+      widgetModalFactory, widgetUtils, $modal, $templateCache, $filter) {
       return {
         restrict: 'E',
         scope: true,
@@ -15,6 +15,19 @@ angular.module('risevision.editor.directives')
           $scope.widgetModalFactory = widgetModalFactory;
           $scope.widgetUtils = widgetUtils;
           $scope.playlistItemFactory = playlistItemFactory;
+
+          $scope.getDurationTooltip = function (item) {
+            var msg = $filter('translate')(
+              'editor-app.playlistItem.duration') + ': ';
+            if (item.playUntilDone) {
+              msg += $filter('translate')(
+                'editor-app.playlistItem.playUntilDone');
+            } else {
+              msg += item.duration + ' ' + $filter('translate')(
+                'editor-app.playlistItem.seconds');
+            }
+            return msg;
+          };
 
           $scope.remove = function (item) {
             var modalInstance = $modal.open({
