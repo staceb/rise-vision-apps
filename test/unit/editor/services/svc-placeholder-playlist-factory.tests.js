@@ -1,5 +1,5 @@
 'use strict';
-  
+
 describe('service: placeholderPlaylistFactory:', function() {
   beforeEach(module('risevision.editor.services'));
   beforeEach(module(function ($provide) {
@@ -16,7 +16,7 @@ describe('service: placeholderPlaylistFactory:', function() {
     item2 = {
       name: 'item2'
     };
-    
+
     items = [item0, item, item2];
 
     placeholderFactory = {
@@ -27,7 +27,7 @@ describe('service: placeholderPlaylistFactory:', function() {
         updateSubscriptionStatusCalled = true;
       }
     };
-    
+
     $provide.service('placeholderFactory',function () {
       return placeholderFactory;
     });
@@ -39,7 +39,7 @@ describe('service: placeholderPlaylistFactory:', function() {
     trackerCalled = undefined;
     updateSubscriptionStatusCalled = false;
 
-    inject(function($injector){  
+    inject(function($injector){
       placeholderPlaylistFactory = $injector.get('placeholderPlaylistFactory');
       placeholderPlaylistFactory.item = item;
     });
@@ -52,31 +52,28 @@ describe('service: placeholderPlaylistFactory:', function() {
     expect(placeholderPlaylistFactory.updateItem).to.be.a('function');
     expect(placeholderPlaylistFactory.removeItem).to.be.a('function');
     expect(placeholderPlaylistFactory.duplicateItem).to.be.a('function');
-    expect(placeholderPlaylistFactory.canPlaylistItemMoveDown).to.be.a('function');
-    expect(placeholderPlaylistFactory.canPlaylistItemMoveUp).to.be.a('function');
-    expect(placeholderPlaylistFactory.movePlaylistItemDown).to.be.a('function');
-    expect(placeholderPlaylistFactory.movePlaylistItemUp).to.be.a('function');
+    expect(placeholderPlaylistFactory.moveItem).to.be.a('function');
   });
-  
+
   describe('getItems: ', function() {
     it('should get the items', function() {
       expect(placeholderPlaylistFactory.getItems()).to.equal(items);
     });
-    
+
     it('should initialize items if undefined', function() {
       placeholderFactory.placeholder.items = undefined;
-      
+
       var _items = placeholderPlaylistFactory.getItems();
-      
+
       expect(_items).to.be.a('array');
       expect(_items.length).to.equal(0);
     });
 
     it('should return undefined if placeholder is undefined', function() {
       placeholderFactory.placeholder = undefined;
-      
+
       var _items = placeholderPlaylistFactory.getItems();
-      
+
       expect(_items).to.equal(undefined);
     });
   });
@@ -87,15 +84,31 @@ describe('service: placeholderPlaylistFactory:', function() {
 
       expect(items.length).to.equal(2);
     });
-    
+
     it('should not remove missing item',function(){
       placeholderPlaylistFactory.removeItem({});
 
       expect(items.length).to.equal(3);
-      expect(items[1]).to.equal(item);    
+      expect(items[1]).to.equal(item);
     });
   });
-  
+
+  describe('moveItem: ', function() {
+    it('movePlaylistItemUp/Down: ', function() {
+      placeholderPlaylistFactory.moveItem(0, 1);
+
+      expect(items.indexOf(item0)).to.equal(1);
+
+      placeholderPlaylistFactory.moveItem(2, 1);
+
+      expect(items.indexOf(item2)).to.equal(1);
+      expect(items.indexOf(item0)).to.equal(2);
+
+      placeholderPlaylistFactory.moveItem(2, 0);
+      expect(items.indexOf(item0)).to.equal(0);
+    });
+  });
+
   describe('updateItem: ',function(){
     var newItem = {
       name: 'Item 2'
@@ -103,68 +116,46 @@ describe('service: placeholderPlaylistFactory:', function() {
 
     it('should add the item',function(){
       placeholderPlaylistFactory.updateItem(newItem);
-      
+
       expect(items.length).to.equal(4);
-      expect(items[3]).to.equal(newItem);    
+      expect(items[3]).to.equal(newItem);
     });
-    
+
     it('should update Subscription Status for new items', function() {
       placeholderPlaylistFactory.updateItem(newItem);
 
-      expect(updateSubscriptionStatusCalled).to.be.true;      
+      expect(updateSubscriptionStatusCalled).to.be.true;
     })
 
     it('should not add duplicate item',function(){
       placeholderPlaylistFactory.updateItem(item);
 
       expect(items.length).to.equal(3);
-      expect(items[1]).to.equal(item);    
+      expect(items[1]).to.equal(item);
     });
-    
+
     it('should not update Subscription Status for duplicate item',function(){
       placeholderPlaylistFactory.updateItem(item);
 
-      expect(updateSubscriptionStatusCalled).to.be.false;      
+      expect(updateSubscriptionStatusCalled).to.be.false;
     });
   });
-  
+
   describe('duplicateItem: ', function() {
     it('should duplicate the item', function() {
       placeholderPlaylistFactory.duplicateItem(item);
-      
+
       expect(items.length).to.equal(4);
       expect(items[2].name).to.equal('item1 (1)')
     });
-    
+
     it('should not have duplicate names', function() {
       placeholderPlaylistFactory.duplicateItem(item);
       placeholderPlaylistFactory.duplicateItem(item);
-      
+
       expect(items.length).to.equal(5);
       expect(items[2].name).to.equal('item1 (2)')
     });
   });
-  
-  it('canPlaylistItemMoveUp/Down: ', function() {
-    expect(placeholderPlaylistFactory.canPlaylistItemMoveDown(item0)).to.be.true;
-    expect(placeholderPlaylistFactory.canPlaylistItemMoveDown(item2)).to.be.false;
-    
-    expect(placeholderPlaylistFactory.canPlaylistItemMoveUp(item0)).to.be.false;
-    expect(placeholderPlaylistFactory.canPlaylistItemMoveUp(item2)).to.be.true;
-  }); 
-  
-  it('movePlaylistItemUp/Down: ', function() {
-    placeholderPlaylistFactory.movePlaylistItemDown(item0);
-    
-    expect(items.indexOf(item0)).to.equal(1);
-    
-    placeholderPlaylistFactory.movePlaylistItemUp(item2);
-    
-    expect(items.indexOf(item2)).to.equal(1);
-    expect(items.indexOf(item0)).to.equal(2);
-
-    placeholderPlaylistFactory.movePlaylistItemDown(item0);
-    expect(items.indexOf(item0)).to.equal(2);
-  }); 
 
 });

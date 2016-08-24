@@ -26,6 +26,7 @@ angular.module('risevision.apps', [
     'risevision.apps.config',
     'risevision.apps.services',
     'risevision.apps.controllers',
+    'risevision.apps.directives',
     'risevision.apps.launcher.controllers',
     'risevision.apps.launcher.directives',
     'risevision.apps.launcher.services',
@@ -473,6 +474,7 @@ angular.module('risevision.apps', [
 
 angular.module('risevision.apps.services', []);
 angular.module('risevision.apps.controllers', []);
+angular.module('risevision.apps.directives', []);
 
 angular.module('risevision.apps.launcher.controllers', []);
 angular.module('risevision.apps.launcher.directives', []);

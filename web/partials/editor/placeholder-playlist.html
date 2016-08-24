@@ -16,16 +16,12 @@
   </a>
 </div>
 
-<div class="editor-playlist scrollable-list add-top">
+<div rv-sortable on-sort="sortItem(evt)" class="editor-playlist scrollable-list add-top sortable-list">
   <!-- Item Playlist -->
-  <div class="editor-playlist-item" ng-repeat="item in factory.getItems() track by $index" ng-show="factory.getItems().length">
-    <div class="arrows">
-      <button class="btn btn-block btn-xs btn-default" id="moveUpButton" ng-click="factory.movePlaylistItemUp(item)" ng-disabled="!factory.canPlaylistItemMoveUp(item)"><i class="fa fa-arrow-up"></i></button>
-      <button class="btn btn-block btn-xs btn-default" id="moveDownButton" ng-click="factory.movePlaylistItemDown(item)" ng-disabled="!factory.canPlaylistItemMoveDown(item)"><i class="fa fa-arrow-down"></i></button>
-      
-      <!-- <i class="fa fa-grip-large fa-rotate-90"></i> -->
+  <div class="editor-playlist-item rv-sortable-item" ng-repeat="item in factory.getItems() track by $index" ng-show="factory.getItems().length">
+    <div class="list-grip rv-sortable-handle">
+      <i class="fa fa-grip-large fa-rotate-90 grip-indicator"></i>
     </div>
-    
     <div class="actions">
       <button type="button" class="btn btn-xs btn-default editPlaylistItem" ng-click="playlistItemFactory.edit(item)" tooltip-placement="left" tooltip-append-to-body="true" tooltip="{{getDurationTooltip(item)}}">
         <i class="fa fa-clock-o icon-sm-left"></i>
@@ -45,6 +41,7 @@
       </p>
       <p class="playlist-item-name" ng-hide="item.type === 'widget' && (item.objectReference || item.settingsUrl)">{{item.name}}</p>
       <p>
+
         <span class="text-small text-muted remove-bottom" ng-if="item.isSubscribed">
           <span class="playlist-item-status" ng-click="playlistItemFactory.edit(item)">{{item.statusMessage}}</span>
         </span>

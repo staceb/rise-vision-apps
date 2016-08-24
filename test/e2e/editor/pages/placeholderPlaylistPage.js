@@ -6,10 +6,9 @@ var PlaceholderPlaylistPage = function() {
   var addTextButton = element(by.id('addTextButton'));
 
   var playlistItems = element.all(by.css('.ph-playlist .editor-playlist-item'));
-  var moveUpButtons = element.all(by.id('moveUpButton'));
-  var moveDownButtons = element.all(by.id('moveDownButton'));
   var removeButtons = element.all(by.id('removeButton'));
   var removeItemButton = element(by.id('confirmForm')).element(by.buttonText('Remove'));
+  var itemDragHandles = element.all(by.css('.rv-sortable-handle'));
   var duplicateButtons = element.all(by.id('duplicateButton'));
   var duplicateItemButton = element.all(by.id('duplicateButton'));
   var itemNameCells = element.all(by.css('.ph-playlist .editor-playlist-item .name-container .playlist-item-name:not(.ng-hide)'));
@@ -23,11 +22,11 @@ var PlaceholderPlaylistPage = function() {
   this.getAddImageButton = function() {
     return addImageButton;
   };
-  
+
   this.getAddVideoButton = function() {
     return addVideoButton;
   };
-  
+
   this.getAddTextButton = function() {
     return addTextButton;
   };
@@ -36,26 +35,18 @@ var PlaceholderPlaylistPage = function() {
     return playlistItems;
   };
 
-  this.getMoveUpButtons = function() {
-    return moveUpButtons;
-  };
-  
-  this.getMoveDownButtons = function() {
-    return moveDownButtons;
-  };
-  
   this.getRemoveButtons = function() {
     return removeButtons;
   };
-  
+
   this.getRemoveItemButton = function() {
     return removeItemButton;
   };
-  
+
   this.getDuplicateButtons = function() {
     return duplicateButtons;
   }
-  
+
   this.getItemNameCells = function() {
     return itemNameCells;
   };
@@ -67,6 +58,10 @@ var PlaceholderPlaylistPage = function() {
   this.getEditPlaylistItemButtons = function() {
     return editPlaylistItemButtons;
   };
+
+  this.getItemDragHandles = function() {
+    return itemDragHandles;
+  }
 
 };
 
