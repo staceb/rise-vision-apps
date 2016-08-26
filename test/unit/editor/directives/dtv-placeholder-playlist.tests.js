@@ -69,5 +69,21 @@ describe('directive: placeholder-playlist', function() {
       expect(items).to.not.include(testitem);
     });
   });
+
+  describe('getDurationTooltip:',function(){
+    it('should return Play Until Done for PUD',function(){
+      var element = $compile("<placeholder-playlist></placeholder-playlist>")($rootScope);
+      $rootScope.$digest();
+      var item = {playUntilDone: true};
+      expect(element.scope().getDurationTooltip(item)).to.be.equal('editor-app.playlistItem.duration: editor-app.playlistItem.playUntilDone');
+    });
+
+    it('should return Duration in seconds when not PUD',function() {
+      var element = $compile("<placeholder-playlist></placeholder-playlist>")($rootScope);
+      $rootScope.$digest();
+      var item = {playUntilDone: false, duration: 33};
+      expect(element.scope().getDurationTooltip(item)).to.be.equal('editor-app.playlistItem.duration: 33 editor-app.playlistItem.seconds');
+    })
+  });
   
 });

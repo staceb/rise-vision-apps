@@ -4,9 +4,9 @@ angular.module('risevision.editor.directives')
   .constant('PRESENTATION_TOOLBAR_SIZE', 60)
   .constant('PRESENTATION_BORDER_SIZE', 12)
   .directive('artboardPresentation', ['editorFactory', 'placeholderFactory',
-    'PRESENTATION_TOOLBAR_SIZE', 'PRESENTATION_BORDER_SIZE',
+    'PRESENTATION_TOOLBAR_SIZE', 'PRESENTATION_BORDER_SIZE', '$stateParams',
     function (editorFactory, placeholderFactory, PRESENTATION_TOOLBAR_SIZE,
-      PRESENTATION_BORDER_SIZE) {
+      PRESENTATION_BORDER_SIZE, $stateParams) {
       return {
         scope: true,
         restrict: 'E',
@@ -33,6 +33,11 @@ angular.module('risevision.editor.directives')
                 $scope.presentation.backgroundScaleToFit ? 'contain' :
                 '');
             }, true);
+
+            $scope.showEmptyState = function () {
+              return !editorFactory.presentation.id && !$scope.hasUnsavedChanges &&
+                !$stateParams.copyPresentation;
+            };
           } //link()
       };
     }

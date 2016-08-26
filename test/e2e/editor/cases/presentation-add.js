@@ -7,6 +7,7 @@ var PresentationListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var helper = require('rv-common-e2e').helper;
 var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
+var ArtboardPage = require('./../pages/artboardPage.js');
 
 var PresentationAddScenarios = function() {
 
@@ -20,6 +21,7 @@ var PresentationAddScenarios = function() {
     var presentationsListPage;
     var workspacePage;
     var presentationPropertiesModalPage;
+    var artboardPage;
 
     before(function () {
       homepage = new HomePage();
@@ -28,6 +30,7 @@ var PresentationAddScenarios = function() {
       workspacePage = new WorkspacePage();
       commonHeaderPage = new CommonHeaderPage();
       presentationPropertiesModalPage = new PresentationPropertiesModalPage();
+      artboardPage = new ArtboardPage();
 
       homepage.getEditor();
       //wait for spinner to go away.
@@ -35,10 +38,20 @@ var PresentationAddScenarios = function() {
         loginPage.signIn();
       });
       presentationsListPage.openNewPresentation();
+      presentationPropertiesModalPage.getCancelButton().click();
     });
 
     it('should show Add Placeholder button', function () {
       expect(workspacePage.getAddPlaceholderButton().isPresent()).to.eventually.be.true;
+    });
+
+    it('should show Add Placeholder button tooltip', function () {
+      expect(workspacePage.getAddPlaceholderTooltip().isDisplayed()).to.eventually.be.true;
+    });
+
+    it('should show artboard empty state',function() {
+      helper.wait(artboardPage.getEmptyState(),'Artboard Empty State');
+      expect(artboardPage.getEmptyState().isDisplayed()).to.eventually.be.true;
     });
 
     it('should show Change Template Button', function () {
@@ -62,6 +75,9 @@ var PresentationAddScenarios = function() {
     });
 
     it('should rename presentation', function () {
+      workspacePage.getPresentationPropertiesButton().click();
+      helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
+
       var presentationName = 'TEST_E2E_PRESENTATION';
 
       helper.wait(presentationPropertiesModalPage.getNameInput(), 'Waiting for Name Input');

@@ -73,7 +73,7 @@ describe('controller: presentation properties modal', function() {
   var $scope, $modalInstance, $modalInstanceDismissSpy, $modalInstanceCloseSpy, 
     editorFactory, copyPresentationSpy, presentationPropertiesFactory, 
     setPresentationPropertiesSpy, companyId, presentationProperties, placeholders,
-    $modal, confirmDelete;
+    $modal, confirmDelete, $broadcastSpy;
 
   beforeEach(function(){
 
@@ -83,6 +83,7 @@ describe('controller: presentation properties modal', function() {
       $modalInstance = $injector.get('$modalInstance');
       $modalInstanceDismissSpy = sinon.spy($modalInstance, 'dismiss');
       $modalInstanceCloseSpy = sinon.spy($modalInstance, 'close');
+      $broadcastSpy = sinon.spy($rootScope,'$broadcast');
       $modal = $injector.get('$modal');
       confirmDelete = false;
 
@@ -130,6 +131,7 @@ describe('controller: presentation properties modal', function() {
     $scope.apply();
     setPresentationPropertiesSpy.should.have.been.calledWith(presentationProperties);
     $modalInstanceDismissSpy.should.have.been.called;
+    $broadcastSpy.should.have.been.calledWith('presentationPropertiesDismissed');
   });
 
   it('should not set presentation properties if form is invalid',function(){
@@ -137,11 +139,13 @@ describe('controller: presentation properties modal', function() {
     $scope.apply();
     setPresentationPropertiesSpy.should.not.have.been.called;
     $modalInstanceDismissSpy.should.not.have.been.called;
+    $broadcastSpy.should.not.have.been.called;
   });
 
   it('should dismiss modal when cancel',function(){
     $scope.dismiss();
     $modalInstanceDismissSpy.should.have.been.called;
+    $broadcastSpy.should.have.been.calledWith('presentationPropertiesDismissed');
   });
 
   describe('confirm delete',function(){
