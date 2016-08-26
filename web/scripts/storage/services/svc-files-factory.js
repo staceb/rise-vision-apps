@@ -65,7 +65,7 @@ angular.module('risevision.storage.services')
       svc.refreshFilesList = function () {
         function processFilesResponse(resp) {
           var TRASH = '--TRASH--/';
-          var parentFolder = decodeURIComponent(storageFactory.folderPath);
+          var parentFolder = storageFactory.folderPath;
           var parentFolderIndex = null;
 
           resp.files = resp.files || [];
@@ -102,7 +102,7 @@ angular.module('risevision.storage.services')
 
         var params = {};
         if (storageFactory.folderPath) {
-          params.folderPath = decodeURIComponent(storageFactory.folderPath);
+          params.folderPath = storageFactory.folderPath;
         } else {
           params.folderPath = undefined;
         }
