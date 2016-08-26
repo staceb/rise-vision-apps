@@ -88,11 +88,6 @@ angular.module('risevision.storage.controllers')
         }
       };
 
-      $scope.currentDecodedFolder = function () {
-        return storageFactory.folderPath ?
-          decodeURIComponent(storageFactory.folderPath) : undefined;
-      };
-
       $scope.dateModifiedOrderFunction = function (file) {
         return file.updated ? file.updated.value : '';
       };
@@ -121,8 +116,8 @@ angular.module('risevision.storage.controllers')
       };
 
       $scope.isEmptyState = function () {
-        return !$scope.currentDecodedFolder() &&
-          $scope.currentDecodedFolder() !== '/' &&
+        return !storageFactory.folderPath &&
+          storageFactory.folderPath !== '/' &&
           $scope.fileUploader.queue.length === 0 &&
           $scope.filesDetails.files.filter(function (f) {
             return !storageFactory.fileIsTrash(f);

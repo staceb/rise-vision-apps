@@ -24,8 +24,8 @@ angular.module('risevision.storage.controllers')
         if ($scope.folderName !== '') {
           $scope.waitingForResponse = true;
 
-          storage.createFolder(decodeURIComponent(storageFactory.folderPath ||
-            '') + $scope.folderName).then(function (resp) {
+          storage.createFolder(storageFactory.folderPath + $scope.folderName)
+            .then(function (resp) {
 
             if (resp.code === 200) {
               $rootScope.$emit('refreshSubscriptionStatus',

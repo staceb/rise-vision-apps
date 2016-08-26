@@ -27,7 +27,7 @@ describe('controller: NewFolderModalCtrl', function() {
       });
 
       $provide.service('storageFactory', function() {
-        return {
+        return storageFactory = {
           folderPath: ''
         };
       });
@@ -57,7 +57,7 @@ describe('controller: NewFolderModalCtrl', function() {
   });
 
   var $scope, storage, $modalInstance, $modalInstanceCloseSpy, createFolderSpy, 
-    duplicatedName, filesFactory, refreshFilesListSpy, emitSpy, result;
+    duplicatedName, storageFactory, filesFactory, refreshFilesListSpy, emitSpy, result;
   beforeEach(function(){
     duplicatedName = false;
     result = { code: 200 };
@@ -116,6 +116,25 @@ describe('controller: NewFolderModalCtrl', function() {
     createFolderSpy.should.not.have.been.called;
     expect($scope.duplicateFolderSpecified).to.be.true;
     expect($scope.waitingForResponse).to.be.false;
+  });
+  
+  it('should correctly create sub-folder of folder with % in name',function(done){
+    storageFactory.folderPath = 'some % folder/';
+
+    $scope.folderName = 'newFolder';
+    $scope.ok();
+
+    expect($scope.waitingForResponse).to.be.true;
+    createFolderSpy.should.have.been.calledWith('some % folder/newFolder');
+
+    setTimeout(function() {
+      expect($scope.waitingForResponse).to.be.false;
+      refreshFilesListSpy.should.have.been.called;      
+      $modalInstanceCloseSpy.should.have.been.calledWith('newFolder');
+      emitSpy.should.have.been.calledWith('refreshSubscriptionStatus', 'trial-available');
+      
+      done();
+    }, 10);
   });
 
   it('should not proceed if foder name is empty',function(){

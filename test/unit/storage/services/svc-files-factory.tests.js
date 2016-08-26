@@ -108,6 +108,21 @@ describe('service: filesFactory:', function() {
         done();
       })
     });
+    
+    it('should handle % in folderPath', function(done) {
+      storageFactory.folderPath = 'folder % name/';
+      filesResponse.files = [{ name: 'folder % name/file1.txt' }];
+
+      filesFactory.refreshFilesList();
+
+      setTimeout(function() {
+        expect(filesFactory.filesDetails.files.length).to.equal(1);
+        expect(filesFactory.filesDetails.files[0].name).to.equal('folder % name/file1.txt');
+        expect(filesFactory.filesDetails.files[0].currentFolder).to.be.undefined;
+        
+        done();
+      })
+    });
 
   });
   

@@ -21,6 +21,7 @@ describe('service: storage:', function() {
             get: function(obj){
               expect(obj).to.be.ok;
               folderPath = obj.folder;
+              filePath = obj.file;
               
               var def = Q.defer();
               if (obj.companyId && returnResult) {
@@ -170,10 +171,11 @@ describe('service: storage:', function() {
     });
 
   }));
-  var storage, returnResult, folderPath, folderName, $rootScope, storageApiRequestObj;
+  var storage, returnResult, folderPath, filePath, folderName, $rootScope, storageApiRequestObj;
   beforeEach(function(){
     returnResult = true;
     folderPath = '';
+    filePath = '';
     
     inject(function($injector){
       $rootScope = $injector.get('$rootScope');
@@ -209,6 +211,36 @@ describe('service: storage:', function() {
       storage.files.get({folderPath: 'someFolder/'})
       .then(function(result){
         expect(folderPath).to.equal('someFolder/');
+
+        done();
+      })
+      .then(null,done);
+    });
+
+    it('should handle % in folder name',function(done){
+      storage.files.get({folderPath: 'some % Folder/'})
+      .then(function(result){
+        expect(folderPath).to.equal('some % Folder/');
+
+        done();
+      })
+      .then(null,done);
+    });
+
+    it('should get single file',function(done){
+      storage.files.get({file: 'someFile.jpg'})
+      .then(function(result){
+        expect(filePath).to.equal('someFile.jpg');
+
+        done();
+      })
+      .then(null,done);
+    });
+
+    it('should handle % in file name',function(done){
+      storage.files.get({file: 'some % File.jpg'})
+      .then(function(result){
+        expect(filePath).to.equal('some % File.jpg');
 
         done();
       })
