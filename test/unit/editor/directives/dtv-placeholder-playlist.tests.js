@@ -15,7 +15,8 @@ describe('directive: placeholder-playlist', function() {
             expect(item).to.be.ok;
             expect(item).to.deep.equal(testitem);
             items.splice(items.indexOf(item),1);
-        }
+        },
+        moveItem: sinon.stub()
       };
     });
     $provide.service('playlistItemFactory', function() {
@@ -24,7 +25,7 @@ describe('directive: placeholder-playlist', function() {
     });
 
     $provide.service('widgetModalFactory', function() {
-      
+
     });
     $provide.service('$modal', function() {
       return {
@@ -47,6 +48,10 @@ describe('directive: placeholder-playlist', function() {
     $templateCache.put('partials/editor/placeholder-playlist.html', '<p>mock</p>');
     $compile = _$compile_;
     $rootScope = _$rootScope_;
+  }));
+
+  afterEach(inject(function(placeholderPlaylistFactory) {
+    placeholderPlaylistFactory.moveItem.reset();
   }));
 
   it('should replace the element with the appropriate content', function() {
@@ -85,5 +90,22 @@ describe('directive: placeholder-playlist', function() {
       expect(element.scope().getDurationTooltip(item)).to.be.equal('editor-app.playlistItem.duration: 33 editor-app.playlistItem.seconds');
     })
   });
-  
+
+  describe('sortItem:', function() {
+    it('should initialize the function', function() {
+      var element = $compile("<placeholder-playlist></placeholder-playlist>")($rootScope);
+      $rootScope.$digest();
+      expect(element.scope().sortItem).to.be.a('function');
+    });
+
+    it('should call moveItem upon invocation', inject(function(placeholderPlaylistFactory) {
+      var element = $compile("<placeholder-playlist></placeholder-playlist>")($rootScope);
+      $rootScope.$digest();
+      expect(placeholderPlaylistFactory.moveItem).not.to.have.been.called;
+      element.scope().sortItem({oldIndex: 0, newIndex: 2});
+      $rootScope.$digest();
+      expect(placeholderPlaylistFactory.moveItem).to.have.been.calledWith(0, 2);
+    }));
+  });
+
 });

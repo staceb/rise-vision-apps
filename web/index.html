@@ -63,9 +63,10 @@
   <script src="bower_components/common-header/dist/js/dependencies.js"></script>
   <script src="bower_components/common-header/dist/js/common-header.js"></script>
   <script src="bower_components/rv-loading/loading.js"></script>
-  
+
   <script type="text/javascript" src="bower_components/angular-vertilize/angular-vertilize.js"></script>
 
+  <script type="text/javascript" src="bower_components/Sortable/Sortable.js"></script>
   <script src="bower_components/rv-common-app-components/dist/js/search-filter.js"></script>
   <script src="bower_components/rv-common-app-components/dist/js/focus-me.js"></script>
   <script src="bower_components/rv-common-app-components/dist/js/confirm-instance.js"></script>
@@ -74,7 +75,7 @@
   <script src="bower_components/rv-common-app-components/dist/js/distribution-selector.js"></script>
   <script src="bower_components/rv-common-app-components/dist/js/presentation-selector.js"></script>
   <script src="bower_components/rv-common-app-components/dist/js/background-image-setting.js"></script>
-  
+
   <script src="bower_components/widget-settings-ui-core/dist/widget-settings-ui-core.js"></script>
 
   <!-- Background image settings widget component -->
@@ -82,30 +83,31 @@
   <script src="bower_components/widget-settings-ui-components/dist/js/angular/tooltip.js"></script>
   <script src="bower_components/widget-settings-ui-components/dist/js/angular/url-field.js"></script>
   <script src="bower_components/widget-settings-ui-components/dist/js/angular/position-setting.js"></script>
-  
+
   <!-- Codemirror HTML Editor component -->
   <script type="text/javascript" src="bower_components/codemirror/lib/codemirror.js"></script>
   <script type="text/javascript" src="bower_components/codemirror/mode/xml/xml.js"></script>
   <script type="text/javascript" src="bower_components/codemirror/mode/javascript/javascript.js"></script>
   <script type="text/javascript" src="bower_components/codemirror/mode/css/css.js"></script>
   <script type="text/javascript" src="bower_components/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-  
+
   <script type="text/javascript" src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
-  
+
   <script type="text/javascript" src="bower_components/jszip/dist/jszip.js"></script>
-  
-<!-- 
+
+<!--
   Questionable deps:
   <script src="bower_components/angular-bootstrap-show-errors/src/showErrors.min.js"></script>
   <script src="bower_components/rv-common-i18n/dist/i18n.js"></script>
  -->
-  
+
   <script src="tmp/partials.js"></script>
 
   <!-- app js -->
   <script src="scripts/config/config.js"></script>
   <script src="scripts/app.js"></script>
-  <script src="scripts/common/controllers/ctr-app.js"></script>  
+  <script src="scripts/common/controllers/ctr-app.js"></script>
+  <script src="scripts/common/directives/dtv-rv-sortable.js"></script>
   <script src="scripts/common/services/svc-access.js"></script>
   <script src="scripts/common/services/svc-email.js"></script>
 
@@ -114,7 +116,7 @@
   <script src="scripts/launcher/controllers/ctr-signin.js"></script>
   <script src="scripts/launcher/directives/dtv-priority-support-banner.js"></script>
   <script src="scripts/launcher/services/svc-launcher-tracker.js"></script>
-  
+
   <!-- schedules -->
   <script src="scripts/schedules/services/svc-schedule.js"></script>
   <script src="scripts/schedules/services/svc-schedule-factory.js"></script>
@@ -127,7 +129,7 @@
   <script src="scripts/schedules/controllers/ctr-schedule-details.js"></script>
   <script src="scripts/schedules/controllers/ctr-schedule-add.js"></script>
   <script src="scripts/schedules/controllers/ctr-playlist-item-modal.js"></script>
-  
+
   <!-- displays -->
   <script src="scripts/displays/services/svc-display.js"></script>
   <script src="scripts/displays/services/svc-display-factory.js"></script>
@@ -140,7 +142,7 @@
   <script src="scripts/displays/filters/ftr-resolution.js"></script>
   <script src="scripts/displays/directives/dtv-time-picker.js"></script>
   <script src="scripts/displays/directives/dtv-download-player.js"></script>
-      
+
   <script src="scripts/displays/directives/dtv-display-fields.js"></script>
   <script src="scripts/displays/controllers/ctr-displays-list.js"></script>
   <script src="scripts/displays/controllers/ctr-display-controls.js"></script>
@@ -211,18 +213,18 @@
   <script src="scripts/storage/services/svc-file-selector-factory.js"></script>
   <script src="scripts/storage/services/svc-file-actions-factory.js"></script>
   <script src="scripts/storage/services/svc-file-upload.js"></script>
-  <script src="scripts/storage/services/svc-files-factory.js"></script> 
+  <script src="scripts/storage/services/svc-files-factory.js"></script>
   <script src="scripts/storage/services/svc-storage.js"></script>
   <script src="scripts/storage/services/svc-upload-uri.js"></script>
   <script src="scripts/storage/services/svc-download-factory.js"></script>
   <script src="scripts/storage/services/svc-file-retriever.js"></script>
 
-  <script src="scripts/storage/filters/ftr-filters.js"></script>  
+  <script src="scripts/storage/filters/ftr-filters.js"></script>
   <script src="scripts/storage/directives/dtv-storage-selector.js"></script>
   <script src="scripts/storage/directives/dtv-storage-file-select.js"></script>
   <script src="scripts/storage/directives/dtv-storage-breadcrumb.js"></script>
   <script src="scripts/storage/directives/dtv-thumbnail-image.js"></script>
-  
+
   <script src="scripts/storage/controllers/ctr-files-list.js"></script>
   <script src="scripts/storage/controllers/ctr-empty-state.js"></script>
   <script src="scripts/storage/controllers/ctr-storage-selector-modal.js"></script>
@@ -232,7 +234,7 @@
   <script src="scripts/storage/controllers/ctr-copy-url-modal.js"></script>
   <script src="scripts/storage/controllers/ctr-subscription-status.js"></script>
   <script src="scripts/storage/controllers/ctr-upload.js"></script>
-  
+
   <!-- endbuild -->
 
 </body>
