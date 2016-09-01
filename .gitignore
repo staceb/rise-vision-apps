@@ -9,3 +9,4 @@ tmp
 web/tmp
 web/scripts/config/config.js
 test/e2e/config/config.json
+.DS_Store
