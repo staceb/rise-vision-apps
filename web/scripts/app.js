@@ -384,6 +384,7 @@ angular.module('risevision.apps', [
         templateProvider: ['$templateCache', function ($templateCache) {
           return $templateCache.get('partials/editor/artboard.html');
         }],
+        reloadOnSearch: false,
         controller: 'ArtboardController',
         resolve: {
           canAccess: ['canAccessApps',
@@ -400,6 +401,7 @@ angular.module('risevision.apps', [
           return $templateCache.get(
             'partials/editor/html-editor.html');
         }],
+        reloadOnSearch: false,
         controller: 'HtmlEditorController',
         resolve: {
           canAccess: ['canAccessApps',

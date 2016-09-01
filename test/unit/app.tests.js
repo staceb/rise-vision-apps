@@ -91,6 +91,27 @@ describe('app:', function() {
     });
   });
 
+  describe('state apps.editor.workspace.artboard:',function(){
+    it('should register state',function(){
+      var state = $state.get('apps.editor.workspace.artboard')
+      expect(state).to.be.ok;
+      expect(state.url).to.equal('');
+      expect(state.controller).to.be.ok;
+      expect(state.reloadOnSearch).to.be.false;      
+    });
+  });
+  
+
+  describe('state apps.editor.workspace.htmleditor:',function(){
+    it('should register state',function(){
+      var state = $state.get('apps.editor.workspace.htmleditor')
+      expect(state).to.be.ok;
+      expect(state.url).to.equal('/htmleditor');
+      expect(state.controller).to.be.ok;
+      expect(state.reloadOnSearch).to.be.false;      
+    });
+  });
+
 
   it('should open add display modal when addDisplay event is sent',function(){
     var spy = sinon.spy(displayFactory,'addDisplayModal');
