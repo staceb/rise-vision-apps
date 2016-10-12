@@ -17,7 +17,7 @@ angular.module('risevision.storage.services')
         // Handles the case where a file inside a folder was added (since files are not visible, only adds the folder)
         var fileName = idx >= 0 ? newFile.name.substring(0, idx + 1) :
           newFile.name;
-        var existingFileNameIndex;
+        var existingFileNameIndex = -1;
 
         for (var i = 0, j = svc.filesDetails.files.length; i < j; i += 1) {
           if (svc.filesDetails.files[i].name === fileName) {
@@ -27,13 +27,13 @@ angular.module('risevision.storage.services')
         }
 
         if (idx >= 0) {
-          if (!existingFileNameIndex) {
+          if (existingFileNameIndex === -1) {
             svc.filesDetails.files.push({
               name: fileName,
               kind: 'folder'
             });
           }
-        } else if (existingFileNameIndex) {
+        } else if (existingFileNameIndex !== -1) {
           svc.filesDetails.files.splice(existingFileNameIndex, 1, newFile);
         } else {
           svc.filesDetails.files.push(newFile);
