@@ -14,8 +14,8 @@ angular.module('risevision.displays.directives')
             $scope.timezones = TIMEZONES;
 
             $scope.isChromeOs = function (display) {
-              return display && display.os && display.os.indexOf('cros') !==
-                -1;
+              return display && display.os && (display.os.indexOf('cros') !==
+                -1 && display.os.indexOf('icrosoft') === -1);
             };
 
             $scope.canReboot = function (display) {
