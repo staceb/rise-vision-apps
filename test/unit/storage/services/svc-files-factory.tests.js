@@ -145,6 +145,14 @@ describe('service: filesFactory:', function() {
         expect(filesFactory.filesDetails.files.length).to.equal(6);
       });
     });
+
+    it('should not duplicate first item - fix issue', function () {
+      return filesFactory.refreshFilesList().then(function() {
+        filesFactory.addFile({ name: 'test1' });
+
+        expect(filesFactory.filesDetails.files.length).to.equal(4);
+      });
+    });
   
     it('should add one folder', function () {
       return filesFactory.refreshFilesList().then(function() {
