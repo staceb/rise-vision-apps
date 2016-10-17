@@ -35,6 +35,7 @@ describe('directive: storage-file-select', function() {
 
     $rootScope.file = {
       name: "file1.jpg",
+      timeCreated: '123',
       metadata: {
         thumbnail: 'http://example.com/thumb.jpg'
       }
@@ -46,10 +47,10 @@ describe('directive: storage-file-select', function() {
     $rootScope.$apply();
   }
 
-  it('should render thumbnail', function() {
+  it('should render thumbnail appending timeCreated for cache bursting', function() {
     _compile();
     expect(element.scope().isSvg).to.be.false;
-    expect(element.scope().imgSrc).to.equal('http://example.com/thumb.jpg=s100-ci');
+    expect(element.scope().imgSrc).to.equal('http://example.com/thumb.jpg=s100-ci?_=123');
     expect(element.scope().imgClasses).to.equal('');
   });
 
