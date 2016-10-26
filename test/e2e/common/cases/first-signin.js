@@ -82,8 +82,11 @@ var FirstSigninScenarios = function() {
         autoScheduleModalPage.getCloseButton().click();
       });
 
+      it('removes current SubCompany',function(){
+        commonHeaderPage.deleteCurrentCompany();
+      });
+
       after(function(){
-        commonHeaderPage.deleteCurrentCompany(); //deleting the SubCompany
         commonHeaderPage.deleteAllSubCompanies();
       });
       
