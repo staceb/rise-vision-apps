@@ -6,7 +6,7 @@ angular.module('risevision.editor.directives')
       return {
         scope: {
           popOnEventEnabled: '=',
-          popOnEvent:'@'
+          popOnEvent: '@'
         },
         restrict: 'A',
         link: function (scope, element) {

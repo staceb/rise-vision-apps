@@ -27,30 +27,30 @@ angular.module('risevision.storage.controllers')
           storage.createFolder(storageFactory.folderPath + $scope.folderName)
             .then(function (resp) {
 
-            if (resp.code === 200) {
-              $rootScope.$emit('refreshSubscriptionStatus',
-                'trial-available');
-              filesFactory.refreshFilesList();
-              $modalInstance.close($scope.folderName);
+              if (resp.code === 200) {
+                $rootScope.$emit('refreshSubscriptionStatus',
+                  'trial-available');
+                filesFactory.refreshFilesList();
+                $modalInstance.close($scope.folderName);
 
-            } else if (resp.code === 403 && resp.message.indexOf(
-                'restricted-role') === -1) {
-              $translate('storage-client.' + resp.message, {
-                username: resp.userEmail
-              }).then(function (msg) {
+              } else if (resp.code === 403 && resp.message.indexOf(
+                  'restricted-role') === -1) {
+                $translate('storage-client.' + resp.message, {
+                  username: resp.userEmail
+                }).then(function (msg) {
+                  $scope.accessDenied = true;
+                  $scope.accessDeniedMessage = msg;
+                });
+              } else if (resp.code === 403) {
                 $scope.accessDenied = true;
-                $scope.accessDeniedMessage = msg;
-              });
-            } else if (resp.code === 403) {
-              $scope.accessDenied = true;
-            } else {
-              $scope.respCode = resp.code;
-              $scope.accessDenied = true;
-            }
+              } else {
+                $scope.respCode = resp.code;
+                $scope.accessDenied = true;
+              }
 
-          }).finally(function () {
-            $scope.waitingForResponse = false;
-          });
+            }).finally(function () {
+              $scope.waitingForResponse = false;
+            });
         }
       };
       $scope.cancel = function () {

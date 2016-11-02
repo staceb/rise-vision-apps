@@ -43,7 +43,7 @@
                   }
                   if (scope.file.metadata && scope.file.metadata.thumbnail) {
                     imgSrc = scope.file.metadata.thumbnail +
-                      '=s100-ci' + '?_='+scope.file.timeCreated;
+                      '=s100-ci' + '?_=' + scope.file.timeCreated;
                   } else {
                     if (storageFactory.fileIsImage(scope.file)) {
                       isSvg = true;

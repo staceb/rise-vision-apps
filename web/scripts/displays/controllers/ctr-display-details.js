@@ -2,9 +2,11 @@
 
 angular.module('risevision.displays.controllers')
   .controller('displayDetails', ['$scope', '$q', '$state',
-    'displayFactory', 'display', '$loading', '$log', '$modal', '$templateCache',
+    'displayFactory', 'display', '$loading', '$log', '$modal',
+    '$templateCache',
     'displayId',
-    function ($scope, $q, $state, displayFactory, display, $loading, $log, $modal,
+    function ($scope, $q, $state, displayFactory, display, $loading, $log,
+      $modal,
       $templateCache, displayId) {
       $scope.factory = displayFactory;
       $scope.displayService = display;

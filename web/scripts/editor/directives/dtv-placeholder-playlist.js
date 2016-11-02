@@ -32,7 +32,7 @@ angular.module('risevision.editor.directives')
           $scope.remove = function (item) {
             var modalInstance = $modal.open({
               template: $templateCache.get(
-              'confirm-instance/confirm-modal.html'),
+                'confirm-instance/confirm-modal.html'),
               controller: 'confirmInstance',
               windowClass: 'modal-custom',
               resolve: {
