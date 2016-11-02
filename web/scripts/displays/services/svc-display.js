@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   /*jshint camelcase: false */
@@ -7,7 +7,8 @@
     .constant('DISPLAY_WRITABLE_FIELDS', [
       'name', 'status', 'useCompanyAddress', 'addressDescription', 'street',
       'unit', 'city', 'province', 'country', 'postalCode', 'timeZoneOffset',
-      'restartEnabled', 'restartTime', 'browserUpgradeMode', 'width', 'height',
+      'restartEnabled', 'restartTime', 'browserUpgradeMode', 'width',
+      'height',
       'orientation'
     ])
     .constant('DISPLAY_SEARCH_FIELDS', [
@@ -18,7 +19,7 @@
       'getDisplayStatus', 'pick', 'DISPLAY_WRITABLE_FIELDS',
       'DISPLAY_SEARCH_FIELDS',
       function ($q, $log, coreAPILoader, userState, getDisplayStatus, pick,
-         DISPLAY_WRITABLE_FIELDS, DISPLAY_SEARCH_FIELDS) {
+        DISPLAY_WRITABLE_FIELDS, DISPLAY_SEARCH_FIELDS) {
 
         var createSearchQuery = function (fields, search) {
           var query = '';
@@ -37,14 +38,16 @@
             var deferred = $q.defer();
 
             var query = search.query ?
-              createSearchQuery(DISPLAY_SEARCH_FIELDS, search.query) : '';
+              createSearchQuery(DISPLAY_SEARCH_FIELDS, search.query) :
+              '';
 
             var obj = {
               'companyId': userState.getSelectedCompanyId(),
               'search': query,
               'cursor': cursor,
               'count': search.count,
-              'sort': search.sortBy + (search.reverse ? ' desc' : ' asc')
+              'sort': search.sortBy + (search.reverse ? ' desc' :
+                ' asc')
             };
             $log.debug('list displays called with', obj);
             coreAPILoader().then(function (coreApi) {
@@ -55,28 +58,28 @@
 
             return deferred.promise;
 
-            function onGetListSuccess (resp) {
+            function onGetListSuccess(resp) {
               var result = resp.result;
 
               //eager digest
               deferred.resolve(result);
 
-              if(result.items) {
-                var displayIds = result.items.map(function(item) {
+              if (result.items) {
+                var displayIds = result.items.map(function (item) {
                   return item.id;
                 });
 
                 service.statusLoading = true;
 
-                getDisplayStatus(displayIds).then(function(statuses) {
+                getDisplayStatus(displayIds).then(function (statuses) {
                   _mergeStatuses(result.items, statuses);
-                }).finally(function() {
+                }).finally(function () {
                   service.statusLoading = false;
                 });
               }
             }
 
-            function onFailure (e) {
+            function onFailure(e) {
               $log.error('Failed to get list of displays.', e);
               deferred.reject(e);
             }
@@ -97,12 +100,12 @@
                 deferred.resolve(resp.result);
 
                 var item = resp.result.item;
-                if(item) {
+                if (item) {
                   service.statusLoading = true;
 
-                  getDisplayStatus([item.id]).then(function(statuses) {
+                  getDisplayStatus([item.id]).then(function (statuses) {
                     _mergeStatus(item, statuses[0]);
-                  }).finally(function() {
+                  }).finally(function () {
                     service.statusLoading = false;
                   });
                 }
@@ -233,24 +236,24 @@
       }
     ]);
 
-    function _mergeStatuses(items, statuses) {
-      var lookup = {};
+  function _mergeStatuses(items, statuses) {
+    var lookup = {};
 
-      statuses.forEach(function(s) {
-        for (var key in s) {
-          lookup[key] = s[key];
-        }
-      });
-
-      items.forEach(function(item) {
-        _mergeStatus(item, lookup);
-      });
-    }
-
-    function _mergeStatus(item, lookup) {
-      if(lookup[item.id] === true) {
-        item.onlineStatus = 'online';
+    statuses.forEach(function (s) {
+      for (var key in s) {
+        lookup[key] = s[key];
       }
+    });
+
+    items.forEach(function (item) {
+      _mergeStatus(item, lookup);
+    });
+  }
+
+  function _mergeStatus(item, lookup) {
+    if (lookup[item.id] === true) {
+      item.onlineStatus = 'online';
     }
+  }
 
 })();

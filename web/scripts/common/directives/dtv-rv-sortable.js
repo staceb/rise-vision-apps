@@ -4,7 +4,9 @@ angular.module('risevision.apps.directives')
   .directive('rvSortable', [function () {
     return {
       restrict: 'AC',
-      scope: { onSort: '&' },
+      scope: {
+        onSort: '&'
+      },
       link: function ($scope, $element) {
         var sortable;
 
@@ -17,14 +19,16 @@ angular.module('risevision.apps.directives')
             animation: 150,
             handle: '.rv-sortable-handle',
             draggable: '.rv-sortable-item',
-            onEnd: function(evt) {
-              if($scope.onSort) {
-                $scope.onSort({ evt: evt });
+            onEnd: function (evt) {
+              if ($scope.onSort) {
+                $scope.onSort({
+                  evt: evt
+                });
               }
             }
           });
 
-          $scope.$on('$destroy', function() {
+          $scope.$on('$destroy', function () {
             sortable.destroy();
           });
         }
