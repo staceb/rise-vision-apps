@@ -82,7 +82,7 @@ angular.module('risevision.editor.services')
         }
       };
 
-      factory.showWidgetModal = function (item) {
+      factory.showWidgetModal = function (item, softUpdate) {
         if (!item || !item.objectReference && !item.settingsUrl) {
           return;
         }
@@ -127,7 +127,9 @@ angular.module('risevision.editor.services')
             _updateItemObjectData(item, widgetData.params);
             item.additionalParams = widgetData.additionalParams;
 
-            placeholderPlaylistFactory.updateItem(item);
+            if (!softUpdate) {
+              placeholderPlaylistFactory.updateItem(item);
+            }
           }
 
           $log.info('Widget saved:', widgetData);

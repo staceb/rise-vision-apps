@@ -162,6 +162,18 @@ describe('service: widgetModalFactory:', function() {
       done();
     }, 10);
   });
+
+  it('should update item but nort Playlist if soft update',function(done){
+    widgetModalFactory.showWidgetModal(item,true);
+    
+    setTimeout(function() {
+      expect(item.additionalParams).to.equal('updatedParams');
+      
+      expect(placeholderPlaylistFactory.items).to.have.length(0);
+      
+      done();
+    }, 10);
+  });
   
   it('should cancel',function(done){
     updateParams = false;
