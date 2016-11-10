@@ -16,7 +16,7 @@ describe('filter: status', function() {
     expect(status()).to.equal('notinstalled');
   });
 
-  it('should default to notinstalled if display does not have any attribute',function(){
+  it('should default to notinstalled if display does not have player version',function(){
     var display = {
     }
     expect(status(display)).to.equal('notinstalled');
@@ -24,6 +24,7 @@ describe('filter: status', function() {
     
   it('should show blocked display',function() {
     var display = {
+      playerVersion: 'RisePlayer',
       blockExpiryDate: 'Jan1'
     }
     
@@ -32,7 +33,7 @@ describe('filter: status', function() {
 
   it('should show offline display',function() {
     var display = {
-      lastActivityDate: 'Jan1',
+      playerVersion: 'RisePlayer',
       playerErrorCode: 0
     };
     expect(status(display)).to.equal("offline");
@@ -40,7 +41,7 @@ describe('filter: status', function() {
   
   it('should show error display',function() {
     var display = {
-      lastActivityDate: 'Jan1',
+      playerVersion: 'RisePlayer',
       playerErrorCode: 1
     };
     expect(status(display)).to.equal("error");
@@ -48,7 +49,7 @@ describe('filter: status', function() {
   
   it('should show online display',function() {
     var display = {
-      lastActivityDate: 'Jan1',
+      playerVersion: 'RisePlayer',
       playerErrorCode: 0,
       onlineStatus: "online"
     };
@@ -57,7 +58,7 @@ describe('filter: status', function() {
   
   it('should show error display',function() {
     var display = {
-      lastActivityDate: 'Jan1',
+      playerVersion: 'RisePlayer',
       playerErrorCode: 0,
       onlineStatus: "offline"
     };

@@ -1,8 +1,8 @@
 <div class="form-group" ng-class="{'has-error': !displayDetails.name.$pristine && displayDetails.name.$invalid}" show-errors>
   <label class="control-label">{{'displays-app.fields.name.name' | translate}} *</label>
-  <div ng-class="{'input-group custom-addon': display.lastActivityDate}">
+  <div ng-class="{'input-group custom-addon': display.playerVersion}">
     <input type="text" class="form-control" placeholder="Display Name" id="name" name="name" ng-model="display.name" required>
-    <span class="input-group-addon" ng-show="display.lastActivityDate">
+    <span class="input-group-addon" ng-show="display.playerVersion">
       <div class="form-control-static nowrap" ng-if="display.id">
         <i ng-if="displayService.statusLoading" class="fa fa-spinner fa-spin fa-fw"></i>
         <i ng-if="!displayService.statusLoading" class="fa {{display | status}} fa-circle icon-left"></i>
@@ -15,7 +15,7 @@
 </div>
 
 <!--      INSTALL PLAYER      -->
-<div ng-show="display.id && !display.lastActivityDate">
+<div ng-show="display.id && !display.playerVersion">
 
   <div class="text-right add-top add-bottom">
     <button class="btn btn-link" ng-click="showHelp = !showHelp" ng-hide="showHelp">{{ 'displays-app.fields.controls.howtoInstall' | translate }}</button>
@@ -51,7 +51,7 @@
 
 </div>
 
-<div class="form-group" ng-show="display.lastActivityDate" ng-controller="displayControls">
+<div class="form-group" ng-show="display.playerVersion" ng-controller="displayControls">
   <hr />
 
   <div class="form-group form-inline">

@@ -11,7 +11,7 @@ angular.module('risevision.displays.filters')
           return 'blocked';
         } else if (display.onlineStatus === 'online') {
           return 'online';
-        } else if (display.lastActivityDate) {
+        } else if (display.playerVersion) {
           if (display.playerErrorCode && display.playerErrorCode !== 0) {
             return 'error';
           } else {
