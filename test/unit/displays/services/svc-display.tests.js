@@ -1,6 +1,7 @@
 'use strict';
 describe('service: display:', function() {
   var CONNECTION_TIME = Date.now();
+  var screenshotRequesterMock, imageBlobLoaderMock;
 
   beforeEach(module('risevision.displays.services'));
   beforeEach(module(function ($provide) {
@@ -24,7 +25,17 @@ describe('service: display:', function() {
         });
 
         return deferred.promise;
-      }
+      };
+    });
+    $provide.factory('screenshotRequester', function($q) {
+      return function(ids) {
+        return screenshotRequesterMock($q);
+      };
+    });
+    $provide.factory('imageBlobLoader', function($q) {
+      return function() {
+        return imageBlobLoaderMock($q);
+      };
     });
     $provide.service('userState',function(){
       return {
@@ -487,6 +498,54 @@ describe('service: display:', function() {
       expect(display.hasSchedule({ scheduleId: "1" })).to.be.truely;
       expect(display.hasSchedule({ scheduleId: "" })).to.be.falsey;
       expect(display.hasSchedule({ scheduleId: "DEMO" })).to.be.falsey;
+    });
+  });
+
+  describe('requestScreenshot', function() {
+    it('should successfully request a screenshot', function() {
+      screenshotRequesterMock = function($q) {
+        return $q.resolve({ msg: 'screenshot-saved' });
+      };
+
+      display.requestScreenshot()
+        .then(function(resp) {
+          expect(resp.msg).to.equal('screenshot-saved');
+        });
+    });
+
+    it('should handled failed screenshot requests', function() {
+      screenshotRequesterMock = function($q) {
+        return $q.reject('screenshot-failed');
+      };
+
+      display.requestScreenshot()
+        .catch(function(resp) {
+          expect(resp).to.equal('screenshot-failed');
+        });
+    });
+  });
+
+  describe('loadScreenshot', function() {
+    it('should successfully load a screenshot', function() {
+      imageBlobLoaderMock = function($q) {
+        return $q.resolve({ imageUrl: '' });
+      };
+
+      display.loadScreenshot()
+        .then(function(resp) {
+          expect(resp.imageUrl).to.be.truely;
+        });
+    });
+
+    it('should handle failed screenshot requests', function() {
+      imageBlobLoaderMock = function($q) {
+        return $q.reject({ err: 'timeout' });
+      };
+
+      display.loadScreenshot()
+        .catch(function(resp) {
+          expect(resp.err).to.equal('timeout');
+        });
     });
   });
 });
