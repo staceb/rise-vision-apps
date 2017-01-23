@@ -7,14 +7,14 @@ angular.module('risevision.editor.directives')
         restrict: 'E',
         templateUrl: 'partials/editor/toolbar.html',
         link: function ($scope) {
-            $scope.addNewPlaceholder = function () {
-              placeholdersFactory.addNewPlaceholder();
-            };
+          $scope.addNewPlaceholder = function () {
+            placeholdersFactory.addNewPlaceholder();
+          };
 
-            $scope.openProperties = function () {
-              editorFactory.openPresentationProperties();
-            };
-          } //link()
+          $scope.openProperties = function () {
+            editorFactory.openPresentationProperties();
+          };
+        } //link()
       };
     }
   ]);

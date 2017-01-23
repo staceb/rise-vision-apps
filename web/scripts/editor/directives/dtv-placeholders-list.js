@@ -10,39 +10,39 @@ angular.module('risevision.editor.directives')
         scope: true,
         templateUrl: 'partials/editor/placeholders-list.html',
         link: function ($scope) {
-            $scope.factory = placeholdersFactory;
-            $scope.editorFactory = editorFactory;
+          $scope.factory = placeholdersFactory;
+          $scope.editorFactory = editorFactory;
 
-            $scope.manage = function (placeholder) {
-              placeholderFactory.setPlaceholder(placeholder);
-            };
+          $scope.manage = function (placeholder) {
+            placeholderFactory.setPlaceholder(placeholder);
+          };
 
-            $scope.remove = function (placeholder) {
-              var modalInstance = $modal.open({
-                template: $templateCache.get(
-                  'confirm-instance/confirm-modal.html'),
-                controller: 'confirmInstance',
-                windowClass: 'modal-custom',
-                resolve: {
-                  confirmationTitle: function () {
-                    return 'editor-app.details.removePlaceholder';
-                  },
-                  confirmationMessage: function () {
-                    return '' +
-                      'editor-app.details.removePlaceholderWarning';
-                  },
-                  confirmationButton: function () {
-                    return 'editor-app.details.remove';
-                  },
-                  cancelButton: null
-                }
-              });
+          $scope.remove = function (placeholder) {
+            var modalInstance = $modal.open({
+              template: $templateCache.get(
+                'confirm-instance/confirm-modal.html'),
+              controller: 'confirmInstance',
+              windowClass: 'modal-custom',
+              resolve: {
+                confirmationTitle: function () {
+                  return 'editor-app.details.removePlaceholder';
+                },
+                confirmationMessage: function () {
+                  return '' +
+                    'editor-app.details.removePlaceholderWarning';
+                },
+                confirmationButton: function () {
+                  return 'editor-app.details.remove';
+                },
+                cancelButton: null
+              }
+            });
 
-              modalInstance.result.then(function () {
-                placeholdersFactory.removePlaceholder(placeholder);
-              });
-            };
-          } //link()
+            modalInstance.result.then(function () {
+              placeholdersFactory.removePlaceholder(placeholder);
+            });
+          };
+        } //link()
       };
     }
   ]);

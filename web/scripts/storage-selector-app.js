@@ -35,60 +35,60 @@ angular.module('risevision.apps.storage.storage-selector', [
 
       // Use $stateProvider to configure states.
       $stateProvider.state('apps', {
-        template: '<div ui-view></div>'
-      })
+          template: '<div ui-view></div>'
+        })
 
-      .state('apps.launcher', {
-        abstract: true,
-        template: '<div class="website" ui-view></div>'
-      })
+        .state('apps.launcher', {
+          abstract: true,
+          template: '<div class="website" ui-view></div>'
+        })
 
-      .state('apps.launcher.unregistered', {
-        templateProvider: ['$templateCache', function ($templateCache) {
-          return $templateCache.get(
-            'partials/launcher/signup.html');
-        }]
-      })
+        .state('apps.launcher.unregistered', {
+          templateProvider: ['$templateCache', function ($templateCache) {
+            return $templateCache.get(
+              'partials/launcher/signup.html');
+          }]
+        })
 
-      // storage
-      .state('apps.storage', {
-        url: '?cid',
-        abstract: true,
-        template: '<div class="storage-app" ui-view ' +
-          'off-canvas-content></div>'
-      })
+        // storage
+        .state('apps.storage', {
+          url: '?cid',
+          abstract: true,
+          template: '<div class="storage-app" ui-view ' +
+            'off-canvas-content></div>'
+        })
 
-      .state('apps.storage.unauthorized', {
-        templateProvider: ['$templateCache', function ($templateCache) {
-          return $templateCache.get(
-            'partials/storage/login.html');
-        }]
-      })
+        .state('apps.storage.unauthorized', {
+          templateProvider: ['$templateCache', function ($templateCache) {
+            return $templateCache.get(
+              'partials/storage/login.html');
+          }]
+        })
 
-      .state('apps.storage.home', {
-        url: '/',
-        templateProvider: ['$templateCache', function ($templateCache) {
-          return $templateCache.get(
-            'partials/storage/storage-modal.html');
-        }],
-        controller: 'StorageSelectorModalController',
-        resolve: {
-          enableByURL: function () {
-            return false;
-          },
-          '$modalInstance': [function () {
-            return {
-              close: function () {},
-              dismiss: function () {}
-            };
+        .state('apps.storage.home', {
+          url: '/',
+          templateProvider: ['$templateCache', function ($templateCache) {
+            return $templateCache.get(
+              'partials/storage/storage-modal.html');
           }],
-          canAccessStorage: ['canAccessStorage',
-            function (canAccessStorage) {
-              return canAccessStorage();
-            }
-          ]
-        }
-      });
+          controller: 'StorageSelectorModalController',
+          resolve: {
+            enableByURL: function () {
+              return false;
+            },
+            '$modalInstance': [function () {
+              return {
+                close: function () {},
+                dismiss: function () {}
+              };
+            }],
+            canAccessStorage: ['canAccessStorage',
+              function (canAccessStorage) {
+                return canAccessStorage();
+              }
+            ]
+          }
+        });
 
     }
   ])

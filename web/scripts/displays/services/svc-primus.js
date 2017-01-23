@@ -1,5 +1,6 @@
 angular.module('risevision.displays.services')
-  .factory('loadPrimus', ['$q', '$window', 'MESSAGING_URL', function ($q, $window, MESSAGING_URL) {
+  .factory('loadPrimus', ['$q', '$window', 'MESSAGING_URL', function ($q,
+    $window, MESSAGING_URL) {
     return {
       create: function () {
         var deferred = $q.defer();
@@ -16,13 +17,14 @@ angular.module('risevision.displays.services')
     };
   }])
 
-  .factory('getDisplayStatus', ['loadPrimus', '$q', '$timeout', function (loadPrimus, $q, $timeout) {
+  .factory('getDisplayStatus', ['loadPrimus', '$q', '$timeout', function (
+    loadPrimus, $q, $timeout) {
     return function (displayIds) {
       var deferred = $q.defer();
 
       loadPrimus.create()
         .then(function (primus) {
-          var timer = $timeout(function() {
+          var timer = $timeout(function () {
             primus.end();
             deferred.reject('timeout');
           }, 10000);
@@ -54,13 +56,14 @@ angular.module('risevision.displays.services')
     };
   }])
 
-  .factory('screenshotRequester', ['loadPrimus', '$q', '$timeout', function (loadPrimus, $q, $timeout) {
+  .factory('screenshotRequester', ['loadPrimus', '$q', '$timeout', function (
+    loadPrimus, $q, $timeout) {
     return function (coreRequester) {
       var deferred = $q.defer();
 
       loadPrimus.create()
         .then(function (primus) {
-          var timer = $timeout(function() {
+          var timer = $timeout(function () {
             primus.end();
             deferred.reject('timeout');
           }, 10000);
@@ -68,17 +71,15 @@ angular.module('risevision.displays.services')
           primus.on('data', function (data) {
             if (data.msg === 'client-connected') {
               coreRequester(data.clientId)
-                .then(null, function(err) {
+                .then(null, function (err) {
                   primus.end();
                   deferred.reject(err);
                 });
-            }
-            else if (data.msg === 'screenshot-saved') {
+            } else if (data.msg === 'screenshot-saved') {
               $timeout.cancel(timer);
               primus.end();
               deferred.resolve(data);
-            }
-            else if (data.msg === 'screenshot-failed') {
+            } else if (data.msg === 'screenshot-failed') {
               primus.end();
               deferred.reject('screenshot-failed');
             }
