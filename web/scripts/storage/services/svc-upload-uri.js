@@ -31,7 +31,7 @@ angular.module('risevision.storage.services')
 
         return storage.getResumableUploadURI(file.name, file.type)
 
-        .then(function (resp) {
+          .then(function (resp) {
             if (resp.result === false) {
               if (resp.message === 'upload-inactive-subscription') {
                 resp.message = inactiveSubscription({

@@ -16,9 +16,11 @@
       'postalCode'
     ])
     .service('display', ['$q', '$log', 'coreAPILoader', 'userState',
-      'getDisplayStatus', 'pick', 'DISPLAY_WRITABLE_FIELDS',
+      'getDisplayStatus', 'screenshotRequester', 'imageBlobLoader', 'pick',
+      'DISPLAY_WRITABLE_FIELDS',
       'DISPLAY_SEARCH_FIELDS',
-      function ($q, $log, coreAPILoader, userState, getDisplayStatus, pick,
+      function ($q, $log, coreAPILoader, userState, getDisplayStatus,
+        screenshotRequester, imageBlobLoader, pick,
         DISPLAY_WRITABLE_FIELDS, DISPLAY_SEARCH_FIELDS) {
 
         var createSearchQuery = function (fields, search) {
@@ -233,6 +235,33 @@
           hasSchedule: function (display) {
             return display && display.scheduleId && display.scheduleId !==
               'DEMO';
+          },
+          requestScreenshot: function (displayId) {
+            $log.debug('request screenshot called with', displayId);
+
+            return screenshotRequester(function (clientId) {
+                return coreAPILoader().then(function (coreApi) {
+                  return coreApi.display.requestScreenshot({
+                    id: displayId,
+                    clientId: clientId
+                  });
+                });
+              })
+              .then(function (resp) {
+                $log.debug('request screenshot resp', resp);
+                return resp;
+              })
+              .then(null, function (e) {
+                $log.error('Failed screenshot request', e);
+                return $q.reject(e);
+              });
+          },
+          loadScreenshot: function (displayId) {
+            var url =
+              'https://storage.googleapis.com/risevision-display-screenshots/' +
+              displayId + '.jpg';
+
+            return imageBlobLoader(url);
           }
         };
 

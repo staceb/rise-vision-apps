@@ -8,12 +8,12 @@ angular.module('risevision.editor.directives')
         scope: true,
         templateUrl: 'partials/editor/sidebar.html',
         link: function ($scope) {
-            $scope.factory = placeholderFactory;
+          $scope.factory = placeholderFactory;
+          $scope.showPlaylist = true;
+          $scope.$watch('factory.placeholder', function () {
             $scope.showPlaylist = true;
-            $scope.$watch('factory.placeholder', function () {
-              $scope.showPlaylist = true;
-            });
-          } //link()
+          });
+        } //link()
       };
     }
   ]);

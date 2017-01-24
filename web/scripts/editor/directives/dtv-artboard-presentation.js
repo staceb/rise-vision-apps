@@ -12,33 +12,33 @@ angular.module('risevision.editor.directives')
         restrict: 'E',
         templateUrl: 'partials/editor/artboard-presentation.html',
         link: function ($scope, element, attrs) {
-            var heightIncrement = PRESENTATION_TOOLBAR_SIZE +
-              PRESENTATION_BORDER_SIZE;
-            var widthIncrement = 2 * PRESENTATION_BORDER_SIZE;
+          var heightIncrement = PRESENTATION_TOOLBAR_SIZE +
+            PRESENTATION_BORDER_SIZE;
+          var widthIncrement = 2 * PRESENTATION_BORDER_SIZE;
 
-            $scope.editorFactory = editorFactory;
-            $scope.placeholderFactory = placeholderFactory;
-            element.addClass('artboard-presentation');
+          $scope.editorFactory = editorFactory;
+          $scope.placeholderFactory = placeholderFactory;
+          element.addClass('artboard-presentation');
 
-            $scope.$watch('editorFactory.presentation', function () {
-              $scope.presentation = editorFactory.presentation;
-              element.css('width', ($scope.presentation.width +
-                  widthIncrement) + $scope.presentation
-                .widthUnits);
-              element.css('height', ($scope.presentation.height +
-                  heightIncrement) + $scope.presentation
-                .heightUnits);
-              element.css('background', $scope.presentation.backgroundStyle);
-              element.css('backgroundSize',
-                $scope.presentation.backgroundScaleToFit ? 'contain' :
-                '');
-            }, true);
+          $scope.$watch('editorFactory.presentation', function () {
+            $scope.presentation = editorFactory.presentation;
+            element.css('width', ($scope.presentation.width +
+                widthIncrement) + $scope.presentation
+              .widthUnits);
+            element.css('height', ($scope.presentation.height +
+                heightIncrement) + $scope.presentation
+              .heightUnits);
+            element.css('background', $scope.presentation.backgroundStyle);
+            element.css('backgroundSize',
+              $scope.presentation.backgroundScaleToFit ? 'contain' :
+              '');
+          }, true);
 
-            $scope.showEmptyState = function () {
-              return !editorFactory.presentation.id && !$scope.hasUnsavedChanges &&
-                !$stateParams.copyPresentation;
-            };
-          } //link()
+          $scope.showEmptyState = function () {
+            return !editorFactory.presentation.id && !$scope.hasUnsavedChanges &&
+              !$stateParams.copyPresentation;
+          };
+        } //link()
       };
     }
   ]);
