@@ -25,8 +25,7 @@ describe('Filters: ', function() {
     });
     
     it('should show folder label', function () {
-      // should be 'Folder' but the translation is missing
-      expect(fileTypeFilter('someFolder/')).to.equal('');
+      expect(fileTypeFilter('someFolder/')).to.equal('common.folder');
     });
   });
   
@@ -51,10 +50,8 @@ describe('Filters: ', function() {
     });
     
     it('should replace trash label', function () {
-      expect(fileNameFilter('--TRASH--/', '')).to.equal('/');
-
-      // should be 'trash/hello.txt' but the translation is missing
-      expect(fileNameFilter('--TRASH--/hello.txt', '')).to.equal('/hello.txt');
+      expect(fileNameFilter('--TRASH--/', '')).to.equal('storage-client.trash/');
+      expect(fileNameFilter('--TRASH--/hello.txt', '')).to.equal('storage-client.trash/hello.txt');
     });
   });
 
