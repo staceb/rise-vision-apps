@@ -2,12 +2,8 @@
 
 /* Filters */
 angular.module('risevision.storage.filters')
-  .filter('fileTypeFilter', ['$translate', function ($translate) {
-    var folderLabel = '';
-
-    $translate('common.folder').then(function (value) {
-      folderLabel = value;
-    });
+  .filter('fileTypeFilter', ['$filter', function ($filter) {
+    var folderLabel = $filter('translate')('common.folder');
 
     return function (filename) {
       var re = /(?:\.([^.]+))?$/;
@@ -26,14 +22,10 @@ angular.module('risevision.storage.filters')
       return '';
     };
   }])
-  .filter('fileNameFilter', ['$translate', function ($translate) {
+  .filter('fileNameFilter', ['$filter', function ($filter) {
     var trash = '--TRASH--/';
 
-    var trashLabel = '';
-
-    $translate(['storage-client.trash']).then(function (values) {
-      trashLabel = values['storage-client.trash'];
-    });
+    var trashLabel = $filter('translate')('storage-client.trash');
 
     return function (filename, currentFolder) {
       var returnValue = filename;
