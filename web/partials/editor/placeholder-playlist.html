@@ -42,7 +42,7 @@
       <p class="playlist-item-name" ng-hide="item.type === 'widget' && (item.objectReference || item.settingsUrl)">{{item.name}}</p>
       <p>
 
-        <span class="text-small text-muted u_remove-bottom" ng-if="item.isSubscribed">
+        <span class="text-small text-muted u_remove-bottom" ng-if="item.statusMessage !== 'Free' && item.statusMessage !== 'Subscribed'">
           <span class="playlist-item-status" ng-click="playlistItemFactory.edit(item)">{{item.statusMessage}}</span>
         </span>
       </p>
