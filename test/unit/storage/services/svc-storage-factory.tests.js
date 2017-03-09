@@ -203,6 +203,9 @@ describe('service: storageFactory:', function() {
 
     storageFactory.folderPath = '--TRASH--/';
     expect(storageFactory.isTrashFolder()).to.be.true;
+
+    storageFactory.folderPath = '--TRASH--/subfolder/';
+    expect(storageFactory.isTrashFolder()).to.be.true;
   });
 
   it('fileIsImage:',function(){

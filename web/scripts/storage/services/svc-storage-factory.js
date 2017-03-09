@@ -134,7 +134,7 @@ angular.module('risevision.storage.services')
 
 
       factory.isTrashFolder = function () {
-        return factory.folderPath === '--TRASH--/';
+        return factory.folderPath.lastIndexOf('--TRASH--/', 0) === 0;
       };
 
       factory.addFolder = function () {
