@@ -1,11 +1,11 @@
 'use strict';
 angular.module('risevision.storage.services')
   .factory('fileActionsFactory', ['$rootScope',
-    'fileSelectorFactory', 'filesFactory', 'storage',
-    'downloadFactory', '$modal', '$translate',
+    'fileSelectorFactory', 'filesFactory', 'storage', 'storageFactory',
+    'downloadFactory', '$modal', '$translate', 'localStorageService', '$q',
     'STORAGE_FILE_URL',
-    function ($rootScope, fileSelectorFactory, filesFactory,
-      storage, downloadFactory, $modal, $translate, STORAGE_FILE_URL) {
+    function ($rootScope, fileSelectorFactory, filesFactory, storage, storageFactory,
+      downloadFactory, $modal, $translate, localStorageService, $q, STORAGE_FILE_URL) {
       var factory = {};
 
       factory.statusDetails = {
@@ -172,6 +172,91 @@ angular.module('risevision.storage.services')
       factory.getActivePendingOperations = function () {
         return factory.pendingOperations.filter(function (op) {
           return !op.actionFailed;
+        });
+      };
+
+      factory.refreshThumbnail = function(file) {
+        if(!storageFactory.fileIsFolder(file)) {
+          return storage.files.get({ file: file.name })
+            .then(function (resp) {
+              return resp && resp.files && resp.files[0] ? resp.files[0] : file;
+            });
+        }
+        else {
+          return $q.resolve(angular.copy(file));
+        }
+      };
+
+      factory.renameObject = function(sourceObject, newName) {
+        var suffix = storageFactory.fileIsFolder(sourceObject) && !storageFactory.fileIsFolder({ name: newName }) ? "/" : "";
+        var renameName = newName + suffix;
+        var newObject = angular.copy(sourceObject);
+
+        return storage.rename(sourceObject.name, renameName)
+          .then(function(resp) {
+            if(resp.code !== 200) {
+              return resp;
+            }
+            else {
+              newObject.name = renameName;
+
+              return factory.refreshThumbnail(newObject)
+                .then(function(file) {
+                  filesFactory.removeFiles([sourceObject]);
+                  filesFactory.addFile(newObject);
+                  fileSelectorFactory.resetSelections();
+
+                  return resp;
+                });
+            }
+          });
+      };
+
+      factory.showBreakLinkWarning = function (infoLine1Key, infoLine2Key, warningKey, confirmKey, cancelKey, localStorageKey) {
+        var hideWarning = localStorageService.get(localStorageKey) === 'true';
+
+        if(hideWarning) {
+          return $q.resolve();
+        }
+
+        return $modal.open({
+          templateUrl: 'partials/storage/break-link-warning-modal.html',
+          controller: 'BreakLinkWarningModalCtrl',
+          size: 'md',
+          resolve: {
+            infoLine1Key: function() { return infoLine1Key; },
+            infoLine2Key: function() { return infoLine2Key; },
+            warningKey: function() { return warningKey; },
+            confirmKey: function() { return confirmKey; },
+            cancelKey: function() { return cancelKey; },
+            localStorageKey: function() { return localStorageKey; }
+          }
+        }).result;
+      };
+
+      factory.showRenameBreakLinkWarning = function() {
+        var prefix = 'storage-client.rename.';
+
+        return factory.showBreakLinkWarning(prefix + 'breaking-link1',
+                                            prefix + 'breaking-link2',
+                                            prefix + 'breaking-link-hide-warning',
+                                            'common.ok',
+                                            'common.cancel',
+                                            'breakingLinkWarning.hideWarning');
+      };
+
+      factory.renameButtonClick = function (sourceName) {
+        return factory.showRenameBreakLinkWarning().then(function () {
+          var renameModal = $modal.open({
+            templateUrl: 'partials/storage/rename-modal.html',
+            controller: 'RenameModalCtrl',
+            size: 'md',
+            resolve: {
+              sourceObject: function () {
+                return fileSelectorFactory.getSelectedFiles()[0];
+              }
+            }
+          });
         });
       };
 

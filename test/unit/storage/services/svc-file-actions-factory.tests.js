@@ -1,9 +1,22 @@
 'use strict';
 describe('service: fileActionsFactory', function() {
+  var fileActionsFactory, fileSelectorFactory, storage, filesFactory,
+      downloadFactory, $modal, $rootScope, selectedFiles, apiResponse, localStorageService;
+  var getResponse, renameResponse;
+  var sandbox = sinon.sandbox.create();
+
+  var modalOpenMock = function() {
+    return {
+      result: {
+        then: function(cb){ cb(); }
+      }
+    };
+  };
+
   beforeEach(module('risevision.storage.services'));
   beforeEach(module(function ($provide) {
     $provide.service('$q', function() {return Q;});
-    
+
     $provide.factory('fileSelectorFactory',function () {
       return fileSelectorFactory = {
         getSelectedFiles: function() {
@@ -18,19 +31,38 @@ describe('service: fileActionsFactory', function() {
         filesDetails: {
           files: []
         },
+        addFile: function(){},
         removeFiles: function(){}
       };
     });
 
     $provide.factory('storage',function () {
       return storage = {
-        trash: { 
+        trash: {
           move: function(){
             return {
               then:function(cb){
                 if (apiResponse) cb(apiResponse);
               }
+            };
+          }
+        },
+        files: {
+          get: function() {
+            if(getResponse && getResponse.error) {
+              return Q.reject(getResponse);
             }
+            else {
+              return Q.resolve(getResponse);
+            }
+          }
+        },
+        rename: function() {
+          if(renameResponse && renameResponse.error) {
+            return Q.reject(renameResponse);
+          }
+          else {
+            return Q.resolve(renameResponse);
           }
         }
       };
@@ -48,16 +80,26 @@ describe('service: fileActionsFactory', function() {
       };
     });
 
+    $provide.factory('localStorageService', function () {
+      return localStorageService = {
+        get: function() {},
+        set: function() {}
+      };
+    });
+
   }));
-  var fileActionsFactory, fileSelectorFactory, storage, filesFactory, 
-    downloadFactory, $modal, $rootScope, selectedFiles, apiResponse;
-  beforeEach(function(){        
+
+  beforeEach(function(){
     inject(function($injector){
       selectedFiles = null;
       apiResponse = null;
       $rootScope = $injector.get('$rootScope');
       fileActionsFactory = $injector.get('fileActionsFactory');
     });
+  });
+
+  afterEach(function(){
+    sandbox.restore();
   });
 
   it('should exist',function(){
@@ -226,5 +268,162 @@ describe('service: fileActionsFactory', function() {
       expect(fileActionsFactory.getActivePendingOperations())
         .to.not.contain(fileActionsFactory.pendingOperations[1]);
     });
-  });  
+  });
+
+  describe('refreshThumbnail: ', function() {
+    it('should refresh the thumbnail for a file', function(done) {
+      sandbox.spy(storage.files, 'get');
+
+      getResponse = { files: [{ name: "test.jpg" }] };
+
+      fileActionsFactory.refreshThumbnail({ name: "test.jpg" })
+        .then(function(resp) {
+          storage.files.get.should.have.been.called;
+          expect(resp.name).to.equal('test.jpg');
+          done();
+        });
+    });
+
+    it('should not refresh the thumbnail for a folder', function(done) {
+      sandbox.spy(storage.files, 'get');
+
+      fileActionsFactory.refreshThumbnail({ name: "folder/" })
+        .then(function(resp) {
+          storage.files.get.should.not.have.been.called;
+          expect(resp.name).to.equal('folder/');
+          done();
+        });
+    });
+  });
+
+  describe('rename: ', function() {
+    it('should rename a file', function(done) {
+      sandbox.spy(storage.files, 'get');
+      sandbox.spy(storage, 'rename');
+      sandbox.spy(filesFactory, 'addFile');
+      sandbox.spy(filesFactory, 'removeFiles');
+      sandbox.spy(fileSelectorFactory, 'resetSelections');
+
+      getResponse = { files: [{ name: "test2.jpg" }] };
+      renameResponse = { code: 200 };
+
+      fileActionsFactory.renameObject({ name: "test.jpg" }, "test2.jpg")
+        .then(function() {
+          storage.rename.should.have.been.called;
+          storage.files.get.should.have.been.called;
+          filesFactory.addFile.should.have.been.called;
+          filesFactory.removeFiles.should.have.been.called;
+          fileSelectorFactory.resetSelections.should.have.been.called;
+
+          expect(storage.rename.getCall(0).args[0]).to.equal('test.jpg');
+          expect(storage.rename.getCall(0).args[1]).to.equal('test2.jpg');
+          expect(storage.files.get.getCall(0).args[0].file).to.equal('test2.jpg');
+          expect(filesFactory.removeFiles.getCall(0).args[0][0].name).to.equal('test.jpg');
+          expect(filesFactory.addFile.getCall(0).args[0].name).to.equal('test2.jpg');
+          done();
+        });
+    });
+
+    it('should rename a folder', function(done) {
+      sandbox.spy(storage.files, 'get');
+      sandbox.spy(storage, 'rename');
+      sandbox.spy(filesFactory, 'addFile');
+      sandbox.spy(filesFactory, 'removeFiles');
+      sandbox.spy(fileSelectorFactory, 'resetSelections');
+
+      renameResponse = { code: 200 };
+
+      fileActionsFactory.renameObject({ name: "folder1/" }, "folder2")
+        .then(function() {
+          storage.rename.should.have.been.called;
+          storage.files.get.should.not.have.been.called;
+          filesFactory.addFile.should.have.been.called;
+          filesFactory.removeFiles.should.have.been.called;
+          fileSelectorFactory.resetSelections.should.have.been.called;
+
+          expect(storage.rename.getCall(0).args[0]).to.equal('folder1/');
+          expect(storage.rename.getCall(0).args[1]).to.equal('folder2/');
+          expect(filesFactory.removeFiles.getCall(0).args[0][0].name).to.equal('folder1/');
+          expect(filesFactory.addFile.getCall(0).args[0].name).to.equal('folder2/');
+          done();
+      });
+    });
+
+    it('should fail to rename the file because of business logic error', function(done) {
+      sandbox.spy(storage.files, 'get');
+      sandbox.spy(storage, 'rename');
+      sandbox.spy(filesFactory, 'addFile');
+      sandbox.spy(filesFactory, 'removeFiles');
+
+      getResponse = { files: [{ name: "test2.jpg" }] };
+      renameResponse = { code: 404, message: "not-found" };
+
+      fileActionsFactory.renameObject({ name: "test.jpg" }, "test2.jpg")
+        .then(function() {
+          storage.rename.should.have.been.called;
+          storage.files.get.should.not.have.been.called;
+
+          done();
+        });
+    });
+
+    it('should fail to rename the file because of server error', function(done) {
+      sandbox.spy(storage.files, 'get');
+      sandbox.spy(storage, 'rename');
+      sandbox.spy(filesFactory, 'addFile');
+      sandbox.spy(filesFactory, 'removeFiles');
+
+      getResponse = { files: [{ name: "test2.jpg" }] };
+      renameResponse = { error: true };
+
+      fileActionsFactory.renameObject({ name: "test.jpg" }, "test2.jpg");
+
+      setTimeout(function() {
+        storage.rename.should.have.been.called;
+        storage.files.get.should.not.have.been.called;
+
+        done();
+      }, 0);
+    });
+  });
+
+  describe('showBreakLinkWarning:', function(){
+    it('should open warning modal',function(){
+      sandbox.stub(localStorageService, "get").returns('false');
+      sandbox.stub($modal, 'open', modalOpenMock);
+
+      return fileActionsFactory.showBreakLinkWarning()
+        .then(function() {
+          $modal.open.should.have.been.called;
+          expect($modal.open.getCall(0).args[0].templateUrl).to.equal('partials/storage/break-link-warning-modal.html');
+          expect($modal.open.getCall(0).args[0].controller).to.equal('BreakLinkWarningModalCtrl');
+        });
+    });
+
+    it('should not open warning modal',function(){
+      sandbox.stub(localStorageService, "get").returns('true');
+      sandbox.stub($modal, 'open', modalOpenMock);
+
+      return fileActionsFactory.showBreakLinkWarning()
+        .then(function() {
+          $modal.open.should.not.have.been.called;
+        });
+    });
+  });
+
+  describe('renameButtonClick:', function(){
+    it('should open rename modal',function(){
+      sandbox.stub(localStorageService, "get").returns('true');
+      sandbox.stub($modal, 'open', modalOpenMock);
+      selectedFiles = ['file1'];
+
+      return fileActionsFactory.renameButtonClick()
+        .then(function() {
+          $modal.open.should.have.been.calledOnce;
+          expect($modal.open.getCall(0).args[0].templateUrl).to.equal('partials/storage/rename-modal.html');
+          expect($modal.open.getCall(0).args[0].controller).to.equal('RenameModalCtrl');
+          expect($modal.open.getCall(0).args[0].resolve.sourceObject()).to.equal('file1');
+        });
+    });
+  });
 });

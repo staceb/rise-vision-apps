@@ -102,7 +102,7 @@ angular.module('risevision.storage.services')
       var _fileHasExtension = function (file, allowedExtensions) {
         var fileType = $filter('fileTypeFilter')(file.name);
         return allowedExtensions.indexOf(fileType.toLowerCase()) !== -1;
-      }
+      };
 
       factory.canSelect = function (file) {
         return !factory.fileIsTrash(file) && !file.isThrottled &&
@@ -124,14 +124,23 @@ angular.module('risevision.storage.services')
         return file.name === '--TRASH--/';
       };
 
+      factory.fileName = function (file) {
+        return file.name.substr(factory.fileParent(file).length);
+      };
+
+      factory.fileParent = function (file) {
+        var idx = file.name.length - (factory.fileIsFolder(file) ? 2 : 1);
+
+        return file.name.substr(0, file.name.lastIndexOf('/', idx) + 1);
+      };
+
       factory.fileIsImage = function (file) {
         return _fileHasExtension(file, SELECTOR_FILTERS.IMAGES.extensions);
-      }
+      };
 
       factory.fileIsVideo = function (file) {
         return _fileHasExtension(file, SELECTOR_FILTERS.VIDEOS.extensions);
-      }
-
+      };
 
       factory.isTrashFolder = function () {
         return factory.folderPath.lastIndexOf('--TRASH--/', 0) === 0;
