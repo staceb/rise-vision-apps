@@ -53,7 +53,7 @@ angular.module('risevision.schedules.services')
             deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('get', e);
+            _showErrorMessage('Get', e);
 
             deferred.reject();
           })
@@ -137,7 +137,7 @@ angular.module('risevision.schedules.services')
             }
           })
           .then(null, function (e) {
-            _showErrorMessage('add', e);
+            _showErrorMessage('Add', e);
           })
           .finally(function () {
             factory.loadingSchedule = false;
@@ -162,7 +162,7 @@ angular.module('risevision.schedules.services')
             deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('update', e);
+            _showErrorMessage('Update', e);
 
             deferred.reject();
           })
@@ -190,7 +190,7 @@ angular.module('risevision.schedules.services')
             $state.go('apps.schedules.list');
           })
           .then(null, function (e) {
-            _showErrorMessage('delete', e);
+            _showErrorMessage('Delete', e);
           })
           .finally(function () {
             factory.loadingSchedule = false;
@@ -206,8 +206,8 @@ angular.module('risevision.schedules.services')
 
       var _showErrorMessage = function (action, e) {
         factory.errorMessage = 'Failed to ' + action + ' Schedule!';
-        factory.apiError = e.result.error.message ? e.result.error.message :
-          e.result.error.toString();
+        factory.apiError = e.result && e.result.error.message ? e.result.error.message :
+          e.toString();
       };
 
       return factory;
