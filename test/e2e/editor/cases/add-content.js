@@ -57,7 +57,6 @@ var AddContentScenarios = function() {
 
     before('Add Presentation & Placeholder: ', function () {
       presentationsListPage.openNewPresentation();
-      presentationPropertiesModalPage.getCancelButton().click();
 
       helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
 

@@ -30,8 +30,7 @@ var PresentationListPage = function() {
     helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader());
     storeProductsModalPage.getAddBlankPresentation().click();
     
-    helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
-    browser.sleep(500);
+    helper.wait(workspacePage.getWorkspaceContainer(), 'Workspace Container');
   }
 
   this.getEditorAppContainer = function() {

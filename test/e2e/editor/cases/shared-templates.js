@@ -92,7 +92,7 @@ var SharedTemplatesScenarios = function() {
       });      
     });
 
-    it('should open a copy of Shared Template when selecting', function(){
+    xit('should open a copy of Shared Template when selecting', function(){
       sharedTemplatesModalPage.getTemplates().get(0).click();
       helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
 

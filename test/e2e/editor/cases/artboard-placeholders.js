@@ -42,7 +42,6 @@ var ArtboardPlaceholdersScenarios = function() {
           loginPage.signIn();
         });
         presentationsListPage.openNewPresentation();
-        presentationPropertiesModalPage.getCancelButton().click();
 
         helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
       });
