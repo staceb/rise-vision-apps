@@ -368,10 +368,8 @@ angular.module('risevision.apps', [
                     if (copyOf) {
                       return editorFactory.copyTemplate(null, copyOf);
                     }
-                    editorFactory.openPresentationProperties();
                     return editorFactory.newPresentation();
                   } else {
-                    editorFactory.openPresentationProperties();
                     return editorFactory.presentation;
                   }
                 });

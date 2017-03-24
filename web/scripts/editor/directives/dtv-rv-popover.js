@@ -5,20 +5,17 @@ angular.module('risevision.editor.directives')
     function ($timeout, editorFactory) {
       return {
         scope: {
-          popOnEventEnabled: '=',
-          popOnEvent: '@'
+          popOnEventEnabled: '='
         },
         restrict: 'A',
         link: function (scope, element) {
-          scope.$on(scope.popOnEvent, function () {
-            if (!editorFactory.presentation.id && scope.popOnEventEnabled) {
+          if (!editorFactory.presentation.id && scope.popOnEventEnabled) {
               scope.$parent.tooltipClasses = 'animated bounce'
               $timeout(function () {
                 element.trigger('show');
                 scope.$parent.tooltipClasses = ''
               });
-            }
-          });
+          }
 
           element.on('mouseenter', function () {
             if (!editorFactory.presentation.id) {
