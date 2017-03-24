@@ -7,7 +7,6 @@ var PresentationsListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var ArtboardPage = require('./../pages/artboardPage.js');
 var PlaceholdersListPage = require('./../pages/placeholdersListPage.js');
-var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
 var helper = require('rv-common-e2e').helper;
 
 var ArtboardPlaceholdersScenarios = function() {
@@ -21,7 +20,6 @@ var ArtboardPlaceholdersScenarios = function() {
     var workspacePage;
     var artboardPage;
     var placeholdersListPage;
-    var presentationPropertiesModalPage;
 
     before(function () {
       homepage = new HomePage();
@@ -31,7 +29,6 @@ var ArtboardPlaceholdersScenarios = function() {
       artboardPage = new ArtboardPage();
       placeholdersListPage = new PlaceholdersListPage();
       commonHeaderPage = new CommonHeaderPage();
-      presentationPropertiesModalPage = new PresentationPropertiesModalPage();
     });
 
     describe(' Given a user is adding a new presentation and a new placeholder', function () {

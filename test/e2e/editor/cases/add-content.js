@@ -5,7 +5,6 @@ var LoginPage = require('./../../launcher/pages/loginPage.js');
 var CommonHeaderPage = require('rv-common-e2e').commonHeaderPage;
 var PresentationsListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
-var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
 var PlaceholdersListPage = require('./../pages/placeholdersListPage.js');
 var PlaceholderSettingsPage = require('./../pages/placeholderSettingsPage.js');
 var PlaceholderPlaylistPage = require('./../pages/placeholderPlaylistPage.js');
@@ -26,7 +25,6 @@ var AddContentScenarios = function() {
     var workspacePage;
     var placeholdersListPage;
     var placeholderSettingsPage;
-    var presentationPropertiesModalPage;
     var placeholderPlaylistPage;
     var playlistItemModalPage;
     var widgetSettingsPage;
@@ -41,7 +39,6 @@ var AddContentScenarios = function() {
       placeholdersListPage = new PlaceholdersListPage();
       placeholderSettingsPage = new PlaceholderSettingsPage();
       commonHeaderPage = new CommonHeaderPage();
-      presentationPropertiesModalPage = new PresentationPropertiesModalPage();
       placeholderPlaylistPage = new PlaceholderPlaylistPage();
       playlistItemModalPage = new PlaylistItemModalPage();
       widgetSettingsPage = new WidgetSettingsPage();

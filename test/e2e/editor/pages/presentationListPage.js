@@ -2,7 +2,7 @@
 
 var helper = require('rv-common-e2e').helper;
 var StoreProductsModalPage = require('./storeProductsModalPage.js');
-var PresentationPropertiesModalPage = require('./presentationPropertiesModalPage.js');
+var WorkspacePage = require('./workspacePage.js');
 
 var PresentationListPage = function() {
   var editorAppContainer = element(by.css('.editor-app'));
@@ -22,7 +22,7 @@ var PresentationListPage = function() {
 
   this.openNewPresentation = function() {
     var storeProductsModalPage = new StoreProductsModalPage();
-    var presentationPropertiesModalPage = new PresentationPropertiesModalPage();
+    var workspacePage = new WorkspacePage();
 
     helper.waitDisappear(presentationsLoader,'Presentation loader');
     presentationAddButton.click();
