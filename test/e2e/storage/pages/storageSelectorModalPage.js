@@ -11,6 +11,7 @@ var StorageSelectorModalPage = function() {
   var selectFilesButton = element(by.id('selectFilesButton'));
   var byURLButton = element(by.id('byURLButton'));
   var closeButton = element(by.id('closeButton'));
+  var startTrialButton = element(by.id('startTrialButton'));
 
   this.getStorageSelectorModal = function() {
     return storageSelectorModal;
@@ -50,6 +51,10 @@ var StorageSelectorModalPage = function() {
 
   this.getUploadPanel = function() {
     return uploadPanel;
+  };
+
+  this.getStartTrialButton = function() {
+    return startTrialButton;
   };
 
 };
