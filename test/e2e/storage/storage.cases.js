@@ -7,6 +7,7 @@ DownloadScenarios = require('./cases/download.js');
 TrashScenarios = require('./cases/trash.js');
 IframeScenarios = require('./cases/iframe.js');
 DismissModalScenarios = require('./cases/dismiss-modal.js');
+TrialScenarios = require('./cases/trial.js');
 
 storageSelectorScenarios = new StorageSelectorScenarios();
 newFolderModalScenarios = new NewFolderModalScenarios();
@@ -17,3 +18,4 @@ downloadScenarios = new DownloadScenarios();
 trashScenarios = new TrashScenarios();
 iframeScenarios = new IframeScenarios();
 dismissModalScenarios = new DismissModalScenarios();
+trialScenarios = new TrialScenarios();
