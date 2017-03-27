@@ -50,6 +50,10 @@ var ArtboardScenarios = function() {
 
       describe("Given a user clicks on the presentation properties cog icon", function () {
         it('should represent the selected properties size', function () {
+          workspacePage.getPresentationPropertiesButton().click();
+          helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
+          browser.sleep(500);
+
           presentationPropertiesModalPage.getBackgroundColorInput().clear();
           presentationPropertiesModalPage.getBackgroundColorInput().sendKeys('rgba(201,34,34,1)');
           presentationPropertiesModalPage.getResolutionSelect().element(by.cssContainingText('option', '1024 x 768')).click();

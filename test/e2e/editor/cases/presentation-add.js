@@ -38,7 +38,6 @@ var PresentationAddScenarios = function() {
         loginPage.signIn();
       });
       presentationsListPage.openNewPresentation();
-      presentationPropertiesModalPage.getCancelButton().click();
     });
 
     it('should show Add Placeholder button', function () {

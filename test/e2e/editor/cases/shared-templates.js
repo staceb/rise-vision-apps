@@ -6,7 +6,6 @@ var CommonHeaderPage = require('rv-common-e2e').commonHeaderPage;
 var PresentationListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var helper = require('rv-common-e2e').helper;
-var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
 var SharedTemplatesModalPage = require('./../pages/sharedTemplatesModalPage.js');
 
 var SharedTemplatesScenarios = function() {
@@ -20,7 +19,6 @@ var SharedTemplatesScenarios = function() {
     var commonHeaderPage;
     var presentationsListPage;
     var workspacePage;
-    var presentationPropertiesModalPage;
     var sharedTemplatesModalPage;
 
     before(function () {
@@ -29,7 +27,6 @@ var SharedTemplatesScenarios = function() {
       presentationsListPage = new PresentationListPage();
       workspacePage = new WorkspacePage();
       commonHeaderPage = new CommonHeaderPage();
-      presentationPropertiesModalPage = new PresentationPropertiesModalPage();
       sharedTemplatesModalPage = new SharedTemplatesModalPage();
 
       homepage.getEditor();
@@ -94,9 +91,9 @@ var SharedTemplatesScenarios = function() {
 
     it('should open a copy of Shared Template when selecting', function(){
       sharedTemplatesModalPage.getTemplates().get(0).click();
-      helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
+      helper.wait(workspacePage.getWorkspaceContainer(), 'Workspace Container');
 
-      expect(presentationPropertiesModalPage.getNameInput().getAttribute('value')).to.eventually.contain('Copy of ');
+      expect(workspacePage.getPresentationNameContainer().getText()).to.eventually.contain('Copy of ');
     });
 
     afterEach(function(){

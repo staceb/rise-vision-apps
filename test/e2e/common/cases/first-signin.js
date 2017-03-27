@@ -58,10 +58,8 @@ var FirstSigninScenarios = function() {
         helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader());
         storeProductsModalPage.getAddBlankPresentation().click();
         
-        helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
-        browser.sleep(500);
-        expect(presentationPropertiesModalPage.getPresentationPropertiesModal().isDisplayed()).to.eventually.be.true;
-        presentationPropertiesModalPage.getApplyButton().click();
+        helper.wait(workspacePage.getWorkspaceContainer(), 'Workspace Container');
+        expect(workspacePage.getWorkspaceContainer().isDisplayed()).to.eventually.be.true;
       });
 
       it('should show Change Template button', function () {

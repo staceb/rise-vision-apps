@@ -23,8 +23,8 @@ describe('directive: rv-popover', function() {
     expect(element[0].outerHTML).to.equal('<span rv-popover="" class="ng-scope ng-isolate-scope">mock</span>');
   });
 
-  it('should show animated popover when watched event is fired and  event watch is enabled',function(done) {  
-    var element = $compile('<span pop-on-event="presentationPropertiesDismissed" pop-on-event-enabled="true" rv-popover>mock</span>')($rootScope);
+  it('should show animated popover on init and  event watch is enabled',function(done) {  
+    var element = $compile('<span pop-on-event-enabled="true" rv-popover>mock</span>')($rootScope);
     //expects `show` event to be triggered
     element.on('show', function() {
       expect(element.scope().tooltipClasses).to.be.equal('animated bounce');
@@ -32,19 +32,17 @@ describe('directive: rv-popover', function() {
     });
 
     $rootScope.$apply();
-    $rootScope.$broadcast('presentationPropertiesDismissed');
     $timeout.flush();    
   });
 
   it('should not show popover on evene if event watch is not enabled',function(done) {  
-    var element = $compile('<span pop-on-event="presentationPropertiesDismissed" pop-on-event-enabled="false" rv-popover>mock</span>')($rootScope);
+    var element = $compile('<span pop-on-event-enabled="false" rv-popover>mock</span>')($rootScope);
 
     element.on('show', function() {
       done('Error: it should not show');
     });
 
     $rootScope.$apply();
-    $rootScope.$broadcast('presentationPropertiesDismissed');
 
     setTimeout(function(){
       done();
@@ -88,7 +86,7 @@ describe('directive: rv-popover', function() {
 
   it('should not show popover for existing presentations',function(done){
     editorFactory.presentation.id = '123';
-    var element = $compile('<span pop-on-event="presentationPropertiesDismissed" pop-on-event-enabled="true" rv-popover>mock</span>')($rootScope);
+    var element = $compile('<span pop-on-event-enabled="true" rv-popover>mock</span>')($rootScope);
 
     element.on('show', function() {
       done('Error: it should not show');

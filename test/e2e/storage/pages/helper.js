@@ -9,6 +9,7 @@
   var StorageSelectorModalPage = require('./storageSelectorModalPage.js');
   var PresentationListPage = require('./../../editor/pages/presentationListPage.js');
   var PresentationPropertiesModalPage = require('./../../editor/pages/presentationPropertiesModalPage.js');
+  var WorkspacePage = require('./../../editor/pages/workspacePage.js');
   var StorageHomePage = require('./storageHomePage.js');
   var FilesListPage = require('./filesListPage.js');
 
@@ -19,6 +20,7 @@
   var iframePage = new IframePage();
   var presentationListPage = new PresentationListPage();
   var presentationPropertiesModalPage = new PresentationPropertiesModalPage();
+  var workspacePage = new WorkspacePage();
   var storageHomePage = new StorageHomePage();
   var filesListPage = new FilesListPage();
 
@@ -58,6 +60,10 @@
         loginPage.signIn();
       });
       presentationListPage.openNewPresentation();
+      workspacePage.getPresentationPropertiesButton().click();
+      helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
+      browser.sleep(500);
+
       presentationPropertiesModalPage.getBackgroundImageCheckbox().click();
       helper.wait(presentationPropertiesModalPage.getBackgroundImageURLInput(), 'Background Image URL Input');
       presentationPropertiesModalPage.getBackgroundImageStorageButton().click();

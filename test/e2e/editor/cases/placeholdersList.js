@@ -6,7 +6,6 @@ var CommonHeaderPage = require('rv-common-e2e').commonHeaderPage;
 var PresentationsListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var PlaceholdersListPage = require('./../pages/placeholdersListPage.js');
-var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
 var helper = require('rv-common-e2e').helper;
 
 var PlaceholdersListScenarios = function() {
@@ -19,7 +18,6 @@ var PlaceholdersListScenarios = function() {
     var presentationsListPage;
     var workspacePage;
     var placeholdersListPage;
-    var presentationPropertiesModalPage;
 
     before(function () {
       homepage = new HomePage();
@@ -28,7 +26,6 @@ var PlaceholdersListScenarios = function() {
       workspacePage = new WorkspacePage();
       placeholdersListPage = new PlaceholdersListPage();
       commonHeaderPage = new CommonHeaderPage();
-      presentationPropertiesModalPage = new PresentationPropertiesModalPage();
 
       homepage.getEditor();
       //wait for spinner to go away.
@@ -40,7 +37,6 @@ var PlaceholdersListScenarios = function() {
     describe(' Given a user is adding a new presentation and a few placeholders', function () {
       before(function () {
         presentationsListPage.openNewPresentation();
-        presentationPropertiesModalPage.getCancelButton().click();
 
         helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
         helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
