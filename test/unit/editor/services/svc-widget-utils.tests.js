@@ -49,4 +49,15 @@ describe('service: widgetUtils:', function() {
     expect(widgetUtils.getWidgetId()).to.not.be.ok;    
     expect(widgetUtils.getWidgetId('1234')).to.not.be.ok;
   });
+
+  it('getFileName: ',function () {
+    expect(widgetUtils.getFileName('filename.txt')).to.equal('filename.txt');
+    expect(widgetUtils.getFileName('folder/filename.txt')).to.equal('filename.txt');
+    expect(widgetUtils.getFileName('/folder/filename.txt')).to.equal('filename.txt');
+    expect(widgetUtils.getFileName('/folder')).to.equal('folder');
+    expect(widgetUtils.getFileName('/')).to.equal('');
+    expect(widgetUtils.getFileName()).to.equal('');
+  });
+
+
 });

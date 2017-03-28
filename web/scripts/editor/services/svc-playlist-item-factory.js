@@ -125,21 +125,6 @@ angular.module('risevision.editor.services')
           });
       };
 
-      var _getFileName = function (file) {
-        if (!file) {
-          return '';
-        }
-
-        var index = file.lastIndexOf('/');
-        if (index === file.length - 1) {
-          return _getFileName(file.substr(0, file.length - 1));
-        } else if (index === -1) {
-          return file;
-        } else {
-          return file.substr(index + 1, file.length);
-        }
-      };
-
       var _getFolder = function (file) {
         if (!file) {
           return '';
@@ -166,7 +151,8 @@ angular.module('risevision.editor.services')
             additionalParams.storage.folder = file.name;
           } else {
             additionalParams.selector.selection = SELECTOR_TYPES.SINGLE_FILE;
-            additionalParams.storage.fileName = _getFileName(file.name);
+            additionalParams.storage.fileName = widgetUtils.getFileName(
+              file.name);
             additionalParams.storage.folder = _getFolder(file.name);
           }
         } else {
@@ -183,7 +169,7 @@ angular.module('risevision.editor.services')
 
         return _getItemByWidgetId(widgetUtils.getWidgetId('image'))
           .then(function (item) {
-            item.name = file ? _getFileName(file.name) : item.name;
+            item.name = file ? widgetUtils.getFileName(file.name) : item.name;
 
             item.additionalParams = _populateAdditionalParams(
               IMAGE_ADDITIONAL_PARAMS, fileUrl, file);
@@ -198,7 +184,7 @@ angular.module('risevision.editor.services')
 
         return _getItemByWidgetId(widgetUtils.getWidgetId('video'))
           .then(function (item) {
-            item.name = file ? _getFileName(file.name) : item.name;
+            item.name = file ? widgetUtils.getFileName(file.name) : item.name;
             item.playUntilDone = true;
 
             item.additionalParams = _populateAdditionalParams(
