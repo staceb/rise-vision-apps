@@ -45,8 +45,19 @@ var PresentationPropertiesScenarios = function() {
       });
 
       describe("Given a user clicks on the presentation properties cog icon", function () {
-        it('should open the properties modal', function () {
+        it('should open the properties modal when clicking cog', function () {
           workspacePage.getPresentationPropertiesButton().click();
+          helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
+          browser.sleep(500);
+          
+          expect(presentationPropertiesModalPage.getPresentationPropertiesModal().isDisplayed()).to.eventually.be.true;
+        });
+
+        it('should open the properties modal when clicking Presentation name', function () {
+          presentationPropertiesModalPage.getCancelButton().click();
+          expect(presentationPropertiesModalPage.getPresentationPropertiesModal().isPresent()).to.eventually.be.false;
+        
+          workspacePage.getPresentationNameContainer().click();
           helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
           browser.sleep(500);
           
