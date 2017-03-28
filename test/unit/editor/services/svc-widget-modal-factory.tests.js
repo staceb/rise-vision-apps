@@ -42,7 +42,7 @@ describe('service: widgetModalFactory:', function() {
           widgetObj = obj.resolve.widget();
 
           if(updateParams){
-            deferred.resolve({additionalParams: 'updatedParams', params: returnedParams});
+            deferred.resolve({additionalParams: returnedAdditionalParams, params: returnedParams});
           }else{
             deferred.reject();
           }
@@ -70,7 +70,8 @@ describe('service: widgetModalFactory:', function() {
     });
   }));
   
-  var widgetModalFactory, $modal, placeholderPlaylistFactory, item, updateParams, widgetObj, returnedParams;
+  var widgetModalFactory, $modal, placeholderPlaylistFactory, item, updateParams, widgetObj,
+  returnedParams, widgetUtils, returnedAdditionalParams;
   beforeEach(function(){
     item = {
       objectData: 'http://www.risevision.com/widget.html',
@@ -79,9 +80,11 @@ describe('service: widgetModalFactory:', function() {
     };
     updateParams = true;
     returnedParams = null;
+    returnedAdditionalParams = 'updatedParams';
 
     inject(function($injector){
       widgetModalFactory = $injector.get('widgetModalFactory');
+      widgetUtils = $injector.get('widgetUtils');
     });
   });
 
@@ -159,6 +162,49 @@ describe('service: widgetModalFactory:', function() {
       expect(placeholderPlaylistFactory.items[0]).to.have.property('additionalParams');
       expect(placeholderPlaylistFactory.items[0].additionalParams).to.equal('updatedParams');
       
+      done();
+    }, 10);
+  });
+
+  it('should update item name if same as filename',function(done){
+    item.name = 'filename.png';
+    item.objectReference = widgetUtils.getWidgetId('image');
+    item.additionalParams = JSON.stringify({selector:{storageName:'filename.png'}});
+    returnedAdditionalParams = JSON.stringify({selector:{storageName:'newfile.jpg'}});
+
+    widgetModalFactory.showWidgetModal(item);
+    
+    setTimeout(function() {
+      expect(placeholderPlaylistFactory.items[0].name).to.equal('newfile.jpg');
+      done();
+    }, 10);
+  });
+
+  it('should not update item name if name is not the same as filename',function(done){
+    item.name = 'name';
+    item.objectReference = widgetUtils.getWidgetId('image');
+    item.additionalParams = JSON.stringify({selector:{storageName:'filename.png'}});
+    returnedAdditionalParams = JSON.stringify({selector:{storageName:'newfile.jpg'}});
+
+    widgetModalFactory.showWidgetModal(item);
+    
+    setTimeout(function() {
+      expect(placeholderPlaylistFactory.items[0].name).to.not.equal('newfile.jpg');
+      expect(placeholderPlaylistFactory.items[0].name).to.equal('name');
+      done();
+    }, 10);
+  });
+
+  it('should not update item name on error',function(done){
+    item.name = 'filename.png';
+    item.objectReference = widgetUtils.getWidgetId('image');
+    item.additionalParams = JSON.stringify({selector:{storageName:'otherfilename.png'}});
+    returnedAdditionalParams = JSON.stringify({selector:null});
+
+    widgetModalFactory.showWidgetModal(item);
+    
+    setTimeout(function() {
+      expect(placeholderPlaylistFactory.items[0].name).to.equal('filename.png');
       done();
     }, 10);
   });

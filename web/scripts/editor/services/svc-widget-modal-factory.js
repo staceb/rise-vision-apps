@@ -6,10 +6,10 @@ angular.module('risevision.editor.services')
   )
   .factory('widgetModalFactory', ['$rootScope', 'placeholderFactory',
     'placeholderPlaylistFactory', 'gadgetFactory', 'userState', '$q',
-    '$modal', '$location', '$sce', '$log', 'WIDGET_PARAMS',
+    '$modal', '$location', '$sce', '$log', 'WIDGET_PARAMS', 'widgetUtils',
     function ($rootScope, placeholderFactory, placeholderPlaylistFactory,
       gadgetFactory, userState, $q, $modal, $location, $sce, $log,
-      WIDGET_PARAMS) {
+      WIDGET_PARAMS, widgetUtils) {
       var factory = {};
 
       var _getUrlParams = function (widgetUrl) {
@@ -82,6 +82,25 @@ angular.module('risevision.editor.services')
         }
       };
 
+      var _updateItemName = function (item, widgetData) {
+        if (item.objectReference === widgetUtils.getWidgetId('image') ||
+          item.objectReference === widgetUtils.getWidgetId('video')) {
+          try {
+            var oldAdditionalParams = JSON.parse(item.additionalParams);
+            var newAdditionalParams = JSON.parse(widgetData.additionalParams);
+            var oldFilename = widgetUtils.getFileName(oldAdditionalParams.selector
+              .storageName);
+            var newFilename = widgetUtils.getFileName(newAdditionalParams.selector
+              .storageName);
+            if (item.name === oldFilename && newFilename !== '') {
+              item.name = newFilename;
+            }
+          } catch (err) {
+            $log.debug('Error updating item name:', item.name)
+          }
+        }
+      };
+
       factory.showWidgetModal = function (item, softUpdate) {
         if (!item || !item.objectReference && !item.settingsUrl) {
           return;
@@ -125,6 +144,9 @@ angular.module('risevision.editor.services')
         modalInstance.result.then(function (widgetData) {
           if (widgetData) {
             _updateItemObjectData(item, widgetData.params);
+
+            _updateItemName(item, widgetData);
+
             item.additionalParams = widgetData.additionalParams;
 
             if (!softUpdate) {
