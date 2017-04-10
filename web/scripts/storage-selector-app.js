@@ -54,8 +54,7 @@ angular.module('risevision.apps.storage.storage-selector', [
         .state('apps.storage', {
           url: '?cid',
           abstract: true,
-          template: '<div class="storage-app" ui-view ' +
-            'off-canvas-content></div>'
+          template: '<div class="storage-app" ui-view></div>'
         })
 
         .state('apps.storage.unauthorized', {

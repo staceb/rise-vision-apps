@@ -211,8 +211,7 @@ angular.module('risevision.apps', [
         .state('apps.displays', {
           url: '?cid',
           abstract: true,
-          template: '<div class="container displays-app" ui-view ' +
-            'off-canvas-content></div>'
+          template: '<div class="container displays-app" ui-view></div>'
         })
 
         .state('apps.displays.home', {
@@ -303,8 +302,7 @@ angular.module('risevision.apps', [
         .state('apps.editor', {
           url: '?cid',
           abstract: true,
-          template: '<div class="editor-app" ui-view ' +
-            'off-canvas-content></div>'
+          template: '<div class="editor-app" ui-view></div>'
         })
 
         .state('apps.editor.home', {
@@ -415,8 +413,7 @@ angular.module('risevision.apps', [
         .state('apps.storage', {
           url: '?cid',
           abstract: true,
-          template: '<div class="storage-app" ui-view ' +
-            'off-canvas-content></div>'
+          template: '<div class="storage-app" ui-view></div>'
         })
 
         .state('apps.storage.home', {
