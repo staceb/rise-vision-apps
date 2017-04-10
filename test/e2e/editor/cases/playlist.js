@@ -196,8 +196,8 @@ var PlaylistScenarios = function() {
 
     });
 
-    describe('Should Add Widget by URL: ', function () {
-      before('Click Add Widget by URL: ', function () {
+    describe('Should Add a Custom Rise Widget: ', function () {
+      before('Click Add a Custom Rise Widget: ', function () {
         helper.wait(placeholderPlaylistPage.getAddContentButton(), 'Placeholder Playlist Page');
 
         placeholderPlaylistPage.getAddContentButton().click();
@@ -206,7 +206,7 @@ var PlaylistScenarios = function() {
 
         storeProductsModalPage.getAddWidgetByUrlButton().click();
 
-        helper.wait(widgetByUrlModalPage.getAddWidgetByUrlModal(), 'Add Widget By URL Modal');
+        helper.wait(widgetByUrlModalPage.getAddWidgetByUrlModal(), 'Add a Custom Rise Widget');
       });
 
       it('should close Store Products Modal', function () {
@@ -218,7 +218,7 @@ var PlaylistScenarios = function() {
       });
 
       it('should show modal title', function () {
-        expect(widgetByUrlModalPage.getModalTitle().getText()).to.eventually.equal('Add Widget by URL');
+        expect(widgetByUrlModalPage.getModalTitle().getText()).to.eventually.equal('Add a Custom Rise Widget');
       });
 
       it('should show input fields', function () {
