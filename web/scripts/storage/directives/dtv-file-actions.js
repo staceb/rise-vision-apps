@@ -38,6 +38,7 @@
 
             $scope.isDisabledDownloadButton = $scope.isDisabledTrashButton =
               $scope.isDisabledRestoreButton = $scope.isDisabledDeleteButton =
+              $scope.isDisabledDuplicateButton =
               function () {
                 return $scope.filesDetails.checkedItemsCount < 1;
               };

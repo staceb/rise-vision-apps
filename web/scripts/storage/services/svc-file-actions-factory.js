@@ -132,7 +132,7 @@ angular.module('risevision.storage.services')
                   });
                 }
                 selectedFiles.forEach(function (file) {
-                  file.actionFailed = true;
+                  pendingOperationsFactory.markPendingOperationFailed(file);
 
                   filesFactory.filesDetails.files.push(file);
                 });
@@ -176,6 +176,33 @@ angular.module('risevision.storage.services')
                 return factory.refreshThumbnail(newObject)
                   .then(function (file) {
                     filesFactory.removeFiles([sourceObject]);
+                    filesFactory.addFile(newObject);
+                    filesFactory.resetSelections();
+
+                    return resp;
+                  });
+              }
+            });
+        };
+
+        factory.duplicateObject = function (sourceObject) {
+          var newObject = angular.copy(sourceObject);
+
+          pendingOperationsFactory.addPendingOperation(sourceObject, 'duplicate');
+
+          return storage.duplicate(sourceObject.name)
+            .then(function (resp) {
+              if (resp.code !== 200) {
+                pendingOperationsFactory.markPendingOperationFailed(sourceObject);
+
+                return resp;
+              } else {
+                newObject.name = resp.message;
+
+                return factory.refreshThumbnail(newObject)
+                  .then(function (file) {
+                    pendingOperationsFactory.removePendingOperation(sourceObject);
+
                     filesFactory.addFile(newObject);
                     filesFactory.resetSelections();
 
@@ -232,7 +259,7 @@ angular.module('risevision.storage.services')
             'breakingLinkWarning.hideWarning');
         };
 
-        factory.renameButtonClick = function (sourceName) {
+        factory.renameButtonClick = function () {
           return factory.showRenameBreakLinkWarning().then(function () {
             var renameModal = $modal.open({
               templateUrl: 'partials/storage/rename-modal.html',
@@ -248,6 +275,12 @@ angular.module('risevision.storage.services')
               }
             });
           });
+        };
+
+        factory.duplicateButtonClick = function () {
+          return $q.all(filesFactory.getSelectedFiles().map(function(file) {
+            return factory.duplicateObject(file);
+          }));
         };
 
         return factory;
