@@ -16,8 +16,9 @@ describe('service: pendingOperationsFactory', function() {
 
   it('should exist',function(){
     expect(pendingOperationsFactory).to.be.truely;
-    expect(pendingOperationsFactory.pendingOperations).to.be.truely;
-    expect(pendingOperationsFactory.isPOCollapsed).to.be.truely;
+    expect(pendingOperationsFactory.pendingOperations).to.be.ok;
+    expect(pendingOperationsFactory.statusDetails).to.be.ok;
+    expect(pendingOperationsFactory.isPOCollapsed).to.be.ok;
     expect(pendingOperationsFactory.addPendingOperation).to.be.a('function');
     expect(pendingOperationsFactory.addPendingOperations).to.be.a('function');
     expect(pendingOperationsFactory.removePendingOperation).to.be.a('function');
@@ -35,6 +36,17 @@ describe('service: pendingOperationsFactory', function() {
       pendingOperationsFactory.addPendingOperations([{ name: 'file1' }, { name: 'file2' }], 'error');
       expect(pendingOperationsFactory.pendingOperations.length).to.equal(2);
     });
+    
+    it('should clear previously failed operations', function() {
+      var file1 = { name: 'file1', actionFailed: true };
+      pendingOperationsFactory.pendingOperations = [file1, { name: 'file2' }, { name: 'file3', actionFailed: true}];
+
+      pendingOperationsFactory.addPendingOperation(file1);
+      
+      expect(pendingOperationsFactory.pendingOperations.length).to.equal(2);
+      expect(pendingOperationsFactory.pendingOperations.indexOf(file1)).to.not.equal(-1);
+      expect(file1.actionFailed).to.be.false;
+    });
   });
 
   describe('removePendingOperation:',function(){
@@ -47,6 +59,14 @@ describe('service: pendingOperationsFactory', function() {
 
     it('should handle not found',function () {
       pendingOperationsFactory.removePendingOperation({ name: 'file3' });
+    });
+    
+    it('should reset actionFailed flag', function() {
+      var file1 = { name: 'file1', actionFailed: true };
+      pendingOperationsFactory.pendingOperations = [file1, { name: 'file2' }];
+      pendingOperationsFactory.removePendingOperation({ name: 'file1' });
+      expect(pendingOperationsFactory.pendingOperations.length).to.equal(1);
+      expect(file1.actionFailed).to.be.false;
     });
   });
 
