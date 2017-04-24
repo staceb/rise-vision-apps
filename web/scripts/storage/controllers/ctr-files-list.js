@@ -7,8 +7,10 @@ angular.module('risevision.storage.controllers')
       FilesFactory, storageUtils, FileUploader, $loading, $filter, $translate,
       $timeout) {
       $scope.search = {
-        doSearch: function () {}
+        doSearch: function () {},
+        reverse: false
       };
+
       var storageFactory = new StorageFactory();
       var filesFactory = new FilesFactory(storageFactory);
 
@@ -101,15 +103,24 @@ angular.module('risevision.storage.controllers')
         }
       };
 
+      $scope.sortBy = function (cat) {
+        if (cat !== $scope.search.sortBy) {
+          $scope.search.sortBy = cat;
+        } else {
+          $scope.search.reverse = !$scope.search.reverse;
+        }
+      };
+
       $scope.dateModifiedOrderFunction = function (file) {
         return file.updated ? file.updated.value : '';
       };
 
       $scope.fileNameOrderFunction = function (file) {
-        return file.name.replace('--TRASH--/', trashLabel).toLowerCase().split(" (").join("/(");
+        return file.name.replace('--TRASH--/', trashLabel).toLowerCase().split(
+          ' (').join('/(');
       };
 
-      $scope.orderByAttribute = $scope.fileNameOrderFunction;
+      $scope.search.sortBy = $scope.fileNameOrderFunction;
 
       $scope.fileExtOrderFunction = function (file) {
         return file.name.substr(-1) === '/' ?
