@@ -5,15 +5,24 @@ describe('directive: placeholder-drag', function() {
       $document,
       $scope,
       placeholder,
+      editorFactory,
       element;
 
   beforeEach(module('risevision.editor.services'));
   beforeEach(module('risevision.editor.directives'));
+  beforeEach(module(function ($provide) {
+    $provide.service('editorFactory', function(){
+      return {
+        zoomLevel: 1
+      };
+    });
+  }));
   beforeEach(module(mockTranlate()));
-  beforeEach(inject(function(_$compile_, _$rootScope_,_$document_){
+  beforeEach(inject(function(_$compile_, _$rootScope_,_$document_,_editorFactory_){
     $compile = _$compile_;
     $rootScope = _$rootScope_;
     $document = _$document_;
+    editorFactory = _editorFactory_;
     $scope = $rootScope.$new();
     placeholder = {
       "width": 294,
@@ -55,6 +64,17 @@ describe('directive: placeholder-drag', function() {
       $document.triggerHandler({type:'mouseup',pageX:30,pageY:30});
       expect(placeholder.top).to.equal(550);
       expect(placeholder.left).to.equal(70);       
+    });
+
+    it('should consider zoomLevel',function(){
+      editorFactory.zoomLevel = 0.1;
+      $scope.$apply();
+      element.triggerHandler({type:'mousedown',pageX:10,pageY:10});
+      $document.triggerHandler({type:'mousemove',pageX:30,pageY:30});
+      $document.triggerHandler({type:'mouseup',pageX:30,pageY:30});
+      $scope.$apply();
+      expect(placeholder.top).to.equal(730);
+      expect(placeholder.left).to.equal(250);       
     });
   });
 });

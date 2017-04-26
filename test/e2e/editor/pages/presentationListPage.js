@@ -31,6 +31,7 @@ var PresentationListPage = function() {
     storeProductsModalPage.getAddBlankPresentation().click();
     
     helper.wait(workspacePage.getWorkspaceContainer(), 'Workspace Container');
+    browser.sleep(500);
   }
 
   this.getEditorAppContainer = function() {

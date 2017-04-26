@@ -6,9 +6,7 @@ describe('directive: toolbar', function() {
       $q,
       element,
       addNewPlaceholderCalled,
-      currentState,
-      openPresentationPropertiesCalled,
-      validatePresentationResp;
+      openPresentationPropertiesCalled;
 
   beforeEach(module('risevision.editor.controllers'));
   beforeEach(module('risevision.editor.services'));
@@ -20,9 +18,6 @@ describe('directive: toolbar', function() {
         presentation: {},
         openPresentationProperties: function() {
           openPresentationPropertiesCalled = true;
-        },
-        validatePresentation: function() {
-          return validatePresentationResp;
         }
       };
     });
@@ -30,13 +25,6 @@ describe('directive: toolbar', function() {
       return {
         addNewPlaceholder: function(){
             addNewPlaceholderCalled = true;
-        }
-      };
-    });
-    $provide.service('$state', function() {
-      return {
-        go: function(state) {
-          currentState = state;
         }
       };
     });
@@ -50,8 +38,6 @@ describe('directive: toolbar', function() {
     $q = _$q_;
     element = $compile("<toolbar></toolbar>")($scope);
     $scope.$digest();
-
-    validatePresentationResp = $q.resolve();
   }));
 
   it('should exist', function() {
@@ -75,38 +61,6 @@ describe('directive: toolbar', function() {
     it('should open properties',function(){
       $scope.openProperties();
       expect(openPresentationPropertiesCalled).to.be.truely;
-    });
-  });
-
-  describe('showArtboard:',function(){
-    it('should show artboard',function(done){
-      $scope.showArtboard()
-        .then(function() {
-          expect($scope.designMode).to.be.true;
-          done();
-        });
-
-      $scope.$digest();
-    });
-
-    it('should not show artboard because JSON is not valid',function(done){
-      validatePresentationResp = $q.reject();
-
-      $scope.showArtboard()
-        .catch(function() {
-          expect($scope.designMode).to.be.falsey;
-          done();
-        });
-
-      $scope.$digest();
-    });
-  });
-
-  describe('showHtmlEditor:',function(){
-    it('should show html editor',function(){
-      $scope.designMode = true;
-      $scope.showHtmlEditor();
-      expect($scope.designMode).to.be.false;
     });
   });
 });

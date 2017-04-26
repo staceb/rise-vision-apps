@@ -53,6 +53,7 @@ angular.module('risevision.editor.services')
           isStoreProduct: false
         };
         factory.hasLegacyItems = false;
+        factory.zoomLevel = 0.5;
         presentationParser.parsePresentation(factory.presentation);
 
         _clearMessages();
@@ -475,6 +476,27 @@ angular.module('risevision.editor.services')
               userState.addEventListenerVisibilityAPI();
             });
           });
+      };
+
+      factory.canZoomIn = function() {
+        return factory.zoomLevel <= 1.99;
+      }
+
+      factory.canZoomOut = function() {
+        return factory.zoomLevel >= 0.21;
+      }
+
+      factory.zoomIn = function (argument) {
+        if (factory.canZoomIn()) {
+          factory.zoomLevel += 0.1;
+        }
+        
+      };
+
+      factory.zoomOut = function (argument) {
+        if (factory.canZoomOut()) {
+          factory.zoomLevel -= 0.1;  
+        }        
       };
 
       var _showErrorMessage = function (action, e) {
