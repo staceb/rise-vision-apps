@@ -6,6 +6,7 @@ describe('directive: artboard-presentation', function() {
       heightIncrement,
       $scope,
       presentation,
+      editorFactory,
       $stateParams;
 
   presentation = {
@@ -23,18 +24,22 @@ describe('directive: artboard-presentation', function() {
   beforeEach(module(function ($provide) {
     $provide.service('editorFactory', function() {
       return {
+        zoomLevel: 0.5,
+        zoomIn: function(){},
+        zoomOut: function(){},
         presentation: presentation
       };
     });
   }));
 
-  beforeEach(inject(function(_$compile_, _$rootScope_, $templateCache, PRESENTATION_TOOLBAR_SIZE,
-    PRESENTATION_BORDER_SIZE, _$stateParams_){
+  beforeEach(inject(function(_$compile_, _$rootScope_, $templateCache,
+    PRESENTATION_BORDER_SIZE, _$stateParams_, _editorFactory_){
     $templateCache.put('partials/editor/artboard-presentation.html', '<p>mock</p>');
     $compile = _$compile_;
     $rootScope = _$rootScope_;
     $stateParams = _$stateParams_;
-    heightIncrement = PRESENTATION_TOOLBAR_SIZE + PRESENTATION_BORDER_SIZE;
+    editorFactory = _editorFactory_;
+    heightIncrement = PRESENTATION_BORDER_SIZE;
     widthIncrement = 2 * PRESENTATION_BORDER_SIZE;
     $scope = $rootScope.$new();
   }));
@@ -43,6 +48,49 @@ describe('directive: artboard-presentation', function() {
     var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
     $scope.$digest();
     expect(element.html()).to.equal('<p>mock</p>');
+  });
+
+  describe('zoom:', function () {
+    it('should watch editorFactory zoomLevel',function() {
+      var scopeWatchSpy = sinon.spy($scope, '$watch');
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$digest();
+      scopeWatchSpy.should.have.been.calledWith('editorFactory.zoomLevel');
+    });
+
+    it('should scale',function(){
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      expect(element.css('transform')).to.equal('scale(0.5)');
+      expect(element.css('transform-origin')).to.equal('0% 0%');
+    });
+
+    it('should re-scale when zoom changes',function(){
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      editorFactory.zoomLevel = 0.1
+      $scope.$apply();
+      expect(element.css('transform')).to.equal('scale(0.1)');
+      expect(element.css('transform-origin')).to.equal('0% 0%');
+    });
+
+    it('should zoom out on mouse wheel+CTRL',function(){
+      var zoomOutSpy = sinon.spy(editorFactory,'zoomOut')
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      element.triggerHandler({type:'mousewheel',ctrlKey:true,pageX:30,pageY:30, originalEvent: {detail:-130}});
+      $scope.$apply();
+      zoomOutSpy.should.have.been.called;
+    });
+
+    it('should zoom in on mouse wheel+CTRL',function(){
+      var zoomInSpy = sinon.spy(editorFactory,'zoomIn')
+      var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
+      $scope.$apply();
+      element.triggerHandler({type:'mousewheel',ctrlKey:true,pageX:30,pageY:30, originalEvent: {detail:0}});
+      $scope.$apply();
+      zoomInSpy.should.have.been.called;
+    });
   });
 
   describe('presentation:', function () {
@@ -111,4 +159,5 @@ describe('directive: artboard-presentation', function() {
       expect(element.scope().showEmptyState()).to.be.false;
     });
   });
+
 });

@@ -20,6 +20,7 @@ var ArtboardPlaceholdersScenarios = function() {
     var workspacePage;
     var artboardPage;
     var placeholdersListPage;
+    var initialZoom = 0.5;
 
     before(function () {
       homepage = new HomePage();
@@ -74,8 +75,8 @@ var ArtboardPlaceholdersScenarios = function() {
         browser.sleep(500); //wait for transition
 
         artboardPage.getPlaceholderContainer('ph1').getLocation().then(function (location) {
-          expect(location.x).to.be.equal(left + 20);
-          expect(location.y).to.be.equal(top + 20);
+          expect(location.x).to.be.equal(left + 20*initialZoom);
+          expect(location.y).to.be.equal(top + 20*initialZoom);
           
           done();
         });
@@ -104,9 +105,9 @@ var ArtboardPlaceholdersScenarios = function() {
 
       it('should not deselect by clicking the placeholder', function (done) {
         artboardPage.getPlaceholderContainers().get(0).getSize().then(function (size) {
-          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width - 10, y: size.height - 10}).click().perform();
+          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width*initialZoom - 10, y: size.height*initialZoom - 10}).click().perform();
           expect(artboardPage.getPlaceholderContainers().get(0).getAttribute('class')).to.eventually.contain('edit-mode');
-          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width - 10, y: size.height - 10}).click().perform();
+          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width*initialZoom - 10, y: size.height*initialZoom - 10}).click().perform();
           expect(artboardPage.getPlaceholderContainers().get(0).getAttribute('class')).to.eventually.contain('edit-mode');
           done();
         });
@@ -115,12 +116,12 @@ var ArtboardPlaceholdersScenarios = function() {
       it('should move placeholder', function (done) {
         artboardPage.getPlaceholderContainers().get(0).getLocation().then(function (initialLocation) {
           artboardPage.getPlaceholderContainers().get(0).getSize().then(function (size) {
-            browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width - 100, y: size.height - 100})
+            browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width*initialZoom - 100*initialZoom, y: size.height*initialZoom - 100*initialZoom})
               .mouseDown()
-              .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width - 50, y: size.height - 50})
+              .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width*initialZoom - 50*initialZoom, y: size.height*initialZoom - 50*initialZoom})
               .mouseUp()
               .perform();
-            expect(artboardPage.getPlaceholderContainers().get(0).getLocation()).to.eventually.include({x: initialLocation.x + 50, y: initialLocation.y + 50});
+            expect(artboardPage.getPlaceholderContainers().get(0).getLocation()).to.eventually.include({x: initialLocation.x + 50*initialZoom, y: initialLocation.y + 50*initialZoom});
             
             done()
           });
@@ -129,9 +130,9 @@ var ArtboardPlaceholdersScenarios = function() {
 
       it('should resize placeholder', function (done) {
         artboardPage.getPlaceholderContainers().get(0).getSize().then(function (initialSize) {
-          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width, y: initialSize.height / 2})
+          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width*initialZoom, y: initialSize.height*initialZoom / 2})
             .mouseDown()
-            .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width - 50, y: initialSize.height / 2})
+            .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width*initialZoom - 50*initialZoom, y: initialSize.height*initialZoom / 2})
             .mouseUp()
             .perform();
           expect(artboardPage.getPlaceholderContainers().get(0).getSize()).to.eventually.include({width: initialSize.width - 50, height: initialSize.height});
@@ -142,9 +143,9 @@ var ArtboardPlaceholdersScenarios = function() {
 
       it('should resize placeholder from the corner', function (done) {
         artboardPage.getPlaceholderContainers().get(0).getSize().then(function (initialSize) {
-          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width, y: initialSize.height})
+          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width*initialZoom, y: initialSize.height*initialZoom})
             .mouseDown()
-            .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width + 20, y: initialSize.height + 20})
+            .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width*initialZoom + 20*initialZoom, y: initialSize.height*initialZoom + 20*initialZoom})
             .mouseUp()
             .perform();
           expect(artboardPage.getPlaceholderContainers().get(0).getSize()).to.eventually.include({width: initialSize.width + 20, height: initialSize.height + 20});
@@ -156,7 +157,7 @@ var ArtboardPlaceholdersScenarios = function() {
       it('should reveal hidden sidebar when selecting placeholder', function (done) {
         workspacePage.getExpandArtboardButton().click();
         artboardPage.getPlaceholderContainers().get(0).getSize().then(function (size) {
-          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width - 100, y: size.height - 100}).click().perform();
+          browser.actions().mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width*initialZoom - 100*initialZoom, y: size.height*initialZoom - 100*initialZoom}).click().perform();
           expect(workspacePage.getWorkspaceContainer().getAttribute('class')).to.not.eventually.contain('hide-sidebar');
           
           done();

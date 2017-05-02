@@ -58,10 +58,11 @@ var ArtboardScenarios = function() {
           presentationPropertiesModalPage.getBackgroundColorInput().sendKeys('rgba(201,34,34,1)');
           presentationPropertiesModalPage.getResolutionSelect().element(by.cssContainingText('option', '1024 x 768')).click();
           helper.clickWhenClickable(presentationPropertiesModalPage.getApplyButton(), 'Apply Button');
+          browser.sleep(500);
 
           expect(workspacePage.getArtboardContainer().getCssValue('background')).to.eventually.equal('rgb(201, 34, 34) none repeat scroll 0% 0% / auto padding-box border-box');
           expect(workspacePage.getArtboardContainer().getSize()).to.eventually.have.property('width', 1048);
-          expect(workspacePage.getArtboardContainer().getSize()).to.eventually.have.property('height', 840);          
+          expect(workspacePage.getArtboardContainer().getSize()).to.eventually.have.property('height', 780);          
         });
       });
 

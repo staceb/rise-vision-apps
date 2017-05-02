@@ -1,8 +1,12 @@
 <div class="container-fluid text-right editor-footer">
   <div class="footer-content">
-    
-    <div class="pull-left">
-      
+    <div class="pull-left" ng-init="designMode = true">
+        <button id="designButton" class="btn btn-link" ng-class="{'hidden' : designMode}" ng-disabled="designMode" ng-click="showArtboard()">
+          {{'editor-app.workspace.toolbar.mode.design' | translate}}
+        </button>
+        <button id="htmlButton" class="btn btn-link" ng-class="{'hidden' : !designMode}" ng-disabled="!designMode" ng-click="showHtmlEditor()">
+          {{'editor-app.workspace.toolbar.mode.html' | translate}} <i class="fa fa-code"></i>
+        </button>
     </div>
     
     <span class="save-status u_margin-right" ng-show="factory.presentation.id">
