@@ -11,7 +11,7 @@ describe("Services: uploader", function() {
     });
   }));
   
-  var uploader, lastAddedFileItem;
+  var uploader, lastAddedFileItem, $timeout;
 
   beforeEach(function() {
   	inject(function($injector) {
@@ -27,6 +27,8 @@ describe("Services: uploader", function() {
       uploader.onBeforeUploadItem = function() {};
       uploader.onCancelItem = function() {};
       uploader.onCompleteItem = function() {};
+
+      $timeout = $injector.get("$timeout");
   	});
   });
 
@@ -48,21 +50,27 @@ describe("Services: uploader", function() {
       expect(uploader.queue.length).to.equal(1);
       expect(uploader.queue[0].file.name).to.equal("folder/test1.txt");
     });
-    
-    it("multiple files should be enqueued asynchronously after the first", function (done) {
-      uploader.addToQueue([{ name: "test1.txt", webkitRelativePath: "folder/test1.txt", size: 200, type: "text" },
-        { name: "test2.txt", webkitRelativePath: "folder/test2.txt", size: 200, type: "text" },
-        { name: "test3.txt", webkitRelativePath: "folder/test3.txt", size: 200, type: "text" }]);
 
-      expect(uploader.queue.length).to.equal(1);
+    it("multiple files should be enqueued asynchronously after the first batch", function () {
+      var files = [];
+
+      for(var i = 1; i <= uploader.queueLimit + 5; i++) {
+        files.push({ name: "test" + i + ".txt", webkitRelativePath: "folder/test" + i + ".txt", size: 200, type: "text" });
+      }
+
+      uploader.addToQueue(files);
+
+      expect(uploader.queue.length).to.equal(uploader.queueLimit);
       expect(uploader.queue[0].file.name).to.equal("folder/test1.txt");
-      
-      setTimeout(function() {
-        expect(uploader.queue.length).to.equal(3);
-        expect(uploader.queue[1].file.name).to.equal("folder/test2.txt");
 
-        done();      
-      }, 10);
+      for(var j = uploader.queueLimit - 1; j >= 0; j--) {
+        uploader.removeFromQueue(j);
+      }
+
+      $timeout.flush(500);
+
+      expect(uploader.queue.length).to.equal(5);
+      expect(uploader.queue[0].file.name).to.equal("folder/test" + (uploader.queueLimit + 1) + ".txt");
     });
 
     it("should invoke onAfterAddingFile", function() {
@@ -75,7 +83,27 @@ describe("Services: uploader", function() {
 
     });
   });
-  
+
+  it("removeAll: ", function () {
+    var files = [];
+
+    for(var i = 1; i <= uploader.queueLimit + 5; i++) {
+      files.push({ name: "test" + i + ".txt", webkitRelativePath: "folder/test" + i + ".txt", size: 200, type: "text" });
+    }
+
+    uploader.addToQueue(files);
+
+    expect(uploader.queue.length).to.equal(uploader.queueLimit);
+    expect(uploader.queue[0].file.name).to.equal("folder/test1.txt");
+    
+    uploader.removeAll();
+
+    expect(uploader.queue.length).to.equal(0);
+
+    $timeout.flush(500);
+
+    expect(uploader.queue.length).to.equal(0);
+  });
 
   describe('uploadItem:',function(){
     it("should invoke onBeforeUploadItem", function(done) {

@@ -20,7 +20,6 @@
           link: function ($scope) {
             $scope.uploader = FileUploader;
             $scope.status = {};
-            $scope.completed = [];
 
             $scope.removeItem = function (item) {
               FileUploader.removeFromQueue(item);
@@ -53,8 +52,6 @@
             };
 
             FileUploader.onAfterAddingFile = function (fileItem) {
-              var deferred = $q.defer();
-
               console.info('onAfterAddingFile', fileItem.file.name);
 
               if (!fileItem.isRetrying) {
@@ -82,12 +79,7 @@
                   console.log('getURI error', resp);
                   FileUploader.notifyErrorItem(fileItem);
                   $scope.status.message = resp;
-                })
-                .finally(function () {
-                  deferred.resolve();
                 });
-
-              return deferred.promise;
             };
 
             FileUploader.onBeforeUploadItem = function (item) {
@@ -104,19 +96,6 @@
 
             FileUploader.onCompleteItem = function (item) {
               console.log('onCompleteItem', item);
-              if (item.isSuccess) {
-                $scope.completed.push(item.file.name);
-              }
-
-              if ($scope.activeUploadCount() === 0) {
-                UploadURIService.notifyGCMTargetsChanged($scope.completed)
-                  .then(function (resp) {
-                    console.log(
-                      'UploadURIService.notifyGCMTargetsChanged',
-                      resp);
-                    $scope.completed = [];
-                  });
-              }
 
               if (item.isCancel) {
                 return;

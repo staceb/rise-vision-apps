@@ -36,13 +36,6 @@ describe('directive: upload', function() {
           deferred.resolve(file.name);
           
           return deferred.promise;
-        },
-        notifyGCMTargetsChanged: function() {
-          return {
-            then: function(cb) {
-              cb();
-            }
-          };
         }
       };
     });
@@ -120,14 +113,6 @@ describe('directive: upload', function() {
     expect(FileUploader.onCompleteItem).to.exist;
 
     expect(UploadURIService.getURI).to.exist;
-  });
-  
-  it('Uploader onAfterAddingFile should return a promise', function() {
-    var file1 = { name: 'test1.jpg', size: 200, slice: function() {} };
-    var fileItem = { file: file1 };
-
-    expect(FileUploader.onAfterAddingFile(fileItem).then).to.exist;
-    expect(FileUploader.onAfterAddingFile(fileItem).then).to.be.a.function;
   });
 
   it('should invoke onAfterAddingFile', function() {
@@ -207,7 +192,6 @@ describe('directive: upload', function() {
 
       setTimeout(function() {
         spy.should.have.been.calledWith(item);
-        expect($scope.completed).to.contain(item.file.name); 
         done();
       }, 10);               
     });      
