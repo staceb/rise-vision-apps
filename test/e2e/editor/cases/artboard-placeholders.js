@@ -32,25 +32,33 @@ var ArtboardPlaceholdersScenarios = function() {
       commonHeaderPage = new CommonHeaderPage();
     });
 
-    describe(' Given a user is adding a new presentation and a new placeholder', function () {
-      before(function () {
-        homepage.getEditor();
-        //wait for spinner to go away.
-        helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader').then(function () {
-          loginPage.signIn();
-        });
-        presentationsListPage.openNewPresentation();
-
-        helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
+    before(function () {
+      homepage.getEditor();
+      //wait for spinner to go away.
+      helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader').then(function () {
+        loginPage.signIn();
       });
-      
+      presentationsListPage.openNewPresentation();
+    });
+
+    describe(' Given a user is adding a new presentation', function () {
       it('should zoom to fit', function(done) {
         workspacePage.getZoomDropdown().getText().then(function(text) {
-          initialZoom = parseInt(text.substring(0, text.indexOf('%'))) / 100;
-          expect(initialZoom).to.be.greaterThan(0);
+          let zoom = parseInt(text.substring(0, text.indexOf('%'))) / 100;
+          expect(zoom).to.be.greaterThan(0);
 
           done();
         });        
+      });
+    });
+
+    describe(' Given a user is adding a new presentation and a new placeholder', function () {
+      before(function () {
+        workspacePage.getZoomDropdown().click();
+        workspacePage.getZoomFullSizeDropdownItem().click();
+        initialZoom = 1;
+
+        helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
       });
 
       it('should show the placeholder', function () {
@@ -84,8 +92,8 @@ var ArtboardPlaceholdersScenarios = function() {
         browser.sleep(500); //wait for transition
 
         artboardPage.getPlaceholderContainer('ph1').getLocation().then(function (location) {
-          expect(location.x).to.be.equal(left + 20*initialZoom);
-          expect(location.y).to.be.equal(top + 20*initialZoom);
+          expect(Math.round(location.x)).to.be.equal(Math.round(left + 20*initialZoom));
+          expect(Math.round(location.y)).to.be.equal(Math.round(top + 20*initialZoom));
           
           done();
         });
@@ -129,10 +137,14 @@ var ArtboardPlaceholdersScenarios = function() {
               .mouseDown()
               .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: size.width*initialZoom - 50*initialZoom, y: size.height*initialZoom - 50*initialZoom})
               .mouseUp()
-              .perform();
-            expect(artboardPage.getPlaceholderContainers().get(0).getLocation()).to.eventually.include({x: Math.floor(initialLocation.x + 50*initialZoom), y: Math.floor(initialLocation.y + 50*initialZoom)});
-            
-            done()
+              .perform()
+              .then(function() {
+                artboardPage.getPlaceholderContainers().get(0).getLocation().then(function(loc) {
+                  expect(Math.floor(loc.x)).to.equal(Math.floor(initialLocation.x + 50*initialZoom));
+                  expect(Math.floor(loc.y)).to.equal(Math.floor(initialLocation.y + 50*initialZoom));
+                  done();
+                });
+              });
           });
         });
       });
@@ -143,10 +155,14 @@ var ArtboardPlaceholdersScenarios = function() {
             .mouseDown()
             .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width*initialZoom - 50*initialZoom, y: initialSize.height*initialZoom / 2})
             .mouseUp()
-            .perform();
-          expect(artboardPage.getPlaceholderContainers().get(0).getSize()).to.eventually.include({width: initialSize.width - 50, height: initialSize.height});
-          
-          done();
+            .perform()
+            .then(function() {
+              artboardPage.getPlaceholderContainers().get(0).getSize().then(function(sz) {
+                expect(Math.floor(sz.width)).to.equal(Math.floor(initialSize.width - 50));
+                expect(Math.floor(sz.height)).to.equal(Math.floor(initialSize.height));
+                done();
+              });
+            });
         });
       });
 
@@ -156,10 +172,14 @@ var ArtboardPlaceholdersScenarios = function() {
             .mouseDown()
             .mouseMove(artboardPage.getPlaceholderContainers().get(0), {x: initialSize.width*initialZoom + 20*initialZoom, y: initialSize.height*initialZoom + 20*initialZoom})
             .mouseUp()
-            .perform();
-          expect(artboardPage.getPlaceholderContainers().get(0).getSize()).to.eventually.include({width: initialSize.width + 20, height: initialSize.height + 20});
-          
-          done();
+            .perform()
+            .then(function() {
+              artboardPage.getPlaceholderContainers().get(0).getSize().then(function(sz) {
+                expect(Math.floor(sz.width)).to.equal(Math.floor(initialSize.width + 20));
+                expect(Math.floor(sz.height)).to.equal(Math.floor(initialSize.height + 20));
+                done();
+              });
+            });
         });
       });
 
