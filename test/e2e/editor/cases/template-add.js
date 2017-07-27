@@ -16,6 +16,7 @@ var TemplateAddScenarios = function() {
   describe("In order to manage presentations " +
     "As a user signed in " +
     "I would like to add presentations", function () {
+    var subCompanyName = 'E2E TEST SUBCOMPANY';
     var homepage;
     var loginPage;
     var commonHeaderPage;
@@ -24,6 +25,26 @@ var TemplateAddScenarios = function() {
     var presentationPropertiesModalPage;
     var storeProductsModalPage;
     var productDetailsModalPage;
+
+    function loadEditor() {
+      homepage.getEditor();
+      loginPage.signIn();
+    }
+
+    function openContentModal() {
+      helper.waitDisappear(presentationsListPage.getPresentationsLoader(),'Presentation loader');
+      presentationsListPage.getPresentationAddButton().click();
+
+      helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
+    }
+
+    function createSubCompany() {
+      commonHeaderPage.createSubCompany(subCompanyName);
+    }
+
+    function selectSubCompany() {
+      commonHeaderPage.selectSubCompany(subCompanyName);
+    }
 
     before(function () {
       homepage = new HomePage();
@@ -35,12 +56,15 @@ var TemplateAddScenarios = function() {
       storeProductsModalPage = new StoreProductsModalPage();
       productDetailsModalPage = new ProductDetailsModalPage();
 
-      homepage.getEditor();
-      loginPage.signIn();
-      helper.waitDisappear(presentationsListPage.getPresentationsLoader(),'Presentation loader');
-      presentationsListPage.getPresentationAddButton().click();
+      loadEditor();
+      createSubCompany();
+      selectSubCompany();
+      openContentModal();
+    });
 
-      helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
+    after(function() {
+      loadEditor();
+      commonHeaderPage.deleteAllSubCompanies();
     });
 
     it('should open the Store Templates Modal', function () {
@@ -54,6 +78,11 @@ var TemplateAddScenarios = function() {
     it('should show a search box', function () {
       expect(storeProductsModalPage.getSearchFilter().isDisplayed()).to.eventually.be.true;
       expect(storeProductsModalPage.getSearchInput().getAttribute('placeholder')).to.eventually.equal('Search for Templates');
+    });
+
+    it('should show a banner for Templates Library', function () {
+      expect(storeProductsModalPage.getDisplayBanner().isDisplayed()).to.eventually.be.true;
+      expect(storeProductsModalPage.getDisplayBanner().getAttribute('href')).to.eventually.equal('https://store.risevision.com/product/300/template-library-subscription');
     });
 
     it('should show search categories', function() {
@@ -105,7 +134,7 @@ var TemplateAddScenarios = function() {
       expect(storeProductsModalPage.getPremiumProducts().count()).to.eventually.be.above(0);
     });
 
-    it('should show preview modal when seleting a free template',function(){
+    it('should show preview modal when selecting a free template',function(){
       storeProductsModalPage.getFreeProducts().get(0).click();
       browser.sleep(1000);
       expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
@@ -119,14 +148,45 @@ var TemplateAddScenarios = function() {
     it('should show preview modal selecting a premium template',function(){
       storeProductsModalPage.getPremiumProducts().get(0).click();
       browser.sleep(1000);
+      helper.waitDisappear(productDetailsModalPage.getPricingLoader(), 'Pricing loader');
       expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
       expect(productDetailsModalPage.getViewInStoreButton().isDisplayed()).to.eventually.be.true;
-      expect(productDetailsModalPage.getViewInStoreButton().getText()).to.eventually.equal('View In Store');
+      expect(productDetailsModalPage.getViewInStoreButton().getText()).to.eventually.equal('USD 10 Purchase in Store');
+      expect(productDetailsModalPage.getPreviewTemplate().isDisplayed()).to.eventually.be.true;
+      expect(productDetailsModalPage.getPreviewTemplate().getAttribute('href')).to.eventually.contain('http://preview.risevision.com');
+      productDetailsModalPage.getCloseButton().click();
+      browser.sleep(1000);
     });
 
-    it('should show pricing for premium template',function(){
-      helper.waitDisappear(productDetailsModalPage.getPricingLoader());
-      expect(productDetailsModalPage.getPricingInfo().getText()).to.eventually.equal('$10 USD Per Company');
+    it('should start a trial and, next time product details is open, Select Template button will be shown',function(){
+      storeProductsModalPage.getPremiumProducts().get(0).click();
+      browser.sleep(1000);
+      helper.waitDisappear(productDetailsModalPage.getPricingLoader(), 'Pricing loader');
+      expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
+      expect(productDetailsModalPage.getStartTrialButton().isDisplayed()).to.eventually.be.true;
+      productDetailsModalPage.getStartTrialButton().click();
+      helper.waitDisappear(productDetailsModalPage.getProductDetailsModal(), 'Storage Selector Modal');
+      browser.sleep(1000);
+
+      // Hack to account for error when selecting a product on staging
+      if(productDetailsModalPage.getErrorDialogCloseButton().isDisplayed()) {
+        productDetailsModalPage.getErrorDialogCloseButton().click();
+        browser.sleep(1000);
+      }
+      
+      // Reload page and select company whose trial has just started
+      loadEditor();
+      selectSubCompany();
+      openContentModal();
+      browser.sleep(2000);
+      // Validate buttons are updated as expected
+      storeProductsModalPage.getPremiumProducts().get(0).click();
+      browser.sleep(1000);
+      helper.waitDisappear(productDetailsModalPage.getPricingLoader(), 'Pricing loader');
+      expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
+      expect(productDetailsModalPage.getUseProductButton().isDisplayed()).to.eventually.be.true;
+      productDetailsModalPage.getCloseButton().click();
+      browser.sleep(1000);
     });
 
     // The Store Templates are not yet released to sub-companies

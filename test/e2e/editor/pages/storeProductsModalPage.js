@@ -7,7 +7,8 @@ var StoreProductsModalPage = function() {
   var searchCategories = element.all(by.repeater('category in paymentCategories'));
 
   var storeProductsLoader = element(by.css('#addStoreProductModal .spinner-backdrop'));
-
+  var productListLoader = element(by.xpath('//ul[@spinner-key="product-list-loader"]'));
+  
   var storeProductsList = element(by.id('productList'));
   var storeProducts = element.all(by.css('.storeProduct'));
   var addBlankPresentation = element(by.css('.blank-template'));
@@ -16,6 +17,7 @@ var StoreProductsModalPage = function() {
   var statusFields = element.all(by.id('status'));
   var freeProducts = element.all(by.cssContainingText('p#status', 'Free'));
   var premiumProducts = element.all(by.cssContainingText('p#status', 'Premium'));
+  var displayBanner = element(by.id('displayBanner'));
 
   var addWidgetByUrlButton = element(by.id('addWidgetByUrl'));
   var closeButton = element(by.css('.close'));
@@ -30,6 +32,10 @@ var StoreProductsModalPage = function() {
 
   this.getStoreProductsModal = function () {
     return storeProductsModal;
+  };
+
+  this.getProductListLoader = function () {
+    return productListLoader;
   };
 
   this.getModalTitle = function () {
@@ -79,6 +85,10 @@ var StoreProductsModalPage = function() {
   this.getStatusFields = function() {
     return statusFields;
   };
+
+  this.getDisplayBanner = function() {
+    return displayBanner;
+  }
 
   this.getAddWidgetByUrlButton = function() {
     return addWidgetByUrlButton;

@@ -43,6 +43,7 @@ angular.module('risevision.editor.controllers')
 
       $scope.select = function (product) {
         if (category === TEMPLATES_TYPE) {
+          console.log("Product", product);
           var productDetailsModal = $modal.open({
             templateUrl: 'partials/editor/product-details-modal.html',
             size: 'lg',
