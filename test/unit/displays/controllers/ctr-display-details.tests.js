@@ -2,11 +2,12 @@
 describe('controller: display details', function() {
   var displayId = 1234;
 
-  beforeEach(module('risevision.displays.controllers'));
   beforeEach(module('risevision.displays.services'));
+  beforeEach(module('risevision.displays.controllers'));
   beforeEach(module('risevision.displays.filters'));
   beforeEach(module(mockTranlate()));
   beforeEach(module(function ($provide) {
+    $provide.service('$q', function() {return Q;});
     $provide.service('displayFactory', function() {
       return {
         display: {},
@@ -22,7 +23,9 @@ describe('controller: display details', function() {
         },
         deleteDisplay: function() {
           deleteCalled = true;
-        }
+        },
+        is3rdPartyPlayer: function(){ return false;},
+        isOutdatedPlayer: function(){ return false;}
       };
     });
     $provide.service('$state',function(){
@@ -53,6 +56,23 @@ describe('controller: display details', function() {
         }
       };
     });
+    $provide.service('$loading',function(){
+      return {
+        start: function(){},
+        stop: function(){}
+      };
+    });
+    $provide.service('storeAuthorization',function(){
+      return {
+      };
+    });
+    $provide.service('userState',function(){
+      return {
+          getSelectedCompanyId: function() {return "company1"},
+          _restoreState: function(){}
+      };
+    });
+    
     $provide.service('display', function() {
       return {
         loadScreenshot: sinon.spy(function() {
@@ -77,20 +97,23 @@ describe('controller: display details', function() {
     $provide.value('displayId', '1234');
   }));
   var $scope, $state, updateCalled, deleteCalled, confirmDelete;
-  var resolveLoadScreenshot, resolveRequestScreenshot;
+  var resolveLoadScreenshot, resolveRequestScreenshot, $rootScope, $loading, displayFactory;
   beforeEach(function(){
     updateCalled = false;
     deleteCalled = false;
     resolveRequestScreenshot = true;
     resolveLoadScreenshot = true;
 
-    inject(function($injector,$rootScope, $controller){
+    inject(function($injector, $controller){
+      displayFactory = $injector.get('displayFactory');
+      $loading = $injector.get('$loading');
+      $rootScope = $injector.get('$rootScope');
       $scope = $rootScope.$new();
       $state = $injector.get('$state');
       $controller('displayDetails', {
         $scope : $scope,
         display:$injector.get('display'),
-        displayFactory:$injector.get('displayFactory'),
+        displayFactory: displayFactory,
         $modal:$injector.get('$modal'),
         $state : $state,
         $log : $injector.get('$log')});
@@ -100,13 +123,32 @@ describe('controller: display details', function() {
 
   it('should exist',function() {
     expect($scope).to.be.ok;
+    expect($scope.displayId).to.be.ok;
     expect($scope.factory).to.be.ok;
+    expect($scope.companyId).to.be.ok;
+    expect($scope.productCode).to.be.ok;
+    expect($scope.productId).to.be.ok;
+    expect($scope.productLink).to.be.ok;
+    expect($scope.subscriptionStatus).to.be.ok;
+    expect($scope.showTrialButton).to.be.false;
+    expect($scope.showTrialStatus).to.be.false;
+    expect($scope.showSubscribeButton).to.be.false;
 
     expect($scope.save).to.be.a('function');
     expect($scope.confirmDelete).to.be.a('function');
   });
 
   it('should initialize', function(done) {
+
+    expect($scope.companyId).to.equal("company1");
+    expect($scope.productCode).to.equal("c4b368be86245bf9501baaa6e0b00df9719869fd");
+    expect($scope.productId).to.equal("2048");
+    expect($scope.productLink).to.equal("https://store.risevision.com/product/2048/?cid=company1");
+
+    expect($scope.showTrialButton).to.be.false;
+    expect($scope.showTrialStatus).to.be.false;
+    expect($scope.showSubscribeButton).to.be.false;
+
     setTimeout(function() {
       expect($scope.display).to.be.ok;
       expect($scope.display.id).to.equal('1234');
@@ -296,4 +338,134 @@ describe('controller: display details', function() {
       expect($scope.reloadScreenshotDisabled({ onlineStatus: 'online', scheduleId: 1 })).to.be.truely;
     });
   });
+
+  it('should show spinner on refreshSubscriptionStatus',function(){
+    var spy = sinon.spy($loading,'start')
+    $rootScope.$emit('refreshSubscriptionStatus');
+    spy.should.have.been.calledWith('loading-trial');
+  });
+
+  describe('subscription-status:changed:',function(){
+    it('should hide spinner and set false to flags when on default state ',function(){
+      var spy = sinon.spy($loading,'stop')
+      
+      $rootScope.$emit('subscription-status:changed');
+      
+      spy.should.have.been.calledWith('loading-trial');
+      expect($scope.showTrialButton).to.be.false;
+      expect($scope.showTrialStatus).to.be.false;
+      expect($scope.showSubscribeButton).to.be.false;
+    });
+
+    it('should hide flags for 3rd part players',function(done){
+      $scope.deferredDisplay.resolve({playerName:'Cenique', playerVersion: '2017.07.17.20.21'});
+      var spy = sinon.stub(displayFactory,'is3rdPartyPlayer',function() {return true});
+      
+      $rootScope.$emit('subscription-status:changed',{});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.false;
+        expect($scope.showTrialStatus).to.be.false;
+        expect($scope.showSubscribeButton).to.be.false;
+        done();
+      },10);
+    });
+
+    it('should hide flags for outdated players',function(done){
+      $scope.deferredDisplay.resolve({playerName:'RiseVisionElectron', playerVersion: '2017.01.04.14.40'})
+      var spy = sinon.stub(displayFactory,'isOutdatedPlayer',function() {return true});
+      
+      $rootScope.$emit('subscription-status:changed',{});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.false;
+        expect($scope.showTrialStatus).to.be.false;
+        expect($scope.showSubscribeButton).to.be.false;
+        done();
+      },10);
+    });
+
+    it('should set correct flags when trial-available',function(done){
+      $scope.deferredDisplay.resolve({playerName:'RiseVisionElectron', playerVersion: '2017.07.17.20.21'});
+      
+      $rootScope.$emit('subscription-status:changed',{statusCode: 'trial-available'});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.true;
+        expect($scope.showTrialStatus).to.be.false;
+        expect($scope.showSubscribeButton).to.be.false;
+        done();
+      },10)     
+    });
+
+    it('should set correct flags when on-trial',function(done){
+      $scope.deferredDisplay.resolve({playerName:'RiseVisionElectron', playerVersion: '2017.07.17.20.21'});      
+      $rootScope.$emit('subscription-status:changed',{statusCode: 'on-trial'});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.false;
+        expect($scope.showTrialStatus).to.be.true;
+        expect($scope.showSubscribeButton).to.be.true;
+        done();
+      },10);
+    });
+
+    it('should set correct flags when suspended',function(done){
+      $scope.deferredDisplay.resolve({playerName:'RiseVisionElectron', playerVersion: '2017.07.17.20.21'});      
+      $rootScope.$emit('subscription-status:changed',{statusCode: 'suspended'});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.false;
+        expect($scope.showTrialStatus).to.be.true;
+        expect($scope.showSubscribeButton).to.be.true;
+        done();
+      },10);
+    });
+
+    it('should set correct flags when trial-expired',function(done){
+      $scope.deferredDisplay.resolve({playerName:'RiseVisionElectron', playerVersion: '2017.07.17.20.21'});      
+      $rootScope.$emit('subscription-status:changed',{statusCode: 'trial-expired'});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.false;
+        expect($scope.showTrialStatus).to.be.false;
+        expect($scope.showSubscribeButton).to.be.true;
+        done();
+      },10);
+    });
+
+    it('should set correct flags when cancelled',function(done){
+      $scope.deferredDisplay.resolve({playerName:'RiseVisionElectron', playerVersion: '2017.07.17.20.21'});      
+      $rootScope.$emit('subscription-status:changed',{statusCode: 'cancelled'});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.false;
+        expect($scope.showTrialStatus).to.be.false;
+        expect($scope.showSubscribeButton).to.be.true;
+        done();
+      },10);
+    });
+
+    it('should set correct flags when not-subscribed',function(done){
+      $scope.deferredDisplay.resolve({playerName:'RiseVisionElectron', playerVersion: '2017.07.17.20.21'});      
+      $rootScope.$emit('subscription-status:changed',{statusCode: 'not-subscribed'});
+      
+      setTimeout(function(){
+        expect($scope.showTrialButton).to.be.false;
+        expect($scope.showTrialStatus).to.be.false;
+        expect($scope.showSubscribeButton).to.be.true;
+        done();
+      },10);
+    });
+  });
+
+  it('should remove listeners on $destroy',function(){
+    expect($rootScope.$$listeners['refreshSubscriptionStatus']).to.be.ok;
+    expect($rootScope.$$listeners['subscription-status:changed']).to.be.ok;
+
+    $rootScope.$destroy();
+
+    expect($rootScope.$$listeners['refreshSubscriptionStatus']).to.not.be.ok;
+    expect($rootScope.$$listeners['subscription-status:changed']).to.not.be.ok;
+  })
 });

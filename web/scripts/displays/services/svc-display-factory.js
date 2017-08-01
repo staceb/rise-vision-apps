@@ -2,9 +2,9 @@
 
 angular.module('risevision.displays.services')
   .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal',
-    'display', 'displayTracker', 'displayEmail',
+    'display', 'displayTracker', 'displayEmail', 'storeAuthorization' ,'PLAYER_PRO_PRODUCT_CODE', '$loading',
     function ($rootScope, $q, $state, $modal, display, displayTracker,
-      displayEmail) {
+      displayEmail, storeAuthorization, PLAYER_PRO_PRODUCT_CODE, $loading) {
       var factory = {};
       var _displayId;
 
@@ -33,6 +33,43 @@ angular.module('risevision.displays.services')
       };
 
       _init();
+
+      factory.is3rdPartyPlayer = function (display) {
+        return display && display.playerName && (display.playerName === 'RisePlayerPackagedApp' || display.playerName
+          .indexOf('RisePlayer') === -1);
+      };
+
+
+      factory.isOutdatedPlayer = function (display) {
+        return !factory.is3rdPartyPlayer(display) && (display && display.playerName && (display.playerName !== 'RisePlayerElectron' ||
+          display.playerVersion < '2017.07.17.20.21'));
+      };
+
+      factory.startPlayerProTrialModal = function () {
+        displayTracker('Start Player Pro Trial Modal');
+
+        return $modal.open({
+          templateUrl: 'partials/displays/player-pro-trial-modal.html',
+          size: 'lg',
+          controller: 'PlayerProTrialModalCtrl'
+        });
+      };
+
+      factory.startPlayerProTrial = function () {
+        displayTracker('Starting Player Pro Trial');
+
+        $loading.start('loading-trial');
+        return storeAuthorization.startTrial(PLAYER_PRO_PRODUCT_CODE)
+          .then(function () {
+            displayTracker('Started Trial Player Pro');
+            $loading.stop('loading-trial');
+            $rootScope.$emit('refreshSubscriptionStatus', 'trial-available');
+          },function (e) {
+            $loading.stop('loading-trial');
+            return $q.reject();
+          });
+      };
+      
 
       factory.addDisplayModal = function (display) {
         displayTracker('Add Display');
