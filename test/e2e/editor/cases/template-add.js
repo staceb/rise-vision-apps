@@ -184,6 +184,7 @@ var TemplateAddScenarios = function() {
       browser.sleep(1000);
       helper.waitDisappear(productDetailsModalPage.getPricingLoader(), 'Pricing loader');
       expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
+      helper.wait(productDetailsModalPage.getUseProductButton(),'Use Product Button');
       expect(productDetailsModalPage.getUseProductButton().isDisplayed()).to.eventually.be.true;
       productDetailsModalPage.getCloseButton().click();
       browser.sleep(1000);
