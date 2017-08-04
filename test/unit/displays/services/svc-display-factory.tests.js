@@ -384,9 +384,14 @@ describe('service: displayFactory:', function() {
   });
 
   it('is3rdPartyPlayer:',function(){
+    expect(displayFactory.is3rdPartyPlayer()).to.be.false;
+    expect(displayFactory.is3rdPartyPlayer({playerName:''})).to.be.false;
     expect(displayFactory.is3rdPartyPlayer({playerName:'RisePlayer'})).to.be.false;
     expect(displayFactory.is3rdPartyPlayer({playerName:'RisePlayerPackagedApp'})).to.be.true;
     expect(displayFactory.is3rdPartyPlayer({playerName:'Cenique'})).to.be.true;
+    expect(displayFactory.is3rdPartyPlayer({playerName:'Other', playerVersion: 'Cenique 2.0'})).to.be.true;
+    expect(displayFactory.is3rdPartyPlayer({playerName:'Other', os: 'Android', playerVersion: '1.0'})).to.be.true;
+    expect(displayFactory.is3rdPartyPlayer({playerName:'Other', os: 'cros', playerVersion: '1.0'})).to.be.true;
   });
 
   it('isOutdatedPlayer:',function(){
