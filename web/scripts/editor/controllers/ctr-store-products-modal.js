@@ -8,10 +8,10 @@ angular.module('risevision.editor.controllers')
   ])
   .controller('storeProductsModal', ['$scope', 'ScrollingListService',
     'store', '$modalInstance', '$loading', '$filter', 'STORE_URL', 'category',
-    '$modal', 'playlistItemFactory', 'PAYMENT_CATEGORIES',
+    '$modal', 'playlistItemFactory', 'checkTemplateAccess', 'PAYMENT_CATEGORIES',
     'TEMPLATES_TYPE',
     function ($scope, ScrollingListService, store, $modalInstance, $loading,
-      $filter, STORE_URL, category, $modal, playlistItemFactory,
+      $filter, STORE_URL, category, $modal, playlistItemFactory, checkTemplateAccess,
       PAYMENT_CATEGORIES, TEMPLATES_TYPE) {
       var defaultCount = 1000;
 
@@ -63,7 +63,18 @@ angular.module('risevision.editor.controllers')
       };
 
       $scope.quickSelect = function (product) {
-        $modalInstance.close(product);
+        if (category === TEMPLATES_TYPE) {
+          return checkTemplateAccess(product.productCode)
+            .then(function() {
+              $modalInstance.close(product);
+            })
+            .catch(function() {
+              $scope.select(product);
+            });
+        }
+        else {
+          $modalInstance.close(product);
+        }
       };
 
       $scope.addWidgetByUrl = function () {

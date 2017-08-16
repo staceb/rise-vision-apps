@@ -44,6 +44,11 @@ describe('controller: ProductDetailsModalController', function() {
         }
       };
     });
+    $provide.service('checkTemplateAccess',function(){
+      return sinon.spy(function () {
+        return storeAuthorize ? Q.resolve() : Q.reject();
+      });
+    });
     $provide.service('$loading',function(){
       return {
         stop: function(){}
@@ -52,10 +57,10 @@ describe('controller: ProductDetailsModalController', function() {
     $provide.value('STORE_URL',STORE_URL);
   }));
   var $scope, $modalInstance, $modalInstanceDismissSpy, $modalInstanceCloseSpy, product,
-    $loadingStopSpy, $timeout, storeCheckSpy, storeAuthorize, TEMPLATE_LIBRARY_PRODUCT_CODE;
+    $loadingStopSpy, $timeout, storeCheckSpy, checkTemplateAccessSpy, storeAuthorize, TEMPLATE_LIBRARY_PRODUCT_CODE;
   
   function initController(paymentTerms) {
-    inject(function($injector,$rootScope, $controller, $loading, storeAuthorization){
+    inject(function($injector,$rootScope, $controller, $loading, storeAuthorization, checkTemplateAccess){
       $scope = $rootScope.$new();
       $modalInstance = $injector.get('$modalInstance');
       $timeout = $injector.get('$timeout');
@@ -64,6 +69,7 @@ describe('controller: ProductDetailsModalController', function() {
       $loadingStopSpy = sinon.spy($loading,'stop');
 
       storeCheckSpy = sinon.spy(storeAuthorization,'check');
+      checkTemplateAccessSpy = checkTemplateAccess;
       
       $modalInstanceDismissSpy = sinon.spy($modalInstance, 'dismiss');
       $modalInstanceCloseSpy = sinon.spy($modalInstance, 'close');
@@ -81,7 +87,7 @@ describe('controller: ProductDetailsModalController', function() {
 
       $controller('ProductDetailsModalController', {
         $scope: $scope,
-        $modalInstance : $modalInstance,
+        $modalInstance: $modalInstance,
         product: product
       });
       $scope.$digest();
@@ -121,14 +127,14 @@ describe('controller: ProductDetailsModalController', function() {
     initController('premium');
     
     expect($scope.canUseProduct).to.be.false;
-    storeCheckSpy.should.have.been.calledWith(TEMPLATE_LIBRARY_PRODUCT_CODE);
+    checkTemplateAccessSpy.should.have.been.called;
   });
 
   it('should allow owned products',function(done){
     storeAuthorize = true;
     initController('premium');
     
-    storeCheckSpy.should.have.been.calledWith(TEMPLATE_LIBRARY_PRODUCT_CODE);
+    checkTemplateAccessSpy.should.have.been.called;
     setTimeout(function() {
       expect($scope.canUseProduct).to.be.true;
       $loadingStopSpy.should.have.been.calledWith('loading-price');
