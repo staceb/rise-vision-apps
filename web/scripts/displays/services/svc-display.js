@@ -23,7 +23,8 @@
       'DISPLAY_SEARCH_FIELDS', 'PLAYER_PRO_PRODUCT_CODE',
       function ($rootScope, $q, $log, coreAPILoader, userState,
         getDisplayStatus, screenshotRequester, imageBlobLoader, pick,
-        getProductSubscriptionStatus, DISPLAY_WRITABLE_FIELDS, DISPLAY_SEARCH_FIELDS, PLAYER_PRO_PRODUCT_CODE) {
+        getProductSubscriptionStatus, DISPLAY_WRITABLE_FIELDS,
+        DISPLAY_SEARCH_FIELDS, PLAYER_PRO_PRODUCT_CODE) {
 
         var createSearchQuery = function (fields, search) {
           var query = '';
