@@ -2,26 +2,16 @@
 describe('controller: Sign In', function() {
   beforeEach(module('risevision.apps.launcher.controllers'));
   beforeEach(module(function ($provide) {
-    $provide.service('userState', function() {
-      return {
-        authenticate: function(forceAuth) {
-
-          var deferred = Q.defer();
-          if(!forceAuth){
-            goToLogin = false;
-            if(isLoggedIn) {
-
-               deferred.resolve();
-            } else {
-              deferred.reject();
-            }
-          }else{
-            goToLogin = true;
-            deferred.resolve();
-          }
-
-          return deferred.promise;
+    $provide.service('canAccessApps', function() {
+      return function() {
+        var deferred = Q.defer();
+        if(isLoggedIn) {
+           deferred.resolve();
+        } else {
+          deferred.reject();
         }
+
+        return deferred.promise;
       };
     });
     $provide.service('$state',function(){
@@ -37,7 +27,7 @@ describe('controller: Sign In', function() {
       }
     });
   }));
-  var $scope, isLoggedIn, goToLogin, currentState;
+  var $scope, isLoggedIn, currentState;
   beforeEach(function () {
     currentState = '';
   });
@@ -48,33 +38,31 @@ describe('controller: Sign In', function() {
       $scope = $rootScope.$new();
 
       $controller('SignInCtrl', {
-        userState: $injector.get('userState'),
+        canAccessApps: $injector.get('canAccessApps'),
         $state: $injector.get('$state')
       });
       $scope.$digest();
     });
 
     setTimeout(function(){
-      expect(goToLogin).to.be.false;
       expect(currentState).to.equal('apps.launcher.home');
       done();
     },10);
   });
 
-  it('should redirect to google auth when it is not logged in',function(done){
+  it('should do nothing when it is not logged in',function(done){
     isLoggedIn = false;
     inject(function($injector,$rootScope, $controller){
       $scope = $rootScope.$new();
 
       $controller('SignInCtrl', {
-        userState: $injector.get('userState'),
+        canAccessApps: $injector.get('canAccessApps'),
         $state: $injector.get('$state')
       });
       $scope.$digest();
     });
 
     setTimeout(function(){
-      expect(goToLogin).to.be.true;
       expect(currentState).to.not.equal('apps.launcher.home');
       done();
     },10);

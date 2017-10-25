@@ -56,10 +56,6 @@ angular.module('risevision.apps', [
         'show': 'hide'
       });
 
-      $locationProvider.html5Mode(true);
-
-      $urlRouterProvider.otherwise('/');
-
       // Use $stateProvider to configure states.
       $stateProvider.state('apps', {
         template: '<div ui-view></div>'
@@ -68,20 +64,6 @@ angular.module('risevision.apps', [
       .state('apps.launcher', {
         abstract: true,
         template: '<div class="app-launcher" ui-view></div>'
-      })
-
-      .state('apps.launcher.unauthorized', {
-        templateProvider: ['$templateCache', function ($templateCache) {
-          return $templateCache.get(
-            'partials/launcher/login.html');
-        }]
-      })
-
-      .state('apps.launcher.unregistered', {
-        templateProvider: ['$templateCache', function ($templateCache) {
-          return $templateCache.get(
-            'partials/launcher/signup.html');
-        }]
       })
 
       .state('apps.launcher.home', {
@@ -126,9 +108,11 @@ angular.module('risevision.apps', [
 
       .state('apps.launcher.signup', {
         url: '/signup',
-        controller: ['userState', '$state', '$window', '$location', 'STORE_URL', 'IN_RVA_PATH',
-          function (userState, $state, $window, $location, STORE_URL, IN_RVA_PATH) {
-            userState.authenticate(false).then(function () {
+        controller: ['userState', 'userAuthFactory', '$state', '$window', 
+          '$location', 'STORE_URL', 'IN_RVA_PATH',
+          function (userState, userAuthFactory, $state, $window, $location, 
+            STORE_URL, IN_RVA_PATH) {
+            userAuthFactory.authenticate(false).then(function () {
               if (userState.isLoggedIn() && $location.search().show_product) {
                 $window.location.href = STORE_URL + IN_RVA_PATH
                   .replace('productId', $location.search().show_product)
@@ -145,6 +129,14 @@ angular.module('risevision.apps', [
       .state('apps.launcher.signin', {
         url: '/signin',
         controller: 'SignInCtrl'
+      })
+      
+      .state('common.auth.unregistered', {
+        templateProvider: ['$templateCache', function ($templateCache) {
+          return $templateCache.get(
+            'partials/launcher/signup.html');
+          }],
+          url: '/unregistered/:state'
       })
 
       // schedules
@@ -442,19 +434,21 @@ angular.module('risevision.apps', [
 
     }
   ])
-  .run(['$rootScope', '$state', '$modalStack', 'displayFactory',
-    function ($rootScope, $state, $modalStack, displayFactory) {
+  .run(['$rootScope', '$state', '$modalStack', 'userState', 'displayFactory',
+    function ($rootScope, $state, $modalStack, userState, displayFactory) {
+
+      $rootScope.$on('risevision.user.signedOut', function () {
+        $state.go('common.auth.unauthorized');
+      });
 
       $rootScope.$on('distributionSelector.addDisplay', function () {
         displayFactory.addDisplayModal();
       });
 
-      $rootScope.$on('$stateChangeStart', function () {
-        $modalStack.dismissAll();
-      });
-
-      $rootScope.$on('risevision.user.signedOut', function () {
-        $state.go('apps.launcher.unauthorized');
+      $rootScope.$on('$stateChangeStart', function (event) {
+        if (userState.isRiseVisionUser()) {
+          $modalStack.dismissAll();
+        }
       });
 
       $rootScope.$on('risevision.company.selectedCompanyChanged', function () {

@@ -9,7 +9,7 @@ describe('controller: app', function() {
         },
         href: function() {}
       };
-    });      
+    });
   }));
 
   var $scope,$state,rootScope;
@@ -41,11 +41,11 @@ describe('controller: app', function() {
   });
 
   it('should hide CH on login page',function(){
-    $state.current.name = 'apps.launcher.unauthorized';
+    $state.current.name = 'common.auth.unauthorized';
     rootScope.$broadcast('$stateChangeSuccess');
     expect($scope.hideCH).to.be.true;
     
-    $state.current.name = 'apps.launcher.unregistered';
+    $state.current.name = 'apps.launcher.signup';
     rootScope.$broadcast('$stateChangeSuccess');
     expect($scope.hideCH).to.be.true;
 
