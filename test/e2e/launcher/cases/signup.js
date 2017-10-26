@@ -3,7 +3,6 @@ var expect = require('rv-common-e2e').expect;
 var SignUpPage = require('./../pages/signUpPage.js');
 var GoogleAuthPage = require('rv-common-e2e').googleAuthPage;
 var CommonHeaderPage = require('rv-common-e2e').commonHeaderPage;
-var SignInPage = require('./../pages/signInPage.js');
 var helper = require('rv-common-e2e').helper;
 
 var SignupScenarios = function() {
@@ -11,20 +10,18 @@ var SignupScenarios = function() {
   browser.driver.manage().window().setSize(1920, 1080);
   describe('Signup', function() {
     this.timeout(2000);// to allow for protactor to load the seperate page
-    var signInPage;
     var signUpPage;
     var googleAuthPage;
     var commonHeaderPage;
     before(function (){
-      signInPage = new SignInPage();
       signUpPage = new SignUpPage();
       googleAuthPage = new GoogleAuthPage();
       commonHeaderPage = new CommonHeaderPage();
     });
 
     it('should not sign in the user through google when it is already signed in',function(){
-      signInPage.get();
-      signInPage.getGoogleLogin();
+      signUpPage.get();
+      signUpPage.getGoogleLogin();
       googleAuthPage.signin();
       helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader');
       signUpPage.get();
