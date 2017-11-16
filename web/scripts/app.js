@@ -4,6 +4,8 @@ angular.module('risevision.apps', [
     'ngTouch',
     'ui.bootstrap',
     'ui.codemirror',
+    'truncate',
+    'slugifier',
     'risevision.common.header',
     'risevision.common.header.templates',
     'risevision.common.components.last-modified',
