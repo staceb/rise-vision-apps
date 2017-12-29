@@ -160,7 +160,7 @@ workflows:
               only: master
       - deploy_staging:
           requires:
-            - test_unit
+            - dependencies
           filters:
             branches:
               only: /(feature|fix|chore).*/
