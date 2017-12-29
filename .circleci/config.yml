@@ -19,7 +19,7 @@ jobs:
           name: save SHA to a file
           command: echo $CIRCLE_SHA1 > .circle-sha
       - save_cache:
-          key: repo-with-deps-{{ checksum ".circle-sha" }}
+          key: rise-vision-apps-{{ .BuildNum }}-{{ epoch }}
           paths:
             - ~/rise-vision-apps
   test_unit:
@@ -32,7 +32,7 @@ jobs:
           command: echo $CIRCLE_SHA1 > .circle-sha
       - restore_cache:
           keys:
-            - repo-with-deps-{{ checksum ".circle-sha" }}
+            - rise-vision-apps-{{ .BuildNum }}-{{ epoch }}
       - run: 
           name: unit_tests
           command: NODE_ENV=test npm run test
@@ -51,7 +51,7 @@ jobs:
           command: echo $CIRCLE_SHA1 > .circle-sha
       - restore_cache:
           keys:
-            - repo-with-deps-{{ checksum ".circle-sha" }}
+            - rise-vision-apps-{{ .BuildNum }}-{{ epoch }}
       - run: echo $CHROME_INSTANCES
       # Install latest chrome
       - run: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
@@ -78,7 +78,7 @@ jobs:
           command: echo $CIRCLE_SHA1 > .circle-sha
       - restore_cache:
           keys:
-            - repo-with-deps-{{ checksum ".circle-sha" }}
+            - rise-vision-apps-{{ .BuildNum }}-{{ epoch }}
       - run: NODE_ENV=stage npm run ci-build
       - run: sudo apt-get -y install rsync
       - run: ssh -o StrictHostKeyChecking=no apps@webserver-stage.risevision.com 'mkdir -p /rise-front-end/apps';
@@ -112,7 +112,7 @@ jobs:
           command: echo $CIRCLE_SHA1 > .circle-sha
       - restore_cache:
           keys:
-            - repo-with-deps-{{ checksum ".circle-sha" }}
+            - rise-vision-apps-{{ .BuildNum }}-{{ epoch }}
       - run: NODE_ENV=prod npm run ci-build
       - run: sudo apt-get -y install rsync
       - run: ssh -o StrictHostKeyChecking=no apps@webserver-stage.risevision.com 'mkdir -p /rise-front-end/apps';
@@ -134,7 +134,7 @@ jobs:
           command: echo $CIRCLE_SHA1 > .circle-sha
       - restore_cache:
           keys:
-            - repo-with-deps-{{ checksum ".circle-sha" }}
+            - rise-vision-apps-{{ .BuildNum }}-{{ epoch }}
       - run: NODE_ENV=prod npm run ci-build
       - run: sudo apt-get -y install rsync
       # It deploys to production server 2.
@@ -184,7 +184,6 @@ workflows:
       - deploy_staging:
           requires:
             - test_unit
-            - test_e2e
           filters:
             branches:
               only: /(feature|fix|chore).*/
