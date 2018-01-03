@@ -94,7 +94,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: NODE_ENV=prod npm run ci-build
+      - run: NODE_ENV=beta npm run ci-build
       - run: sudo apt-get -y install rsync
       - run: ssh -o StrictHostKeyChecking=no apps@webserver-stage.risevision.com 'mkdir -p /rise-front-end/apps';
       - run: 
@@ -132,6 +132,7 @@ jobs:
               echo "Beta branch exists ($BETA_BRANCH), skipping beta deployment";
             fi;
             if [ "$BETA_BRANCH" == '' ]; then
+              NODE_ENV=beta npm run ci-build
               echo "Beta branch missing, updating beta environment";
               ssh -o StrictHostKeyChecking=no apps@webserver-stage.risevision.com 'mkdir -p /rise-front-end/apps';
               rsync -rptz -e ssh --delete dist apps@webserver-stage.risevision.com:/rise-front-end/apps/stage-beta;
