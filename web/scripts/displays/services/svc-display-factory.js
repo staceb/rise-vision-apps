@@ -62,9 +62,13 @@ angular.module('risevision.displays.services')
         return !!playerName && (isCAP || isCROS || isAndroid || isCenique || !isRisePlayer);
       };
 
+      factory.isElectronPlayer = function (display) {
+        return !!(display && display.playerName && 
+          display.playerName.indexOf('RisePlayerElectron') !== -1);
+      };
+
       factory.isUnsupportedPlayer = function (display) {
-        return !!(display && !factory.is3rdPartyPlayer(display) &&
-          display.playerName && display.playerName !== 'RisePlayerElectron');
+        return !!(display && !factory.is3rdPartyPlayer(display) && !factory.isElectronPlayer(display));
       };
 
       factory.isOutdatedPlayer = function (display) {
@@ -75,11 +79,11 @@ angular.module('risevision.displays.services')
 
         return !factory.is3rdPartyPlayer(display) &&
           !factory.isUnsupportedPlayer(display) &&
-          (display && display.playerName && (display.playerName !== 'RisePlayerElectron' || !upToDate));
+          (!factory.isElectronPlayer(display) || !upToDate);
       };
 
       factory.isProCompatiblePlayer = function (display) {
-        return !!(display && display.playerName === 'RisePlayerElectron' &&
+        return !!(display && factory.isElectronPlayer(display) &&
           display.playerVersion >= '2017.07.31.15.31');
       };
 

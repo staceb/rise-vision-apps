@@ -153,7 +153,7 @@ angular.module('risevision.displays.controllers')
           return 'os-not-supported';
         } else if (statusFilter(display) === 'notinstalled') {
           return 'not-installed';
-        } else if (display.playerName !== 'RisePlayerElectron' || display.playerVersion <=
+        } else if (!displayFactory.isElectronPlayer(display) || display.playerVersion <=
           '2017.01.10.17.33') {
           return 'upgrade-player';
         } else if (!$scope.displayService.hasSchedule(display)) {
