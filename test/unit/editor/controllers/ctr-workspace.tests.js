@@ -215,16 +215,4 @@ describe('controller: Workspace', function() {
     expect($window.onbeforeunload).to.equal(null);
   });
 
-  describe('changeTemplate',function(){
-    it('should not flag unsaved changes and go to editor add',function(){
-      $scope.hasUnsavedChanges = true;
-      var stub = sinon.stub($state,'go',function(){});
-
-      $scope.changeTemplate();      
-      
-      expect($scope.hasUnsavedChanges).to.be.false;
-      stub.should.have.been.calledWith('apps.editor.add');
-    });
-  });
-
 });
