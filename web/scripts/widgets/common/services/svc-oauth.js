@@ -20,6 +20,7 @@ angular.module('risevision.widgets.services')
             deferred.resolve(response);
           }, function(response) {
             deferred.reject();
+            $log.debug("Could not get Status! " + response);
         });
         return deferred.promise;
       };
@@ -29,7 +30,7 @@ angular.module('risevision.widgets.services')
         _getStatus()
           .then(function(response) {
             if (response.data && Array.isArray(response.data.authenticated) && response.data.authenticated.length) {
-              key = userState.getSelectedCompanyId() + ":" + provider + ":" + response.data.authenticated[0];  
+              key = userState.getSelectedCompanyId() + ":" + provider + ":" + response.data.authenticated[0];
               deferred.resolve();
             } else {
               deferred.reject();
@@ -52,6 +53,7 @@ angular.module('risevision.widgets.services')
             }
           }, function(response) {
             deferred.reject();
+            $log.debug("Could not get state token! " + response);
         });
         return deferred.promise;
       };
@@ -64,8 +66,8 @@ angular.module('risevision.widgets.services')
           if (!error) {
             deferred.resolve(result.code);
           } else {
-              deferred.reject();
-              console.error('could not connect to twitter');
+            deferred.reject();
+            $log.debug("could not connect to twitter with oauth.io! " + error);
           }
         });
         return deferred.promise;
@@ -82,6 +84,7 @@ angular.module('risevision.widgets.services')
             }
           }, function(response) {
             deferred.reject();
+            $log.debug("Could not authenticate with OAuth Token Provider! " + response);
         });
         return deferred.promise;
       };
@@ -116,6 +119,7 @@ angular.module('risevision.widgets.services')
             deferred.resolve();
           }, function(response) {
             deferred.reject();
+            $log.debug("Could not revoke with OAuth Token Provider! " + response);
         });
         return deferred.promise;
       };
