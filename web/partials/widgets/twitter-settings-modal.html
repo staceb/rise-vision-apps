@@ -1,0 +1,90 @@
+<div class="image-settings-fs" ng-controller="TwitterSettingsController" ng-cloak>
+	<div class="modal-header">
+		<button id="dismissButton" type="button" class="close" ng-click="closeSettings()">
+			<i class="fa fa-times"></i>
+		</button>
+		<h3 class="modal-title">Twitter Widget Settings</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-warning" ng-show="!twitterConnected">
+			<div class="alert-body text-center">
+				<p>Connect your Twitter account to use the Twitter Widget</p>
+				<button class="btn btn-primary" ng-click="connect()">Connect an account</button>
+			</div>
+		</div>
+
+		<div class="alert alert-info" ng-show="twitterConnected">
+			<div class="alert-body text-center">
+				<span>Twitter account succesfully connected. <a href="#" ng-click="revoke()">Revoke Access</a></span>
+			</div>
+		</div>
+
+		<form>
+		  <div class="form-group">
+		    <!--label class="control-label">Enter a #hashtag or @handle to display Tweets from any public account</label>
+		    <input type="text" class="form-control" placeholder="#hashtag/@handle"-->
+	      <label class="control-label">Enter a @handle to display Tweets from any public account</label>
+		    <input type="text" class="form-control" placeholder="@handle" ng-model="settings.additionalParams.screenName">
+		  </div><!--form-inline-->
+
+		  <!--h4>Options</h4>
+		  <div class="form-group">
+		    <div class="checkbox">
+		      <label>
+		        <input type="checkbox"> Show Mentions
+		      </label>
+		    </div>
+		    <div class="checkbox">
+		      <label>
+		        <input type="checkbox"> Show Images
+		      </label>
+		    </div>
+		  </div>
+
+		  <div class="form-group form-inline">
+		    <label class="control-label">Show last</label>
+		    <input type="text" value="5" class="form-control" style="max-width: 100px">
+		    <label class="control-label">Tweets</label>
+		  </div>
+
+		  <div class="form-group form-inline">
+		    <label class="control-label">Show each Tweet for</label>
+		    <input type="text" value="10" class="form-control" style="max-width: 100px">
+		    <label class="control-label">seconds</label>
+		  </div>
+		  <h4>Appearance</h4>
+		  <div class="form-group">
+
+		    <div class="radio">
+		      <label>
+		        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+		  Light Theme
+		      </label>
+		    </div>
+		    <div class="radio">
+		      <label>
+		        <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+		  Dark Theme
+		      </label>
+		    </div>
+
+		  </div!-->
+		  <h4>Preview</h4>
+		  <div class="alert alert-info">
+		  	<div class="alert-body">
+		  		The Twitter Widget uses sample content in Preview, your Tweets will only show on a Display with Rise Player Professional.
+		  	</div>
+		  </div>
+		  <div class="panel panel-default">
+		  	<div class="panel-body">
+		  		<img src="https://lh4.googleusercontent.com/XG2bp3HwgBrhruE4oF_N07Irz-4lIcFu-cmJrEE5GqfnJcow3XFiQl4bnJJljOPTeHtvffgCTW6QjJS4FWNFK22ymzQhRgvMy79eUelZPMVw4FDvdSJ0Tet0eUlfhmpK-hAk4vU" class="img-responsive">
+		  	</div>
+		  </div>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+	  <widget-button-toolbar save="saveSettings()" cancel="closeSettings()" disable-save="settingsForm.$invalid">
+	  </widget-button-toolbar>
+	</div>
+</div>

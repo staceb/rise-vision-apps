@@ -6,6 +6,8 @@ angular.module('risevision.apps', [
     'ui.codemirror',
     'truncate',
     'slugifier',
+    'risevision.widget.twitter.services',
+    'risevision.widget.twitter.settings',
     'risevision.common.header',
     'risevision.common.header.templates',
     'risevision.common.components.last-modified',
