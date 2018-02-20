@@ -36,7 +36,7 @@
     .value('MESSAGING_URL', 'https://display-messaging-staging.risevision.com')
     .value('APPS_URL', '')
     .value('ENV_NAME', 'DEV')
-    .value('OAUTH_TOKEN_PROVIDER_URL', 'http://services-stage.risevision.com/oauthtokenprovider/')
+    .value('OAUTH_TOKEN_PROVIDER_URL', 'https://services-stage.risevision.com/oauthtokenprovider/')
     .value('OAUTH_PUBLIC_KEY', 'EJMI-lB9hB55OYEsYmjXDNfRGoY');
 
 })(angular);
