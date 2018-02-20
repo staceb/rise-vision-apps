@@ -1,37 +1,32 @@
-angular.module( "risevision.widget.twitter.settings" )
-  .controller( "TwitterSettingsController", [ "$scope", "$rootScope", "$q", "$log", "TwitterOAuthService",
-    function( $scope, $rootScope, $q, $log, TwitterOAuthService ) {
+'use strict';
+angular.module('risevision.widget.twitter.settings')
+  .controller('TwitterSettingsController', ['$scope', '$rootScope', '$q', '$log', 'TwitterOAuthService',
+    function ($scope, $rootScope, $q, $log, TwitterOAuthService) {
       $scope.twitterConnected = false;
 
       TwitterOAuthService.getConnectionStatus()
-        .then(function() {
+        .then(function () {
           $scope.twitterConnected = true;
-        }, function() {
+        }, function () {
           $scope.twitterConnected = false;
         });
 
-      $scope.connect = function() {
+      $scope.connect = function () {
         TwitterOAuthService.authenticate()
-          .then(function(key) {
+          .then(function (key) {
             $scope.twitterConnected = true;
-          }, function() {
+          }, function () {
             $scope.twitterConnected = false;
           });
-      }
+      };
 
-      $scope.revoke = function() {
+      $scope.revoke = function () {
         TwitterOAuthService.revoke()
-          .then(function() {
+          .then(function () {
             $scope.twitterConnected = false;
-          }, function() {
+          }, function () {
             $scope.twitterConnected = true;
           });
-      }
-
-    } ] )
-  .value( "defaultSettings", {
-    "params": {},
-    "additionalParams": {
-      "screenName": ""
+      };
     }
-  } );
+  ]);

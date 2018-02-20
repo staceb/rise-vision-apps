@@ -1,3 +1,5 @@
+/* globals $ */
+
 'use strict';
 
 angular.module('risevision.widgets.services')
