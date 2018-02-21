@@ -44,7 +44,7 @@ angular.module('risevision.widgets.services')
               key = userState.getSelectedCompanyId() + ':' + provider + ':' + response.data.authenticated[0];
               deferred.resolve(true);
             } else {
-              deferred.reject(new Error("No authenticated on the response"));
+              deferred.reject(new Error('No authenticated on the response'));
             }
           }, function (response) {
             deferred.reject(response);
