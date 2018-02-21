@@ -1,8 +1,8 @@
 /* globals OAuth */
 'use strict';
 angular.module('risevision.widgets.services')
-  .factory('OAuthService', ['OAUTH_PUBLIC_KEY', 'OAUTH_TOKEN_PROVIDER_URL', '$q', '$http', '$log', 'userState',
-    function (OAUTH_PUBLIC_KEY, OAUTH_TOKEN_PROVIDER_URL, $q, $http, $log, userState) {
+  .factory('OAuthService', ['$http', 'OAUTH_TOKEN_PROVIDER_URL', 'OAuthio', '$q', '$log', 'userState',
+    function ($http, OAUTH_TOKEN_PROVIDER_URL, OAuthio, $q, $log, userState) {
       var svc = {};
       var provider = '';
       var authorization = (userState.getAccessToken().token_type === 'Bearer') ? userState.getAccessToken().token_type +
@@ -17,7 +17,7 @@ angular.module('risevision.widgets.services')
       var key = '';
 
       svc.initialize = function (newProvider) {
-        OAuth.initialize(OAUTH_PUBLIC_KEY);
+        OAuthio.initialize();
         provider = newProvider;
       };
 
@@ -30,7 +30,7 @@ angular.module('risevision.widgets.services')
           .then(function (response) {
             deferred.resolve(response);
           }, function (response) {
-            deferred.reject();
+            deferred.reject(response);
             $log.debug('Could not get Status! ' + response);
           });
         return deferred.promise;
@@ -42,12 +42,12 @@ angular.module('risevision.widgets.services')
           .then(function (response) {
             if (response.data && Array.isArray(response.data.authenticated) && response.data.authenticated.length) {
               key = userState.getSelectedCompanyId() + ':' + provider + ':' + response.data.authenticated[0];
-              deferred.resolve();
+              deferred.resolve(true);
             } else {
-              deferred.reject();
+              deferred.reject(new Error("No authenticated on the response"));
             }
-          }, function () {
-            deferred.reject();
+          }, function (response) {
+            deferred.reject(response);
           });
 
         return deferred.promise;
@@ -71,16 +71,12 @@ angular.module('risevision.widgets.services')
 
       var _authenticateWithOauthIO = function (stateToken) {
         var deferred = $q.defer();
-        OAuth.popup(provider, {
-          'state': stateToken
-        }, function (error, result) {
-          if (!error) {
+        OAuthio.popup(provider, stateToken)
+          .then(function (result) {
             deferred.resolve(result.code);
-          } else {
+          }, function () {
             deferred.reject();
-            $log.debug('could not connect to twitter with oauth.io! ' + error);
-          }
-        });
+          });
         return deferred.promise;
       };
 
@@ -133,7 +129,7 @@ angular.module('risevision.widgets.services')
             'key': key
           }, requestOptions)
           .then(function (response) {
-            deferred.resolve();
+            deferred.resolve(response.data);
           }, function (response) {
             deferred.reject();
             $log.debug('Could not revoke with OAuth Token Provider! ' + response);

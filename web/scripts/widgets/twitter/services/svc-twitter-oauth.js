@@ -1,5 +1,5 @@
 'use strict';
-angular.module('risevision.widget.twitter.services')
+angular.module('risevision.widgets.twitter')
   .factory('TwitterOAuthService', ['$q', '$log', 'OAuthService',
     function ($q, $log, OAuthService) {
       var svc = {};

@@ -1,11 +1,7 @@
 'use strict';
-angular.module('risevision.widget.twitter.services', [
-  'risevision.widgets.services'
-]);
-
-angular.module('risevision.widget.twitter.settings', [
+angular.module('risevision.widgets.twitter', [
     'risevision.widget.common.widget-button-toolbar',
-    'risevision.widget.twitter.services'
+    'risevision.widgets.services'
   ])
   .run(['defaultSettings', function (defaultSettings) {
     defaultSettings.twitterWidget = {

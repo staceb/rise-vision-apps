@@ -1,7 +1,7 @@
 'use strict';
-angular.module('risevision.widget.twitter.settings')
-  .controller('TwitterSettingsController', ['$scope', '$rootScope', '$q', '$log', 'TwitterOAuthService',
-    function ($scope, $rootScope, $q, $log, TwitterOAuthService) {
+angular.module('risevision.widgets.twitter')
+  .controller('TwitterSettingsController', ['$scope', '$rootScope', 'TwitterOAuthService',
+    function ($scope, $rootScope, TwitterOAuthService) {
       $scope.twitterConnected = false;
 
       TwitterOAuthService.getConnectionStatus()
