@@ -5,16 +5,21 @@ angular.module('risevision.widgets.services')
     function ($http, OAUTH_TOKEN_PROVIDER_URL, OAuthio, $q, $log, userState) {
       var svc = {};
       var provider = '';
-      var authorization = (userState.getAccessToken().token_type === 'Bearer') ? userState.getAccessToken().token_type +
-        ' ' + userState.getAccessToken().access_token : userState.getAccessToken().access_token;
-      var requestOptions = {
-        'headers': {
-          'authorization': authorization
-        },
-        'withCredentials': true,
-        'responseType': 'json'
-      };
       var key = '';
+
+      var _getRequestOptions = function () {
+        var authorization = (userState.getAccessToken().token_type === 'Bearer') ? userState.getAccessToken().token_type +
+          ' ' + userState.getAccessToken().access_token : userState.getAccessToken().access_token;
+        var requestOptions = {
+          'headers': {
+            'authorization': authorization
+          },
+          'withCredentials': true,
+          'responseType': 'json'
+        };
+
+        return requestOptions;
+      }
 
       svc.initialize = function (newProvider) {
         OAuthio.initialize();
@@ -26,12 +31,12 @@ angular.module('risevision.widgets.services')
         $http.post(OAUTH_TOKEN_PROVIDER_URL + 'status', {
             'companyId': userState.getSelectedCompanyId(),
             'provider': provider
-          }, requestOptions)
+          }, _getRequestOptions())
           .then(function (response) {
             deferred.resolve(response);
-          }, function (response) {
-            deferred.reject(response);
-            $log.debug('Could not get Status! ' + response);
+          }, function (error) {
+            deferred.reject(error);
+            $log.debug('Could not get Status! ' + error);
           });
         return deferred.promise;
       };
@@ -46,8 +51,8 @@ angular.module('risevision.widgets.services')
             } else {
               deferred.reject(new Error('No authenticated on the response'));
             }
-          }, function (response) {
-            deferred.reject(response);
+          }, function (error) {
+            deferred.reject(error);
           });
 
         return deferred.promise;
@@ -55,16 +60,16 @@ angular.module('risevision.widgets.services')
 
       var _getStateToken = function () {
         var deferred = $q.defer();
-        $http.get(OAUTH_TOKEN_PROVIDER_URL + 'authenticate', requestOptions)
+        $http.get(OAUTH_TOKEN_PROVIDER_URL + 'authenticate', _getRequestOptions())
           .then(function (response) {
             if (response.data && response.data.token) {
               deferred.resolve(response.data.token);
             } else {
-              deferred.reject();
+              deferred.reject(new Error("No Token"));
             }
-          }, function (response) {
-            deferred.reject();
-            $log.debug('Could not get state token! ' + response);
+          }, function (error) {
+            deferred.reject(error);
+            $log.debug('Could not get state token! ' + error);
           });
         return deferred.promise;
       };
@@ -74,8 +79,8 @@ angular.module('risevision.widgets.services')
         OAuthio.popup(provider, stateToken)
           .then(function (result) {
             deferred.resolve(result.code);
-          }, function () {
-            deferred.reject();
+          }, function (error) {
+            deferred.reject(error);
           });
         return deferred.promise;
       };
@@ -86,53 +91,37 @@ angular.module('risevision.widgets.services')
             'code': code,
             'companyId': userState.getSelectedCompanyId(),
             'provider': provider
-          }, requestOptions)
+          }, _getRequestOptions())
           .then(function (response) {
             if (response.data && response.data.key) {
+              key = response.data.key;
               deferred.resolve(response.data.key);
             } else {
-              deferred.reject();
+              deferred.reject(new Error("No Key"));
             }
-          }, function (response) {
-            deferred.reject();
-            $log.debug('Could not authenticate with OAuth Token Provider! ' + response);
+          }, function (error) {
+            deferred.reject(error);
+            $log.debug('Could not authenticate with OAuth Token Provider! ' + error);
           });
         return deferred.promise;
       };
 
       svc.authenticate = function () {
-        var deferred = $q.defer();
-        _getStateToken()
-          .then(function (stateToken) {
-            _authenticateWithOauthIO(stateToken)
-              .then(function (code) {
-                _authenticateWithOauthTokenProvider(code)
-                  .then(function (newKey) {
-                    key = newKey;
-                    deferred.resolve(newKey);
-                  }, function () {
-                    deferred.reject();
-                  });
-              }, function () {
-                deferred.reject();
-              });
-          }, function () {
-            deferred.reject();
-          });
-
-        return deferred.promise;
+        return _getStateToken()
+                .then(_authenticateWithOauthIO)
+                .then(_authenticateWithOauthTokenProvider)
       };
 
       svc.revoke = function () {
         var deferred = $q.defer();
         $http.post(OAUTH_TOKEN_PROVIDER_URL + 'revoke', {
             'key': key
-          }, requestOptions)
+          }, _getRequestOptions())
           .then(function (response) {
             deferred.resolve(response.data);
-          }, function (response) {
-            deferred.reject();
-            $log.debug('Could not revoke with OAuth Token Provider! ' + response);
+          }, function (error) {
+            deferred.reject(error);
+            $log.debug('Could not revoke with OAuth Token Provider! ' + error);
           });
         return deferred.promise;
       };
