@@ -58,10 +58,6 @@ describe('service: OAuthService:', function() {
     expect(oauthService.revoke).to.be.a('function');
   });
 
-  it('initialize', function() {
-    oauthio.initialize.should.have.been.called;
-  });
-
   it('Connection Status', function(done) {
     $httpBackend.expect('POST', OAUTH_TOKEN_PROVIDER_URL + 'status', {
         'companyId': 'TEST_COMP_ID',

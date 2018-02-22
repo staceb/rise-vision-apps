@@ -9,7 +9,8 @@ describe('service: TwitterOAuthService:', function() {
       return {
         getConnectionStatus: sinon.stub(),
         authenticate: sinon.stub(),
-        revoke: sinon.stub()
+        revoke: sinon.stub(),
+        initialize: sinon.stub()
       }
     });
   }));
@@ -28,6 +29,10 @@ describe('service: TwitterOAuthService:', function() {
     expect(twitterOAuthService.getConnectionStatus).to.be.a('function');
     expect(twitterOAuthService.authenticate).to.be.a('function');
     expect(twitterOAuthService.revoke).to.be.a('function');
+  });
+
+  it('should call initialize with twitter',function(){
+    oauthService.initialize.should.have.been.calledWith('twitter');
   });
 
   it('should call getConnectionStatus',function(){

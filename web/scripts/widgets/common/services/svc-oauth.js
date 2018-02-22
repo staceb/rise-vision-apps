@@ -22,7 +22,6 @@ angular.module('risevision.widgets.services')
       }
 
       svc.initialize = function (newProvider) {
-        OAuthio.initialize();
         provider = newProvider;
       };
 
