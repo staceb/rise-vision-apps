@@ -8,7 +8,7 @@ angular.module('risevision.widgets.twitter', [
       'params': {},
       'additionalParams': {
         'screenName': '',
-        'componentId': 'rise-twitter-' + Math.random().toString().substring(2)
+        'componentId': ''
       }
     };
   }]);
