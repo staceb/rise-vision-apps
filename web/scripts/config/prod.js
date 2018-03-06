@@ -29,7 +29,7 @@
     .value('OLD_MESSAGING_URL',
       'https://display-messaging.risevision.com')
     .value('MESSAGING_PRIMUS_URL',
-      'https://services.risevision.com/messaging/primus')
+      'https://services.risevision.com/messaging/primus?displayId=apps&machineId=1')
     .value('MESSAGING_PRESENCE_URL',
       'https://services.risevision.com/messaging/presence')
     .value('APPS_URL', '')
