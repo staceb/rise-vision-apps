@@ -34,7 +34,7 @@
       'https://services.risevision.com/messaging/presence')
     .value('APPS_URL', '')
     .value('ENV_NAME', 'BETA')
-    .value('OAUTH_TOKEN_PROVIDER_URL', 'https://services-stage.risevision.com/oauthtokenprovider/')
+    .value('OAUTH_TOKEN_PROVIDER_URL', 'https://services.risevision.com/oauthtokenprovider/')
     .value('OAUTH_PUBLIC_KEY', 'EJMI-lB9hB55OYEsYmjXDNfRGoY');
 
 })(angular);
