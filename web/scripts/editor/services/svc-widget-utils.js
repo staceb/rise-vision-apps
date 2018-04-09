@@ -94,8 +94,7 @@ angular.module('risevision.editor.services')
       }
     }
   })
-  .constant('PROFESSIONAL_WIDGETS', [
-    {
+  .constant('PROFESSIONAL_WIDGETS', [{
       env: 'TEST',
       name: 'Twitter Widget Test',
       imageUrl: 'https://s3.amazonaws.com/Rise-Images/UI/twitter-widget%402x-100.jpg',
@@ -112,6 +111,13 @@ angular.module('risevision.editor.services')
       gadgetType: 'Widget',
       id: '67e511ae-62b5-4a44-9551-077f63596079',
       url: 'https://widgets.risevision.com/stable/components/rise-twitter/rise-twitter-widget.html'
+    },
+    {
+      name: 'Embedded Presentation',
+      imageUrl: 'https://s3.amazonaws.com/Store-Products/Rise-Vision/embedded-presentations-640x480.jpg',
+      imageAlt: 'add embedded presentation',
+      gadgetType: 'Presentation',
+      id: 'presentation'
     }
   ])
   .factory('widgetUtils', ['WIDGETS_INFO', 'PROFESSIONAL_WIDGETS', 'APPS_ENV',
@@ -236,9 +242,15 @@ angular.module('risevision.editor.services')
         }
       };
 
-      factory.getProfessionalWidgets = function() {
-        return _.filter(PROFESSIONAL_WIDGETS, {
-          env: APPS_ENV
+      factory.getProfessionalWidgets = function () {
+        return _.filter(PROFESSIONAL_WIDGETS, function (item) {
+          return !item.env || item.env === APPS_ENV;
+        });
+      };
+
+      factory.isProfessionalWidget = function (widgetId) {
+        return !!_.find(PROFESSIONAL_WIDGETS, {
+          id: widgetId
         });
       };
 
