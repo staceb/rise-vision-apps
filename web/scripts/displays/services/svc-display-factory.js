@@ -106,8 +106,6 @@ angular.module('risevision.displays.services')
               displayTracker('Display Created', resp.item.id, resp.item
                 .name);
 
-              displayEmail.send(resp.item.id, resp.item.name);
-
               $rootScope.$broadcast('displayCreated', resp.item);
 
               deferred.resolve();

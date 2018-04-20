@@ -263,7 +263,6 @@ describe('service: displayFactory:', function() {
 
       setTimeout(function(){
         expect(trackerCalled).to.equal('Display Created');
-        expect(emailSent).to.be.true;
         broadcastSpy.should.have.been.calledWith('displayCreated', sinon.match.object);
 
         expect(displayFactory.savingDisplay).to.be.false;
