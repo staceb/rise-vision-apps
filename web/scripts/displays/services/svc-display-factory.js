@@ -2,9 +2,9 @@
 
 angular.module('risevision.displays.services')
   .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal',
-    'display', 'displayTracker', 'displayEmail', '$loading', 'planFactory',
+    'display', 'displayTracker', '$loading', 'planFactory',
     function ($rootScope, $q, $state, $modal, display, displayTracker,
-      displayEmail, $loading, planFactory) {
+      $loading, planFactory) {
       var factory = {};
       var _displayId;
 
