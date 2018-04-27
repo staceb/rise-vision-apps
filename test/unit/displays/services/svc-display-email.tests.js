@@ -9,17 +9,8 @@ describe('service: displayEmail:', function() {
           return Q.resolve();
         }
       }
-    })
-    $provide.service('$templateCache',function(){
-      return {
-        get: function(url){
-          expect(url).to.be.ok;
-
-          return 'email template w/ {{display.id}} & {{display.name}}';
-        },
-        put: function() {}
-      }
     });
+
     $provide.service('userState', function() {
       return {
         getUserEmail: function() {
