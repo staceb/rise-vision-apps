@@ -3,9 +3,9 @@ describe('service: displayEmail:', function() {
   beforeEach(module('risevision.displays.services'));
 
   beforeEach(module(function ($provide) {
-    $provide.service('email', function() {
+    $provide.service('display', function() {
       return {
-        send: function() {
+    	sendSetupEmail : function(){
           return Q.resolve();
         }
       }
@@ -34,8 +34,8 @@ describe('service: displayEmail:', function() {
   beforeEach(function(){
     inject(function($injector){
       displayEmail = $injector.get('displayEmail');
-      var emailService = $injector.get('email');
-      sendSpy = sinon.spy(emailService, 'send');
+      var displayService = $injector.get('display');
+      sendSpy = sinon.spy(displayService, 'sendSetupEmail');
     });
   });
 
@@ -46,16 +46,25 @@ describe('service: displayEmail:', function() {
   });
   
   it('should send email',function(done){
-    displayEmail.send('displayId', 'displayName');
+    displayEmail.send('displayId');
     expect(displayEmail.sendingEmail).to.be.true;
-    sendSpy.should.have.been.calledWith('user@gmail.com',
-      'Set Up Your Display With Rise Vision',
-      'email template w/ displayId & displayName');
+    sendSpy.should.have.been.calledWith('displayId', 'user@gmail.com');
 
     setTimeout(function() {
       expect(displayEmail.sendingEmail).to.be.false;
       done()
     }, 10);
+  });
+  
+  it('should send email to another user',function(done){
+    displayEmail.send('displayId', 'another.user@gmail.com');
+    expect(displayEmail.sendingEmail).to.be.true;
+    sendSpy.should.have.been.calledWith('displayId', 'another.user@gmail.com');
+
+    setTimeout(function() {
+	  expect(displayEmail.sendingEmail).to.be.false;
+	  done()
+	}, 10);
   });
 
   it('should not call w/ missing parameters',function(){

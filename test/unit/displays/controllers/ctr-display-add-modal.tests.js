@@ -120,7 +120,7 @@ describe('controller: display add modal', function() {
       $scope.anotherEmail = 'another@email.com';
       $scope.sendToAnotherEmail();
 
-      spy.should.have.been.calledWith('ID','Name','another@email.com');
+      spy.should.have.been.calledWith('ID', 'another@email.com');
       setTimeout(function() {
         expect($scope.errorMessage).to.be.null;
         done();
