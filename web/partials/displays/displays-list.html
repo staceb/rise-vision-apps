@@ -18,8 +18,12 @@
   </div>
 </div>
 
-<div id="errorBox" ng-show="factory.apiError" class="alert alert-danger" role="alert">
-  <strong>{{factory.errorMessage}}</strong> {{factory.apiError}}
+<div id="errorBox" ng-show="displays.apiError" class="alert alert-danger" role="alert">
+  <strong>{{displays.errorMessage}}</strong> {{displays.apiError}}
+</div> 
+
+<div id="errorBox" ng-show="displayStatusFactory.apiError" class="alert alert-danger" role="alert">
+  <strong>{{displayStatusFactory.errorMessage}}</strong> {{displayStatusFactory.apiError}}
 </div> 
 
 <search-filter filter-config="filterConfig" search="search" do-search="displays.doSearch"></search-filter>
