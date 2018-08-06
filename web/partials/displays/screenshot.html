@@ -18,6 +18,9 @@
       <p>{{ 'displays-app.fields.screenshot.upgradeRequired' | translate }}</p>
       <button class="btn btn-xs btn-primary" ng-click="factory.addDisplayModal(display)">{{ 'displays-app.fields.screenshot.upgradePlayer' | translate }}</button>
     </div>
+    <div class="panel-body display-screenshot" ng-show="screenshotState(display) === 'upgrade-player'">
+      <p>Soon</p>
+    </div>
     <div class="panel-body display-screenshot" ng-show="screenshotState(display) === 'os-not-supported'">
       <p>{{ 'displays-app.fields.screenshot.notAvailable' | translate }}</p>
       <p>{{ 'displays-app.fields.screenshot.osNotSupported' | translate }}</p>
