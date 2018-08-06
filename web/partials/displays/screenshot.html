@@ -19,7 +19,10 @@
       <button class="btn btn-xs btn-primary" ng-click="factory.addDisplayModal(display)">{{ 'displays-app.fields.screenshot.upgradePlayer' | translate }}</button>
     </div>
     <div class="panel-body display-screenshot" ng-show="screenshotState(display) === 'chromeos-soon'">
-      <p>Soon</p>
+      <p>Screenshots on Chrome OS will be available soon</p>
+      <button class="btn btn-link" onclick="window.open('https://help.risevision.com/hc/en-us/articles/360001252066','_blank')">
+        Lear more about Chrome OS Beta
+      </button>
     </div>
     <div class="panel-body display-screenshot" ng-show="screenshotState(display) === 'os-not-supported'">
       <p>{{ 'displays-app.fields.screenshot.notAvailable' | translate }}</p>
