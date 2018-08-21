@@ -26,10 +26,11 @@
 	      <label class="control-label">{{"widget-twitter.screenNameText" | translate }}</label>
 		    <div class="input-group">
 		      <span class="input-group-addon" id="basic-addon1">@</span>
-		      <input id="twitterScreenName" type="text" class="form-control" placeholder="username" ng-model="settings.additionalParams.screenName">
+		      <input id="twitterScreenName" type="text" class="form-control" placeholder="username"
+						required ng-model="settings.additionalParams.screenName">
 		    </div>
 			</div><!--form-inline-->
-			
+
 		  <h4>{{"widget-twitter.previewLable" | translate }}</h4>
 		  <div class="alert alert-info">
 		  	<div class="alert-body">
@@ -46,8 +47,8 @@
 		  	</div>
 		  </div>
 
-		  
-		  
+
+
 
 		</form>
 	</div>
