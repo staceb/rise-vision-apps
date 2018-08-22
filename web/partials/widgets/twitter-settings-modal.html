@@ -20,7 +20,7 @@
 		</div>
 
 		<form role="form" name="settingsForm">
-		  <div ng-class="{'form-group':true, 'has-error':settingsForm.screenName.$invalid}">
+		  <div class="form-group" ng-class="{'has-error': !settingsForm.screenName.$pristine && settingsForm.screenName.$invalid}" show-errors>
 		    <!--label class="control-label">Enter a #hashtag or @handle to display Tweets from any public account</label>
 		    <input type="text" class="form-control" placeholder="#hashtag/@handle"-->
 	      <label class="control-label">{{"widget-twitter.screenName.text" | translate }} *</label>
@@ -28,6 +28,9 @@
 		      <span class="input-group-addon" id="basic-addon1">@</span>
 		      <input id="twitterScreenName" name="screenName" type="text" class="form-control" placeholder="username" required ng-model="settings.additionalParams.screenName">
 		    </div>
+				<p class="text-danger" ng-show="!settingsForm.screenName.$pristine && settingsForm.screenName.$invalid" translate>
+					widget-twitter.screenName.error
+			  </p>
 			</div><!--form-inline-->
 
 		  <h4>{{"widget-twitter.previewLabel" | translate }}</h4>
@@ -49,7 +52,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-	  <widget-button-toolbar save="saveSettings()" cancel="closeSettings()" disable-save="settingsForm.$invalid || !twitterConnected">
+	  <widget-button-toolbar save="saveSettings()" cancel="closeSettings()" disable-save="settingsForm.$invalid">
 	  </widget-button-toolbar>
 	</div>
 </div>
