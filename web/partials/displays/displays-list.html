@@ -2,21 +2,37 @@
   <h1 class="app-header-title" id="title" translate>displays-app.title</h1>
 
   <div class="ml-auto">
-    <a id="displayAddButton" class="btn btn-lg btn-primary" ng-click="displayFactory.addDisplayModal()">{{ 'displays-app.actions.new' | translate }} <i class="fa fa-plus icon-right"></i></a>
+    <a id="displayAddButton" class="btn btn-lg btn-primary" ng-click="displayFactory.addDisplayModal()">
+      {{ 'displays-app.actions.new' | translate }}
+      <i class="fa fa-plus icon-right"></i>
+    </a>
   </div>
 </div>
 
-<div id="errorBox" ng-show="displays.apiError" class="alert alert-danger" role="alert">
-  <strong>{{displays.errorMessage}}</strong> {{displays.apiError}}
-</div> 
+<ul class="display-stats my-4 list-unstyled" ng-show="playerLicenseFactory.getProLicenseCount() > 0">
+  <li class="display-stats-item">
+    <span class="font-weight-bold">{{ playerLicenseFactory.getProLicenseCount() }}</span>
+    Licensed Displays
+  </li>
+  <li class="display-stats-item">
+    <span class="font-weight-bold text-success">{{ playerLicenseFactory.getProAvailableLicenseCount() }}</span>
+    Unused Licenses
+  </li>
+</ul>
 
-<div id="errorBox" ng-show="displayStatusFactory.apiError" class="alert alert-danger" role="alert">
-  <strong>{{displayStatusFactory.errorMessage}}</strong> {{displayStatusFactory.apiError}}
+<div ng-show="displays.apiError" class="alert alert-danger my-2" role="alert">
+  <strong>{{displays.errorMessage}}</strong>
+  {{displays.apiError}}
+</div>
+
+<div id="errorBox" ng-show="displayStatusFactory.apiError" class="alert alert-danger my-2" role="alert">
+  <strong>{{displayStatusFactory.errorMessage}}</strong>
+  {{displayStatusFactory.apiError}}
 </div> 
 
 <search-filter filter-config="filterConfig" search="search" do-search="displays.doSearch"></search-filter>
 
-<div class="bg-warning u_padding-sm u_margin-sm-top u_margin-sm-bottom" ng-show="search.query">
+<div class="alert alert-warning my-2" ng-show="search.query">
   <span translate>displays-app.list.searchNotification</span>
 </div>
 
