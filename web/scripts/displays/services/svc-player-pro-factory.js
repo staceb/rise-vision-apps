@@ -1,20 +1,21 @@
 'use strict';
 
 angular.module('risevision.displays.services')
+  .value('PLAYER_VERSION_DATE_REGEX', /\d{4}\.\d{2}\.\d{2}\.*/)
   .value('SCREENSHOT_PLAYER_VERSION', '2017.01.10.17.33')
   .value('OFFLINE_PLAY_PLAYER_VERSION', '2017.07.31.15.31')
   .value('DISPLAY_CONTROL_PLAYER_VERSION', '2018.01.15.16.31')
   .value('CHROMEOS_PLAYER_VERSION', '2018.07.20.10229')
   .value('CHROMEOS_SCREENSHOT_PLAYER_VERSION', '2018.08.17.8388')
-  .factory('playerProFactory', ['$rootScope', '$q', '$modal', 'userState',
-    'displayTracker', 'storeAuthorization', '$loading', 'parsePlayerDate',
+  .factory('playerProFactory', ['$q', '$modal', 'userState',
+    'parsePlayerDate',
     'getLatestPlayerVersion', 'STORE_URL', 'IN_RVA_PATH',
-    'PLAYER_PRO_PRODUCT_ID', 'PLAYER_PRO_PRODUCT_CODE',
+    'PLAYER_PRO_PRODUCT_ID', 'PLAYER_VERSION_DATE_REGEX',
     'SCREENSHOT_PLAYER_VERSION', 'OFFLINE_PLAY_PLAYER_VERSION', 'DISPLAY_CONTROL_PLAYER_VERSION',
     'CHROMEOS_PLAYER_VERSION', 'CHROMEOS_SCREENSHOT_PLAYER_VERSION',
-    function ($rootScope, $q, $modal, userState, displayTracker, storeAuthorization,
-      $loading, parsePlayerDate, getLatestPlayerVersion,
-      STORE_URL, IN_RVA_PATH, PLAYER_PRO_PRODUCT_ID, PLAYER_PRO_PRODUCT_CODE,
+    function ($q, $modal, userState,
+      parsePlayerDate, getLatestPlayerVersion,
+      STORE_URL, IN_RVA_PATH, PLAYER_PRO_PRODUCT_ID, PLAYER_VERSION_DATE_REGEX,
       SCREENSHOT_PLAYER_VERSION, OFFLINE_PLAY_PLAYER_VERSION, DISPLAY_CONTROL_PLAYER_VERSION,
       CHROMEOS_PLAYER_VERSION, CHROMEOS_SCREENSHOT_PLAYER_VERSION) {
       var factory = {};
@@ -36,6 +37,10 @@ angular.module('risevision.displays.services')
         return (STORE_URL + IN_RVA_PATH
           .replace('productId', PLAYER_PRO_PRODUCT_ID)
           .replace('companyId', userState.getSelectedCompanyId()));
+      };
+
+      var _compareVersion = function (minimumVersion, currentVersion) {
+        return PLAYER_VERSION_DATE_REGEX.test(currentVersion) && currentVersion >= minimumVersion;
       };
 
       factory.is3rdPartyPlayer = function (display) {
@@ -65,8 +70,7 @@ angular.module('risevision.displays.services')
 
       factory.isChromeOSPlayer = function (display) {
         return !!(display && display.playerName && display.playerName.indexOf('RisePlayer') !== -1 &&
-          !factory.isElectronPlayer(display) &&
-          display.playerVersion >= CHROMEOS_PLAYER_VERSION);
+          !factory.isElectronPlayer(display) && _compareVersion(CHROMEOS_PLAYER_VERSION, display.playerVersion));
       };
 
       factory.isUnsupportedPlayer = function (display) {
@@ -87,19 +91,20 @@ angular.module('risevision.displays.services')
       };
 
       factory.isScreenshotCompatiblePlayer = function (display) {
-        return !!(display && factory.isElectronPlayer(display) &&
-            display.playerVersion >= SCREENSHOT_PLAYER_VERSION) ||
-          (factory.isChromeOSPlayer(display) && display.playerVersion >= CHROMEOS_SCREENSHOT_PLAYER_VERSION);
+        var electronSupported = factory.isElectronPlayer(display) && _compareVersion(SCREENSHOT_PLAYER_VERSION, display.playerVersion);
+        var chromeOSSupported = factory.isChromeOSPlayer(display) && _compareVersion(CHROMEOS_SCREENSHOT_PLAYER_VERSION, display.playerVersion);
+
+        return electronSupported || chromeOSSupported;
       };
 
       factory.isOfflinePlayCompatiblePayer = function (display) {
         return !!(display && factory.isElectronPlayer(display) &&
-          display.playerVersion >= OFFLINE_PLAY_PLAYER_VERSION);
+          _compareVersion(OFFLINE_PLAY_PLAYER_VERSION, display.playerVersion));
       };
 
       factory.isDisplayControlCompatiblePlayer = function (display) {
         return !!(display && factory.isElectronPlayer(display) &&
-          display.playerVersion >= DISPLAY_CONTROL_PLAYER_VERSION &&
+          _compareVersion(DISPLAY_CONTROL_PLAYER_VERSION, display.playerVersion) &&
           display.playerProAuthorized);
       };
 

@@ -95,6 +95,7 @@ describe('service: playerProFactory:', function() {
     expect(playerProFactory.isChromeOSPlayer({playerName:'RisePlayer', playerVersion: '2017.07.17.20.21'})).to.be.false;
     expect(playerProFactory.isChromeOSPlayer({playerName:'RisePlayerElectron'})).to.be.false;
     expect(playerProFactory.isChromeOSPlayer({playerName:'RisePlayerElectron', playerVersion: '2018.08.17.20.21'})).to.be.false;
+    expect(playerProFactory.isChromeOSPlayer({playerName:'RisePlayer', playerVersion: '3.6'})).to.be.false;
     expect(playerProFactory.isChromeOSPlayer({playerName:'RisePlayer', playerVersion: '2018.08.17.20.21'})).to.be.true;
     expect(playerProFactory.isChromeOSPlayer({playerName:'(Beta) RisePlayer', playerVersion: '2018.08.17.20.21'})).to.be.true;
   });
@@ -137,16 +138,20 @@ describe('service: playerProFactory:', function() {
   it('isScreenshotCompatiblePlayer:',function(){
     expect(playerProFactory.isScreenshotCompatiblePlayer()).to.be.false;
     expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:''})).to.be.false;
+    expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:'1.0'})).to.be.false;
     expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:'2016.06.27.05.15'})).to.be.false;
     expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:'2017.07.31.15.31'})).to.be.true;
+    expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: '(Beta) RisePlayer', os: 'Chrome OS 10575.58.0', playerVersion: '2.2'})).to.be.false;
     expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: '(Beta) RisePlayer', os: 'Chrome OS 10575.58.0', playerVersion: '2018.08.15.1111'})).to.be.false;
     expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: '(Beta) RisePlayer', os: 'Chrome OS 10575.58.0', playerVersion: '2018.08.17.8388'})).to.be.true;
+    expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: 'RisePlayer', os: 'Chrome OS 10575.58.0', playerVersion: '2.3'})).to.be.false;
     expect(playerProFactory.isScreenshotCompatiblePlayer({playerName: 'RisePlayer', os: 'Chrome OS 10575.58.0', playerVersion: '2018.08.18.9092'})).to.be.true;
   });
 
   it('isOfflinePlayCompatiblePayer:',function(){
     expect(playerProFactory.isOfflinePlayCompatiblePayer()).to.be.false;
     expect(playerProFactory.isOfflinePlayCompatiblePayer({playerName: 'RisePlayerElectron', playerVersion:''})).to.be.false;
+    expect(playerProFactory.isOfflinePlayCompatiblePayer({playerName: 'RisePlayerElectron', playerVersion:'3.11'})).to.be.false;
     expect(playerProFactory.isOfflinePlayCompatiblePayer({playerName: 'RisePlayerElectron', playerVersion:'2017.06.27.05.15'})).to.be.false;
     expect(playerProFactory.isOfflinePlayCompatiblePayer({playerName: 'RisePlayerElectron', playerVersion:'2017.07.31.15.31'})).to.be.true;
     expect(playerProFactory.isOfflinePlayCompatiblePayer({playerName: 'RisePlayerElectron', playerVersion:'2018.09.45.06.49'})).to.be.true;
@@ -155,6 +160,7 @@ describe('service: playerProFactory:', function() {
   it('isDisplayControlCompatiblePlayer:',function(){
     expect(playerProFactory.isDisplayControlCompatiblePlayer()).to.be.false;
     expect(playerProFactory.isDisplayControlCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:''})).to.be.false;
+    expect(playerProFactory.isDisplayControlCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:'95'})).to.be.false;
     expect(playerProFactory.isDisplayControlCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:'2017.07.31.15.31', playerProAuthorized: true})).to.be.false;
     expect(playerProFactory.isDisplayControlCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:'2018.09.45.06.49', playerProAuthorized: false})).to.be.false;
     expect(playerProFactory.isDisplayControlCompatiblePlayer({playerName: 'RisePlayerElectron', playerVersion:'2018.09.45.06.49', playerProAuthorized: true})).to.be.true;
