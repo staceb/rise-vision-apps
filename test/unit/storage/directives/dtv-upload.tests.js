@@ -164,6 +164,17 @@ describe('directive: upload', function() {
     expect(args[0].name).to.be.equal('test/test1.jpg');
   });
 
+  it('should add warning if the file is not supported', function() {
+    var fileName = 'test1.tif';
+    var file1 = { name: fileName, size: 200, slice: function() {}, file: { name: fileName } };
+
+    filesFactory.folderPath = 'test/';
+    FileUploader.onAfterAddingFile(file1);
+
+    expect($scope.warnings[0].fileName).to.be.equal('test/test1.tif');
+    expect($scope.warnings[0].message).to.be.equal('storage-client.warning.image-not-supported');
+  });
+
   it('activeUploadCount: ', function() {
     FileUploader.queue = [
       {

@@ -1,4 +1,9 @@
 <div>
+  
+  <alert class="animated fadeInDown" ng-repeat="warning in warnings" type="warning">
+    <span translate translate-values="{ fileName: warning.fileName }">{{warning.message}}</span>
+  </alert>
+
   <div id="uploadPanel" class="panel animated fadeInDown progress-panel u_margin-md-bottom" ng-show="uploader.queue.length > 0">
     
       <div ng-click="isCollapsed = !isCollapsed">
