@@ -7,9 +7,9 @@
       var GOOGLES_REQUIRED_CHUNK_MULTIPLE = 256 * 1024;  
       return GOOGLES_REQUIRED_CHUNK_MULTIPLE * 4 * 25;
     }()))
-    .directive('upload', ['$rootScope', '$q', '$translate', 'storage',
+    .directive('upload', ['$rootScope', '$timeout', '$translate', 'storage',
       'FileUploader', 'UploadURIService', 'STORAGE_UPLOAD_CHUNK_SIZE',
-      function ($rootScope, $q, $translate, storage, FileUploader,
+      function ($rootScope, $timeout, $translate, storage, FileUploader,
         UploadURIService, STORAGE_UPLOAD_CHUNK_SIZE) {
         return {
           restrict: 'E',
@@ -18,6 +18,10 @@
           },
           templateUrl: 'partials/storage/upload-panel.html',
           link: function ($scope) {
+            var videoTypesNotSupported = ['mov', 'wmv', 'm4v', 'flv' , 'avi', 'ogg', 'ogv'];
+            var imageTypesNotSupported = ['tiff', 'tif'];
+
+            $scope.warnings = [];
             $scope.uploader = FileUploader;
             $scope.status = {};
 
@@ -57,12 +61,29 @@
               FileUploader.removeAll();
             };
 
+            function chekFileType(fileItem) {
+              var fileName = fileItem.file.name;
+              var extension = fileName && fileName.split('.').pop();
+              if (videoTypesNotSupported.indexOf(extension) !== -1) {
+                $scope.warnings.push({fileName: fileName, message: 'storage-client.warning.video-not-supported'});
+              } else if (imageTypesNotSupported.indexOf(extension) !== -1) {
+                $scope.warnings.push({fileName: fileName, message: 'storage-client.warning.image-not-supported'});
+              }
+            }
+
+            function dismissWarning(fileItem) {
+              var warningIndex = _.findIndex($scope.warnings, function (warning) { return warning.fileName === fileItem.file.name; });
+              if (warningIndex !== -1) {
+                $timeout(function () { $scope.warnings.splice(warningIndex); }, 5000);
+              }
+            }
+
             FileUploader.onAfterAddingFile = function (fileItem) {
               console.info('onAfterAddingFile', fileItem.file.name);
 
               if (!fileItem.isRetrying) {
-                fileItem.file.name = ($scope.filesFactory.folderPath ||
-                  '') + fileItem.file.name;
+                fileItem.file.name = ($scope.filesFactory.folderPath || '') + fileItem.file.name;
+                chekFileType(fileItem);
               }
 
               $translate('storage-client.uploading', {
@@ -103,9 +124,13 @@
             FileUploader.onCompleteItem = function (item) {
               console.log('onCompleteItem', item);
 
+              dismissWarning(item);
+
               if (item.isCancel) {
                 return;
-              } else if (!item.isSuccess) {
+              }
+
+              if (!item.isSuccess) {
                 $translate('storage-client.error.upload-failed').then(
                   function (msg) {
                     $scope.status.message = msg;
