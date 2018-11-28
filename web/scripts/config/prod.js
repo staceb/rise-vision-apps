@@ -26,8 +26,6 @@
       'https://rvaserver2.appspot.com/alerts/cap')
     .value('STORAGE_ENDPOINT_URL',
       'https://storage-dot-rvaserver2.appspot.com/_ah/api')
-    .value('OLD_MESSAGING_URL',
-      'https://display-messaging.risevision.com')
     .value('MESSAGING_PRIMUS_URL',
       'https://services.risevision.com/messaging/primus?displayId=apps&machineId=1')
     .value('MESSAGING_PRESENCE_URL',

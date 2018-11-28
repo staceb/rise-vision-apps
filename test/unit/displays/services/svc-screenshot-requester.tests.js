@@ -43,7 +43,6 @@ describe('service: screenshot requester:', function() {
           on: function(eName, cb) {if (eName === 'data') {newPrimusHandler = cb; }},
           end: function() {}
         }; },
-        PrimusOldMS: function() { return primus; },
         primus: primus,
         triggerNewPrimus: function(data) { newPrimusHandler(data); }
       };
