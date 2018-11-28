@@ -13,38 +13,16 @@ describe('service: screenshot requester:', function() {
     });
 
     $provide.service('$window', function() {
-      var primus = {
-        on: function(eName, cb) {
-          if(eName === 'data') {
-            primus.dataCb = cb;
-          } else if (eName === 'open') {
-            primus.openCb = cb;
-          }
-        },
-        open: function() {
-          setTimeout(function() {
-            primus.openCb && primus.openCb();
-          });
-        },
-        end: function() {
-
-        },
-        emit: function(eName, data) {
-          if (eName !== 'data') { return; }
-          primus.dataCb(data);
-        }
-      };
-
-      var newPrimusHandler;
+      var primusHandler;
 
       return {
         Primus: function() { return {
           open: function() {},
-          on: function(eName, cb) {if (eName === 'data') {newPrimusHandler = cb; }},
+          on: function(eName, cb) {if (eName === 'data') {primusHandler = cb; }},
           end: function() {}
         }; },
         primus: primus,
-        triggerNewPrimus: function(data) { newPrimusHandler(data); }
+        triggerPrimusHandler: function(data) { primusHandler(data); }
       };
     });
 
@@ -55,40 +33,15 @@ describe('service: screenshot requester:', function() {
 
   describe('screenshotRequester', function() {
     var $timeout;
-    var triggerNewPrimus;
+    var triggerPrimusHandler;
 
     beforeEach(function() {
       inject(function($injector){
         primus = $injector.get('$window').primus;
-        triggerNewPrimus = $injector.get('$window').triggerNewPrimus;
+        triggerPrimusHandler = $injector.get('$window').triggerPrimusHandler;
         screenshotRequester = $injector.get('screenshotRequester');
         $timeout = $injector.get('$timeout');
       });
-    });
-
-    it('should wait for a successful screenshot response', function(done) {
-      var coreCall = sinon.stub();
-
-      coreCall.returns({
-        then: function() {
-          setTimeout(function() {
-            primus.dataCb({
-              msg: 'screenshot-saved',
-              clientId: 1
-            });
-          });
-        }
-      });
-
-      screenshotRequester(coreCall).then(function(data) {
-        expect(coreCall).to.be.calledOnce;
-        expect(data.msg).to.equal("screenshot-saved");
-        done();
-      });
-
-      setTimeout(function() {
-        primus.dataCb({ msg: 'client-connected', clientId: 1 });
-      }, 50);
     });
 
     it('should wait for a successful screenshot response from new MS', function(done) {
@@ -97,7 +50,7 @@ describe('service: screenshot requester:', function() {
       coreCall.returns({
         then: function() {
           setTimeout(function() {
-            triggerNewPrimus({
+            triggerPrimusHandler({
               msg: 'screenshot-saved',
               clientId: 1
             });
@@ -112,7 +65,7 @@ describe('service: screenshot requester:', function() {
       });
 
       setTimeout(function() {
-        primus.dataCb({ msg: 'client-connected', clientId: 1 });
+        triggerPrimusHandler({ msg: 'client-connected', clientId: 1 });
       }, 50);
     });
 
@@ -124,7 +77,7 @@ describe('service: screenshot requester:', function() {
           expect(a).to.equal(null);
 
           setTimeout(function() {
-            primus.dataCb({
+            triggerPrimusHandler({
               msg: 'screenshot-failed',
               clientId: 1
             });
@@ -139,7 +92,7 @@ describe('service: screenshot requester:', function() {
       });
 
       setTimeout(function() {
-        primus.dataCb({ msg: 'client-connected', clientId: 1 });
+        triggerPrimusHandler({ msg: 'client-connected', clientId: 1 });
       }, 50);
     });
 
@@ -160,7 +113,7 @@ describe('service: screenshot requester:', function() {
       });
 
       setTimeout(function() {
-        primus.dataCb({ msg: 'client-connected', clientId: 1 });
+        triggerPrimusHandler({ msg: 'client-connected', clientId: 1 });
       }, 50);
     });
 
@@ -180,7 +133,7 @@ describe('service: screenshot requester:', function() {
       });
 
       setTimeout(function() {
-        primus.dataCb({ msg: 'client-connected', clientId: 1 });
+        triggerPrimusHandler({ msg: 'client-connected', clientId: 1 });
       }, 50);
     });
   });

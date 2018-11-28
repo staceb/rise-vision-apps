@@ -75,7 +75,7 @@ describe('service: display status factory:', function() {
       });
     });
 
-    it('should call both messaging services and load status', function(done) {
+    it('should call messaging service and load status', function(done) {
       $httpBackend.when('POST', /.*/).respond(function(method, url, data) {
         var ids = JSON.parse(data);
         return [
@@ -88,9 +88,9 @@ describe('service: display status factory:', function() {
       });
 
       displayStatusFactory.getDisplayStatus(['a', 'b', 'c']).then(function(msg) {
-        expect(msg[0].a).to.be.true;
+        expect(msg[0].a).to.be.false;
         expect(msg[1].b).to.be.true;
-        expect(msg[2].c).to.be.true;
+        expect(msg[2].c).to.be.false;
         expect(displayStatusFactory.apiError).to.be.null;
         done();
       });
@@ -111,9 +111,6 @@ describe('service: display status factory:', function() {
         ];
       });
 
-      setTimeout(function() {
-        $timeout.flush();
-      });
       setTimeout($httpBackend.flush, 200);
 
       primus.open = function() {};
@@ -131,9 +128,6 @@ describe('service: display status factory:', function() {
         ];
       });
 
-      setTimeout(function() {
-        $timeout.flush();
-      });
       setTimeout($httpBackend.flush, 200);
 
       primus.open = function() {};
