@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('risevision.apps.billing.controllers')
-  .value('INVOICES_PATH', 'account/view/invoicesHistory?cid=companyId')
+  .value('PAST_INVOICES_PATH', 'account/view/invoicesHistory?cid=companyId')
+  .value('UNPAID_INVOICES_PATH', 'account/view/invoicesDue?cid=companyId')
   .controller('BillingCtrl', ['$rootScope', '$scope', '$loading', '$window', '$modal', '$templateCache', '$timeout',
     'ScrollingListService', 'getCoreCountries', 'userState', 'chargebeeFactory', 'billing', 'STORE_URL',
-    'INVOICES_PATH',
+    'PAST_INVOICES_PATH', 'UNPAID_INVOICES_PATH',
     function ($rootScope, $scope, $loading, $window, $modal, $templateCache, $timeout, ScrollingListService,
-      getCoreCountries, userState, chargebeeFactory, billing, STORE_URL, INVOICES_PATH) {
+      getCoreCountries, userState, chargebeeFactory, billing, STORE_URL, PAST_INVOICES_PATH, UNPAID_INVOICES_PATH) {
 
       $scope.search = {
         count: $scope.listLimit,
@@ -18,6 +19,8 @@ angular.module('risevision.apps.billing.controllers')
       $scope.company = userState.getCopyOfSelectedCompany();
       $scope.chargebeeFactory = chargebeeFactory;
       $scope.subscriptions = new ScrollingListService(billing.getSubscriptions, $scope.search);
+
+      $scope.hasUnpaidInvoices = false;
 
       $scope.$watch('subscriptions.loadingItems', function (loading) {
         if (loading) {
@@ -35,8 +38,26 @@ angular.module('risevision.apps.billing.controllers')
       };
 
       $scope.viewPastInvoicesStore = function () {
-        $window.open(STORE_URL + INVOICES_PATH.replace('companyId', userState.getSelectedCompanyId()), '_blank');
+        $window.open(STORE_URL + PAST_INVOICES_PATH.replace('companyId', userState.getSelectedCompanyId()), '_blank');
       };
+
+      $scope.viewUnpaidInvoicesStore = function () {
+        $window.open(STORE_URL + UNPAID_INVOICES_PATH.replace('companyId', userState.getSelectedCompanyId()), '_blank');
+      };
+
+      var _loadUnpaidInvoices = function () {
+        $scope.invoices = new ScrollingListService(billing.getUnpaidInvoices);
+
+        var $watch = $scope.$watch('invoices.loadingItems', function (loading) {
+          if (loading === false) {
+            $scope.hasUnpaidInvoices = $scope.invoices.items.list.length > 0;
+
+            $watch();
+          }
+        });
+      };
+
+      _loadUnpaidInvoices();
 
       $scope.editPaymentMethods = function () {
         chargebeeFactory.openPaymentSources(userState.getSelectedCompanyId());
@@ -66,6 +87,12 @@ angular.module('risevision.apps.billing.controllers')
 
       $scope.getSubscriptionDesc = function (subscription) {
         var prefix = subscription.quantity > 1 ? subscription.quantity + ' x ' : '';
+
+        // Show `1` quantity for Per Display subscriptions
+        if (_isPerDisplay(subscription) && subscription.quantity > 0) {
+          prefix = subscription.quantity + ' x ';
+        }
+
         var period = _getPeriod(subscription);
         var currency = _getCurrency(subscription);
 
@@ -106,5 +133,10 @@ angular.module('risevision.apps.billing.controllers')
       function _getPeriod(subscription) {
         return subscription.unit.toLowerCase().indexOf('per month') >= 0 ? 'Monthly' : 'Yearly';
       }
+
+      function _isPerDisplay(subscription) {
+        return subscription.unit.toLowerCase().indexOf('per display') >= 0 ? true : false;
+      }
+
     }
   ]);
