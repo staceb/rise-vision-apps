@@ -48,7 +48,7 @@ var FirstSigninScenarios = function() {
       before(function () {
         homepage.get();
         signInPage.signIn();
-        var subCompanyName = 'E2E TEST SUBCOMPANY';
+        var subCompanyName = 'E2E TEST SUBCOMPANY - FIRST SIGN IN';
         commonHeaderPage.createSubCompany(subCompanyName);
         commonHeaderPage.selectSubCompany(subCompanyName);   
       });
@@ -60,13 +60,15 @@ var FirstSigninScenarios = function() {
       });
       
       it('should show the First Step', function() {
+        browser.sleep(500);
         expect(getStartedPage.getWizardStep1().isDisplayed()).to.eventually.be.true;
         
         expect(getStartedPage.getGetStartedButton1().isDisplayed()).to.eventually.be.true;
       });
 
       it('should progress to the Second Step', function() {
-        getStartedPage.getGetStartedButton1().click();
+        helper.clickWhenClickable(getStartedPage.getGetStartedButton1(), 'Get Started Button 1');
+        browser.sleep(500);
 
         expect(getStartedPage.getWizardStep2().isDisplayed()).to.eventually.be.true;
         
@@ -74,7 +76,8 @@ var FirstSigninScenarios = function() {
       });
 
       it('should progress to the Third Step', function() {
-        getStartedPage.getGetStartedButton2().click();
+        helper.clickWhenClickable(getStartedPage.getGetStartedButton2(), 'Get Started Button 2');
+        browser.sleep(500);
 
         expect(getStartedPage.getWizardStep3().isDisplayed()).to.eventually.be.true;
         
@@ -82,7 +85,8 @@ var FirstSigninScenarios = function() {
       });
 
       it('should progress to the Last Step', function() {
-        getStartedPage.getGetStartedButton3().click();
+        helper.clickWhenClickable(getStartedPage.getGetStartedButton3(), 'Get Started Button 3');
+        browser.sleep(500);
 
         expect(getStartedPage.getWizardStep4().isDisplayed()).to.eventually.be.true;
         
@@ -99,11 +103,11 @@ var FirstSigninScenarios = function() {
       });
 
       it('should start a new presentation', function () {
-        getStartedPage.getGetStartedAddPresentation().click();
+        helper.clickWhenClickable(getStartedPage.getGetStartedAddPresentation(), 'Get Started Add Presentation');
 
         helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
         helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader());
-        storeProductsModalPage.getAddBlankPresentation().click();
+        helper.clickWhenClickable(storeProductsModalPage.getAddBlankPresentation(), 'Add Blank Presentation');
         
         helper.wait(workspacePage.getWorkspaceContainer(), 'Workspace Container');
         expect(workspacePage.getWorkspaceContainer().isDisplayed()).to.eventually.be.true;
@@ -117,20 +121,24 @@ var FirstSigninScenarios = function() {
         browser.sleep(500);
 
         helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
-        workspacePage.getSaveButton().click();
+        helper.clickWhenClickable(workspacePage.getSaveButton(), 'Save Button');
 
         helper.wait(autoScheduleModalPage.getAutoScheduleModal());
 
         expect(autoScheduleModalPage.getAutoScheduleModal().isDisplayed()).to.eventually.be.true;
-        autoScheduleModalPage.getCloseButton().click();
+        helper.clickWhenClickable(autoScheduleModalPage.getCloseButton(), 'Close Button');
       });
 
       it('should no longer show the Get Started Page', function () {
-        commonHeaderPage.getCommonHeaderMenuItems().get(0).click();
+        helper.clickWhenClickable(commonHeaderPage.getCommonHeaderMenuItems().get(0), 'First Common Header Menu Item');
 
         helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader');
 
         expect(getStartedPage.getGetStartedContainer().isDisplayed()).to.eventually.be.false;
+      });
+
+      it('removes current SubCompany',function(){
+        commonHeaderPage.deleteCurrentCompany();
       });
 
       xdescribe('Onboarding Bar: ', function() {
@@ -253,10 +261,6 @@ var FirstSigninScenarios = function() {
           helper.waitDisappear(displayAddModalPage.getDisplayAddModal(), 'Display Add Modal');
         });
 
-      });
-
-      it('removes current SubCompany',function(){
-        commonHeaderPage.deleteCurrentCompany();
       });
 
       after(function() {

@@ -64,26 +64,28 @@ var SignInPage = function() {
   };
 
   this.getGoogleLogin = function() {
-    helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader');
+    helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader - Get Google Login');
     helper.wait(signInGoogleLink, 'Sign In Google Link', 1000);
     signInGoogleLink.click();
   };
 
-  this.signIn = function() {
+  this.googleSignIn = function() {
     //wait for spinner to go away.
-    helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader');
+    helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader - Before Google Sign In');
 
     signInGoogleLink.isPresent().then(function (state) {
       if (state) {
         signInGoogleLink.click().then(function () {
           googleAuthPage.signin();
-          helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader');
+          helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader - After Google Sign In');
         });
       }
     });
     
     // helper.wait(onboardingPage.getOnboardingBar(), 'Onboarding bar');
   };
+
+  this.signIn = this.googleSignIn;
 
 };
 
