@@ -5,38 +5,39 @@ angular.module('risevision.apps.directives')
     return {
       restrict: 'AC',
       scope: {
-        onSort: '&'
+        onSort: '&',
+        appendTo: '@',
       },
       link: function ($scope, $element) {
         var sortable;
 
-        applySortable();
-
-        function applySortable() {
-          sortable = Sortable.create($element[0], {
-            sort: true,
-            scroll: false,
-            animation: 150,
+        var _applySortable = function () {
+          sortable = new Draggable.Sortable($element[0], {
             handle: '.rv-sortable-handle',
             draggable: '.rv-sortable-item',
-            forceFallback: isFirefox(),
-            onEnd: function (evt) {
-              if ($scope.onSort) {
-                $scope.onSort({
-                  evt: evt
-                });
-              }
+            mirror: {
+              appendTo: $scope.appendTo,
+              constrainDimensions: true,
+              cursorOffsetX: 10,
+              cursorOffsetY: 10,
+              xAxis: false
+            }
+          });
+
+          sortable.on('sortable:stop', function (evt) {
+            if ($scope.onSort) {
+              $scope.onSort({
+                evt: evt
+              });
             }
           });
 
           $scope.$on('$destroy', function () {
             sortable.destroy();
           });
-        }
+        };
 
-        function isFirefox() {
-          return navigator.userAgent.indexOf('Firefox') >= 0;
-        }
+        _applySortable();
       }
     };
   }]);
