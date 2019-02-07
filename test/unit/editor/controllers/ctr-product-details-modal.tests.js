@@ -35,8 +35,8 @@ describe('controller: ProductDetailsModalController', function() {
   }));
   var $scope, $modalInstance, $modalInstanceDismissSpy, $modalInstanceCloseSpy, product,
     $loading, checkTemplateAccessSpy, storeAuthorize;
-  
-  function initController(paymentTerms) {
+
+  function initController(paymentTerms, productTag) {
     inject(function($injector,$rootScope, $controller, checkTemplateAccess){
       $scope = $rootScope.$new();
       $modalInstance = $injector.get('$modalInstance');
@@ -47,14 +47,15 @@ describe('controller: ProductDetailsModalController', function() {
       $modalInstanceCloseSpy = sinon.spy($modalInstance, 'close');
 
       product = {
-        paymentTerms: paymentTerms ? paymentTerms: 'free', 
-        productCode: '1', 
+        paymentTerms: paymentTerms ? paymentTerms: 'free',
+        productCode: '1',
         pricing:[
           {
             priceUSD: '10',
             priceCAD: '12'
           }
-        ]
+        ],
+        productTag: productTag ? productTag : []
       };
 
       $controller('ProductDetailsModalController', {
@@ -91,6 +92,18 @@ describe('controller: ProductDetailsModalController', function() {
     
     expect($scope.canUseProduct).to.be.true;
   });
+
+  it( 'should not show preview link when product is HTML Template', function() {
+    initController(null, [ "HTMLTemplates" ]);
+
+    expect($scope.showPreviewLink).to.be.false;
+  } );
+
+  it( 'should show preview link when product is not HTML Template', function() {
+    initController();
+
+    expect($scope.showPreviewLink).to.be.true;
+  } );
 
   it('should retrieve premium product status',function(){
     initController('premium');
