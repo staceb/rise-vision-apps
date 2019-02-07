@@ -10,6 +10,7 @@
         $scope.product = product;
         $scope.canUseProduct = product.paymentTerms === 'free';
         $scope.showSubscriptionStatus = product.paymentTerms !== 'free';
+        $scope.showPreviewLink = product.productTag && product.productTag.indexOf( "HTMLTemplates" ) === -1;
         $scope.detailsOpen = false;
 
         if (!$scope.canUseProduct) {
