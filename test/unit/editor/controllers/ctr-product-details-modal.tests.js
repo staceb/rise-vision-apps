@@ -32,12 +32,18 @@ describe('controller: ProductDetailsModalController', function() {
         showPlansModal: function() {}
       }
     });
-    $provide.value('HTML_TEMPLATE_TYPE', 'HTMLTemplates');
+    $provide.service('presentationUtils',function(){
+      return {
+        isHtmlTemplate : function(){
+          return htmlTemplate;
+        }
+      }
+    });
   }));
   var $scope, $modalInstance, $modalInstanceDismissSpy, $modalInstanceCloseSpy, product,
-    $loading, checkTemplateAccessSpy, storeAuthorize;
+    $loading, checkTemplateAccessSpy, storeAuthorize, htmlTemplate;
 
-  function initController(paymentTerms, productTag) {
+  function initController(paymentTerms) {
     inject(function($injector,$rootScope, $controller, checkTemplateAccess){
       $scope = $rootScope.$new();
       $modalInstance = $injector.get('$modalInstance');
@@ -55,8 +61,7 @@ describe('controller: ProductDetailsModalController', function() {
             priceUSD: '10',
             priceCAD: '12'
           }
-        ],
-        productTag: productTag ? productTag : []
+        ]
       };
 
       $controller('ProductDetailsModalController', {
@@ -95,12 +100,14 @@ describe('controller: ProductDetailsModalController', function() {
   });
 
   it( 'should not show preview link when product is HTML Template', function() {
-    initController(null, [ "HTMLTemplates" ]);
+    htmlTemplate = true;
+    initController();
 
     expect($scope.showPreviewLink).to.be.false;
   } );
 
   it( 'should show preview link when product is not HTML Template', function() {
+    htmlTemplate = false;
     initController();
 
     expect($scope.showPreviewLink).to.be.true;
