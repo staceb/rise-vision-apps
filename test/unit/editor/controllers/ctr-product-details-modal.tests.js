@@ -11,7 +11,7 @@ describe('controller: ProductDetailsModalController', function() {
     $provide.service('userState',function(){
       return {
         getCopyOfUserCompany : function(){
-          return {        
+          return {
           };
         }
       }
@@ -31,7 +31,8 @@ describe('controller: ProductDetailsModalController', function() {
       return {
         showPlansModal: function() {}
       }
-    })
+    });
+    $provide.value('HTML_TEMPLATE_TYPE', 'HTMLTemplates');
   }));
   var $scope, $modalInstance, $modalInstanceDismissSpy, $modalInstanceCloseSpy, product,
     $loading, checkTemplateAccessSpy, storeAuthorize;
@@ -42,7 +43,7 @@ describe('controller: ProductDetailsModalController', function() {
       $modalInstance = $injector.get('$modalInstance');
 
       checkTemplateAccessSpy = checkTemplateAccess;
-      
+
       $modalInstanceDismissSpy = sinon.spy($modalInstance, 'dismiss');
       $modalInstanceCloseSpy = sinon.spy($modalInstance, 'close');
 
@@ -66,7 +67,7 @@ describe('controller: ProductDetailsModalController', function() {
       $scope.$digest();
     });
   }
-  
+
   it('should exist',function(){
     initController();
     expect($scope).to.be.ok;
@@ -89,7 +90,7 @@ describe('controller: ProductDetailsModalController', function() {
 
   it('should allow free product',function(){
     initController();
-    
+
     expect($scope.canUseProduct).to.be.true;
   });
 
@@ -116,7 +117,7 @@ describe('controller: ProductDetailsModalController', function() {
   it('should allow owned products',function(done){
     storeAuthorize = true;
     initController('premium');
-    
+
     checkTemplateAccessSpy.should.have.been.called;
     setTimeout(function() {
       expect($scope.canUseProduct).to.be.true;
