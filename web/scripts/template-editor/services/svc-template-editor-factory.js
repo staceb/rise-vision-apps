@@ -23,7 +23,8 @@ angular.module('risevision.template-editor.services')
       };
 
       factory.addPresentation = function () {
-        var deferred = $q.defer();
+        var deferred = $q.defer(),
+          presentationVal = JSON.parse(JSON.stringify(factory.presentation));
 
         _clearMessages();
 
@@ -31,9 +32,9 @@ angular.module('risevision.template-editor.services')
         factory.loadingPresentation = true;
         factory.savingPresentation = true;
 
-        JSON.stringify(factory.presentation.templateAttributeData);
+        presentationVal.templateAttributeData = JSON.stringify(presentationVal.templateAttributeData);
 
-        presentation.add(factory.presentation)
+        presentation.add(presentationVal)
           .then(function (resp) {
             if (resp && resp.item && resp.item.id) {
               $rootScope.$broadcast('presentationCreated');
