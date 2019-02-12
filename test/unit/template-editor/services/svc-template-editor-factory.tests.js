@@ -93,6 +93,11 @@ describe('service: templateEditorFactory:', function() {
         }
       }));
 
+      templateEditorFactory.createFromTemplate({ productId: 'test-id', name: 'Test HTML Template' });
+      expect(templateEditorFactory.presentation.id).to.be.undefined;
+      expect(templateEditorFactory.presentation.productId).to.equal('test-id');
+      expect(templateEditorFactory.presentation.templateAttributeData).to.deep.equal({});
+
       templateEditorFactory.addPresentation()
         .then(function() {
           expect(messageBox).to.not.have.been.called;
@@ -101,6 +106,8 @@ describe('service: templateEditorFactory:', function() {
 
           setTimeout(function(){
             expect($state.go).to.have.been.calledWith('apps.editor.templates.add');
+            expect(presentation.add.getCall(0).args[0].templateAttributeData).to.equal('{}');
+            expect(templateEditorFactory.presentation.templateAttributeData).to.deep.equal({});
             expect(templateEditorFactory.savingPresentation).to.be.false;
             expect(templateEditorFactory.loadingPresentation).to.be.false;
             expect(templateEditorFactory.errorMessage).to.not.be.ok;
