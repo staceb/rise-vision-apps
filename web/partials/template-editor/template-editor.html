@@ -1,25 +1,128 @@
 <style>
-  .template-editor .footer {
-    padding: 10px;
+  .template-editor {
+    background-color: #FFF;
+  }
+ 
+  .template-editor-toolbar {
+    display: flex;
+    align-items: center;
+    z-index: 100;
+    border-bottom: 2px solid #f2f2f2;
+    padding: 18px 0px;
+    margin: 0px 20px;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
   }
 
-  .template-editor .footer button {
+  .template-editor-toolbar i {
+    font-size: 18px;
+  }
+
+  .template-editor-toolbar .presentation-name {
+    max-width: 378px;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    line-height: 32px;
+  }
+
+  .template-editor-toolbar .presentation-name div {
+    max-width: 278px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+
+  .template-editor-toolbar .presentation-name i {
+    font-size: 18px;
+  }
+
+  .template-editor-toolbar .toolbar-right {
+    display: flex;
+    margin-left: auto;
+    flex-wrap: nowrap;
+  }
+
+  .template-editor-toolbar button {
+    width: 152px;
+  }
+
+  .template-editor-body {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
+  .preview-holder {
+    padding: 20px;
+    background-image: linear-gradient(white, lightgray);
+    min-height: 50px;
+  }
+
+  .attribute-editor {
+    padding: 20px;
+    min-height: calc(100vh - 190px);
+  }
+
+  .template-editor-footer {
+    padding: 0px 10px;
+    background-color: #FFF;
+  }
+
+  .template-editor-footer > div {
+    border-top: 2px solid #f2f2f2;
+  }
+
+  .template-editor-footer .btn {
+    margin: 10px 0px;
+  }
+
+  @media screen and (min-width:768px) {
+    .template-editor-toolbar .presentation-name {
+      max-width: calc(100vw - 390px);
+    }
+
+    .template-editor-toolbar .presentation-name div {
+      max-width: calc(100vw - 490px);
+    }
+
+    .preview-holder {
+      min-height: calc(100vh - 180px);
+    }
+
+    .attribute-editor {
+      padding: 20px;
+      min-height: calc(100vh - 180px);
+    }
   }
 </style>
 
 <div class="container-flow template-editor">
 
-  <template-editor-toolbar class="workspace-toolbar"></template-editor-toolbar>
-
-  <div class="row">
-    <template-editor-preview-holder class="col-sm-8 col-sm-push-4">
-    </template-editor-preview-holder>
-
-    <template-attribute-editor class="col-sm-4 col-sm-pull-8">
-    </template-attribute-editor>
+  <div>
+    <template-editor-toolbar class="template-editor-toolbar">
+    </template-editor-toolbar>
   </div>
 
-  <template-editor-footer class="footer navbar-fixed-bottom visible-xs">
+  <div class="row template-editor-body">
+    <div class="col-sm-8 col-sm-push-4 preview-holder">
+      <div style="background-color: #C0C0C0">
+        <template-editor-preview-holder>
+        </template-editor-preview-holder>
+      </div>
+    </div>
+
+    <div class="col-sm-4 col-sm-pull-8 attribute-editor">
+      <template-attribute-editor>
+      </template-attribute-editor>
+    </div>
+  </div>
+
+  <template-editor-footer
+    class="template-editor-footer navbar-fixed-bottom visible-xs">
   </template-editor-footer>
 
 </div>
