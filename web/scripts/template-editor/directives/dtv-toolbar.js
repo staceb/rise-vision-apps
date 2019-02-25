@@ -18,20 +18,20 @@ angular.module('risevision.template-editor.directives')
             var templateNameInput = element.find('input.presentation-name');
 
             if (editing) {
-              setFocusPosition(templateNameInput[0], templateNameInput[0].value.length);
+              setFocus(templateNameInput[0]);
             }
           });
 
-          function setFocusPosition(elem, caretPos) {
+          function setFocus(elem) {
             if (elem !== null) {
               if (elem.createTextRange) {
                 var range = elem.createTextRange();
-                range.move('character', caretPos);
+                range.move('character', 0);
                 range.select();
               } else {
                 if (elem.setSelectionRange) {
                   elem.focus();
-                  elem.setSelectionRange(caretPos, caretPos);
+                  elem.setSelectionRange(0, elem.value.length);
                 } else
                   elem.focus();
               }
