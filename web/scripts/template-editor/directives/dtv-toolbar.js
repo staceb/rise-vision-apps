@@ -9,6 +9,8 @@ angular.module('risevision.template-editor.directives')
         link: function ($scope, element) {
           $scope.factory = templateEditorFactory;
           $scope.isEditingName = false;
+          $scope.defaultNameValue = templateEditorFactory.presentation.name;
+          $scope.defaultNameWidth = "";
 
           $scope.onPresentationNameBlur = function() {
             $scope.isEditingName = false;
@@ -17,8 +19,21 @@ angular.module('risevision.template-editor.directives')
           $scope.$watch("isEditingName", function(editing) {
             var templateNameInput = element.find('input.presentation-name');
 
+            if (!$scope.defaultNameWidth) {
+              // first time editing, store the width of the field when default name is displayed
+              $scope.defaultNameWidth = templateNameInput[0].style.width;
+            }
+
             if (editing) {
               setFocus(templateNameInput[0]);
+            } else {
+              var nameVal = templateNameInput[0].value.replace(/\s/g, '');
+
+              if (!nameVal) {
+                // user deleted entire name, set the name and width values to the defaults
+                $scope.factory.presentation.name = $scope.defaultNameValue;
+                templateNameInput[0].style.width = $scope.defaultNameWidth;
+              }
             }
           });
 
