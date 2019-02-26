@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('templateEditorToolbar', ['templateEditorFactory',
-    function (templateEditorFactory) {
+  .directive('templateEditorToolbar', ['templateEditorFactory', '$templateCache', '$modal',
+    function (templateEditorFactory, $templateCache, $modal) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/toolbar.html',
@@ -10,13 +10,13 @@ angular.module('risevision.template-editor.directives')
           $scope.factory = templateEditorFactory;
           $scope.isEditingName = false;
           $scope.defaultNameValue = templateEditorFactory.presentation.name;
-          $scope.defaultNameWidth = "";
+          $scope.defaultNameWidth = '';
 
           $scope.onPresentationNameBlur = function() {
             $scope.isEditingName = false;
           };
 
-          $scope.$watch("isEditingName", function(editing) {
+          $scope.$watch('isEditingName', function(editing) {
             var templateNameInput = element.find('input.presentation-name');
 
             if (!$scope.defaultNameWidth) {
@@ -37,6 +37,29 @@ angular.module('risevision.template-editor.directives')
             }
           });
 
+          $scope.confirmDelete = function () {
+            $scope.modalInstance = $modal.open({
+              template: $templateCache.get('partials/template-editor/confirm-modal.html'),
+              controller: 'confirmInstance',
+              windowClass: 'modal-custom',
+              resolve: {
+                confirmationMessage: function () {
+                  return 'template.confirm-modal.delete-warning';
+                },
+                confirmationButton: function () {
+                  return 'common.delete-forever';
+                },
+                confirmationTitle: null,
+                cancelButton: null
+              }
+            });
+
+            $scope.modalInstance.result.then(function () {
+              $scope.modalInstance.dismiss();
+              templateEditorFactory.deletePresentation();
+            });
+          };
+
           function setFocus(elem) {
             if (elem !== null) {
               if (elem.createTextRange) {
@@ -47,8 +70,9 @@ angular.module('risevision.template-editor.directives')
                 if (elem.setSelectionRange) {
                   elem.focus();
                   elem.setSelectionRange(0, elem.value.length);
-                } else
+                } else {
                   elem.focus();
+                }
               }
             }
           }

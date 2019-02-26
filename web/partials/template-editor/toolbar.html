@@ -5,7 +5,9 @@
   <button ng-disabled="isEditingName" type="button" class="edit-name" ng-click="isEditingName=true">
     <i class="fa fa-pencil u_margin-left"></i>
   </button>
-  <i class="fa fa-trash-o u_margin-left hidden-xs"></i>
+  <a ng-click="confirmDelete()">
+    <i class="fa fa-trash-o u_margin-left hidden-xs"></i>
+  </a>
 </div>
 
 <div class="toolbar-right">
@@ -20,5 +22,7 @@
     {{'common.publish' | translate}}
   </button>
 
-  <i class="fa fa-trash-o u_margin-left visible-xs"></i>
+  <a ng-click="confirmDelete()">
+    <i class="fa fa-trash-o u_margin-left visible-xs"></i>
+  </a>
 </div>
