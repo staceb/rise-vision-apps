@@ -6,6 +6,25 @@ angular.module('risevision.template-editor.controllers')
       $scope.factory = templateEditorFactory;
       $scope.presentation = presentation;
 
+      $scope.getBlueprintData = function(componentId, attributeKey) {
+        var components = $scope.factory.blueprintData.components;
+        var component = _.find(components, {id: componentId});
+
+        if(!component || !component.attributes) {
+          return null;
+        }
+
+        var attributes = component.attributes;
+
+        // if the attributeKey is not provided, it returns the full attributes structure
+        if(!attributeKey) {
+          return attributes;
+        }
+
+        var attribute = attributes[attributeKey];
+        return attribute && attribute.value;
+      }
+
       $scope.getAttributeData = function(componentId, attributeKey) {
         var component = _componentFor(componentId);
 
