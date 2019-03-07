@@ -161,13 +161,23 @@ angular.module('risevision.template-editor.directives')
             $scope.searchInstruments();
           };
 
+          $scope.getOpenSymbolSelectorButtonLabel = function() {
+            return _getFinancialLabel('add-category');
+          };
+
           $scope.getPopularTitle = function() {
-            return 'template.financial.most-popular-category.' + $scope.category.toLowerCase();
+            return _getFinancialLabel('most-popular-category');
           };
 
           $scope.getSearchPlaceholder = function() {
-            return 'template.financial.search-category.' + $scope.category.toLowerCase();
+            return _getFinancialLabel('search-category');
           };
+
+          function _getFinancialLabel(key) {
+            var category = $scope.category.toLowerCase().replace(' ', '-');
+
+            return 'template.financial.' + key + '.' + category;
+          }
 
           $scope.removeInstrument = function(symbol) {
             var filtered = _.reject($scope.instruments, {symbol: symbol});
