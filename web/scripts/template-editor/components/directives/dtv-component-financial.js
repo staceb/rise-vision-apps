@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('templateComponentFinancial', ['$timeout', 'templateEditorFactory', 'instrumentSearchService',
-    function ($timeout, templateEditorFactory, instrumentSearchService) {
+  .directive('templateComponentFinancial', ['$log', '$timeout', 'templateEditorFactory', 'instrumentSearchService',
+    function ($log, $timeout, templateEditorFactory, instrumentSearchService) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/components/component-financial.html',
@@ -19,6 +19,75 @@ angular.module('risevision.template-editor.directives')
 
             // TODO: hardcoding category for now until templates have component surface category attribute
             $scope.category = "currencies";
+            $scope.instruments = [];
+          }
+
+          function _loadInstrumentList() {
+            var componentId = $scope.factory.selected.id;
+            var instruments =
+              $scope.getAttributeData(componentId, "instruments");
+
+            if(instruments) {
+              $scope.instruments = instruments;
+            } else {
+              _buildInstrumentListFromBlueprint(componentId);
+            }
+          }
+
+          function _buildInstrumentListFromBlueprint(componentId) {
+            var symbolString = $scope.getBlueprintData(componentId, "symbols");
+
+            if(!symbolString) {
+              $log.error("The component blueprint data is not providing default symbols value: " + componentId)
+
+              return;
+            }
+
+            var instruments = [];
+            var symbols = symbolString.split("|");
+
+            _buildListRecursive(componentId, instruments, symbols);
+          }
+
+          function _buildListRecursive(componentId, instruments, symbols) {
+            if( symbols.length === 0 ) {
+              _setInstruments(componentId, instruments);
+
+              return;
+            }
+
+            var symbol = symbols.shift();
+
+            instrumentSearchService.keywordSearch($scope.category, symbol)
+            .then( function(items) {
+              var instrument = _.find(items, {symbol: symbol});
+
+              if(instrument) {
+                instruments.push(instrument);
+              } else {
+                $log.warn("no instrument found for symbol: " + symbol);
+              }
+            })
+            .catch( function(error) {
+              $log.error( error );
+            })
+            .finally( function() {
+              _buildListRecursive(componentId, instruments, symbols);
+            });
+          }
+
+          function _symbolsFor(instruments) {
+            return _.map(instruments, function(instrument) {
+              return instrument.symbol;
+            }).join("|");
+          }
+
+          function _setInstruments(componentId, instruments) {
+            var value = angular.copy(instruments);
+
+            $scope.instruments = value;
+            $scope.setAttributeData(componentId, "instruments", value);
+            $scope.setAttributeData(componentId, "symbols", _symbolsFor(value));
           }
 
           _reset();
@@ -31,6 +100,7 @@ angular.module('risevision.template-editor.directives')
               element.show();
 
               _reset();
+              _loadInstrumentList();
               $scope.enteringInstrumentSelector = true;
 
               $timeout(function () {
@@ -115,18 +185,6 @@ angular.module('risevision.template-editor.directives')
           });
 
           $scope.searchInstruments();
-
-          // TODO: this should be removed once Instrument List is developed
-          $scope.instruments = [{
-            name: 'Canadian Dollar',
-            rate: 'CADUSD=X'
-          }, {
-            name: 'Swiss Franc',
-            rate: 'CHFUSD=X'
-          }, {
-            name: 'Hong Kong Dollar',
-            rate: 'HKDUSD=X'
-          }];
         }
       };
     }
