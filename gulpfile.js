@@ -268,7 +268,7 @@ gulp.task('build', function (cb) {
 gulp.task("config-e2e", function() {
   var env = process.env.E2E_ENV || "dev";
   gutil.log("Environment is", env);
-
+console.log("Chrome version: ", process.env.CHROME_VERSION);
   return gulp.src(["test/e2e/config/" + env + ".json"])
     .pipe(rename("config.json"))
     .pipe(gulp.dest("test/e2e/config"));
