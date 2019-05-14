@@ -1,21 +1,43 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('templateComponentImage', ['$log', 'templateEditorFactory',
-    function ($log, templateEditorFactory) {
+  .constant('SUPPORTED_IMAGE_TYPES', '.png, .jpg, .gif, .tif, .tiff')
+  .directive('templateComponentImage', ['$log', 'templateEditorFactory', 'SUPPORTED_IMAGE_TYPES',
+    function ($log, templateEditorFactory, SUPPORTED_IMAGE_TYPES) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/components/component-image.html',
         link: function ($scope, element) {
           $scope.factory = templateEditorFactory;
+          $scope.validExtensions = SUPPORTED_IMAGE_TYPES;
+          $scope.uploadManager = {
+            onUploadStatus: function (isUploading) {
+              $scope.isUploading = isUploading;
+            },
+            addFile: function (file) {
+              console.log('Added file to uploadManager', file);
+              var selectedImages = _.cloneDeep($scope.selectedImages);
+              var newFile = { file: file.name, 'thumbnail-url': file.metadata.thumbnail };
+              var idx = _.findIndex(selectedImages, { file: file.name });
+
+              if (idx >= 0) {
+                selectedImages.splice(idx, 1, newFile);
+              }
+              else {
+                selectedImages.push(newFile);
+              }
+
+              _setMetadata(selectedImages);
+            }
+          };
 
           function _reset() {
             $scope.selectedImages = [];
+            $scope.isUploading = false;
           }
 
           function _loadSelectedImages() {
-            var selectedImages =
-              $scope.getAttributeData($scope.componentId, 'metadata');
+            var selectedImages = $scope.getAttributeData($scope.componentId, 'metadata');
 
             if(selectedImages) {
               $scope.selectedImages = selectedImages;
@@ -52,8 +74,8 @@ angular.module('risevision.template-editor.directives')
             _getThumbnailUrlFor(fileName)
             .then( function(url) {
               var entry = {
-                "file": fileName,
-                "thumbnail-url": url || ''
+                'file': fileName,
+                'thumbnail-url': url || ''
               };
 
               metadata.push(entry);
@@ -115,6 +137,16 @@ angular.module('risevision.template-editor.directives')
 
           $scope.getPartialPath = function (partial) {
             return 'partials/template-editor/components/component-image/' + partial;
+          };
+
+          $scope.removeImageFromList = function (image) {
+            var idx = $scope.selectedImages.indexOf(image);
+            var selectedImages = _.cloneDeep($scope.selectedImages);
+
+            if (idx >= 0) {
+              selectedImages.splice(idx, 1);
+              _setMetadata(selectedImages);
+            }
           };
         }
       };
