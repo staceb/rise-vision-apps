@@ -18,7 +18,8 @@ angular.module('risevision.template-editor.directives')
             },
             addFile: function (file) {
               console.log('Added file to uploadManager', file);
-              var selectedImages = _.cloneDeep($scope.selectedImages);
+              var selectedImages = $scope.isDefaultImageList ? [] : _.cloneDeep($scope.selectedImages);
+
               var newFile = {
                 file: file.name,
                 'thumbnail-url': file.metadata.thumbnail
@@ -38,7 +39,7 @@ angular.module('risevision.template-editor.directives')
           };
 
           function _reset() {
-            $scope.selectedImages = [];
+            _setSelectedImages([]);
             $scope.isUploading = false;
           }
 
@@ -46,15 +47,19 @@ angular.module('risevision.template-editor.directives')
             var selectedImages = $scope.getAttributeData($scope.componentId, 'metadata');
 
             if (selectedImages) {
-              $scope.selectedImages = selectedImages;
+              _setSelectedImages(selectedImages);
             } else {
               _buildSelectedImagesFromBlueprint();
             }
           }
 
+          function _getDefaultFilesAttribute() {
+            return $scope.getBlueprintData($scope.componentId, 'files');
+          }
+
           function _buildSelectedImagesFromBlueprint() {
             $scope.factory.loadingPresentation = true;
-            var files = $scope.getBlueprintData($scope.componentId, 'files');
+            var files = _getDefaultFilesAttribute();
 
             var metadata = [];
             var fileNames = files ? files.split('|') : [];
@@ -133,11 +138,20 @@ angular.module('risevision.template-editor.directives')
           }
 
           function _setMetadata(metadata) {
-            var value = angular.copy(metadata);
+            var selectedImages = angular.copy(metadata);
+            var filesAttribute = _filesAttributeFor(selectedImages);
 
-            $scope.selectedImages = value;
-            $scope.setAttributeData($scope.componentId, 'metadata', value);
-            $scope.setAttributeData($scope.componentId, 'files', _filesAttributeFor(value));
+            _setSelectedImages(selectedImages);
+
+            $scope.setAttributeData($scope.componentId, 'metadata', selectedImages);
+            $scope.setAttributeData($scope.componentId, 'files', filesAttribute);
+          }
+
+          function _setSelectedImages(selectedImages) {
+            var filesAttribute = _filesAttributeFor(selectedImages);
+
+            $scope.selectedImages = selectedImages;
+            $scope.isDefaultImageList = filesAttribute === _getDefaultFilesAttribute();
           }
 
           _reset();
