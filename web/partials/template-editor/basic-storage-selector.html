@@ -1,0 +1,45 @@
+<div class="storage-selector-component" rv-spinner rv-spinner-key="storage-{{storageSelectorId}}-spinner" rv-spinner-start-active="1">
+  <div class="storage-selector-list" ng-show="folderItems.length > 0 && !isUploading">
+    <div class="image-row" ng-repeat="item in folderItems track by $index">
+      <div class="image-entry">
+        <div class="image-name" ng-if="isFolder(item.name)" ng-click="loadItems(item.name)">
+          <a href="#">{{ fileNameOf(item.name) }}</a>
+        </div>
+        <div class="image-name" ng-if="!isFolder(item.name)" ng-click="selectItem(item)" ng-class="{ 'selected-item': isSelected(item) }">
+          <a href="#">{{ fileNameOf(item.name) }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="storage-selector-list-empty" ng-show="folderItems.length === 0 && !isUploading">
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>You have no images in Storage</h2>
+        <p>Upload images from your device to keep your display interesting!</p>
+        <div>
+          <img class="img-responsive" src="../images/image-empty-list.svg">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <basic-uploader uploader-id="{{storageSelectorId}}"
+                  upload-manager="storageUploadManager"
+                  valid-extensions="validExtensions"
+                  ng-show="isUploading">
+  </basic-uploader>
+</div>
+
+<div class="storage-selector-action-button-bar">
+  <div class="upload-images">
+    <label class="btn btn-primary btn-block" for="{{storageSelectorId}}" ng-disabled="isUploading">
+      <strong>Upload Images</strong>
+    </label>
+  </div>
+  <div class="add-selected">
+    <button class="btn btn-primary btn-block" ng-click="addSelected()" ng-disabled="isUploading || selectedItems.length === 0">
+      <strong>Add Selected</strong>
+    </button>
+  </div>
+</div>

@@ -3,13 +3,15 @@
 angular.module('risevision.template-editor.directives')
   .constant('DEFAULT_IMAGE_THUMBNAIL', 'https://s3.amazonaws.com/Rise-Images/UI/storage-image-icon%402x.png')
   .constant('SUPPORTED_IMAGE_TYPES', '.png, .jpg, .gif, .tif, .tiff')
-  .directive('templateComponentImage', ['$log', 'templateEditorFactory', 'storageAPILoader', 'DEFAULT_IMAGE_THUMBNAIL',
-    'SUPPORTED_IMAGE_TYPES',
-    function ($log, templateEditorFactory, storageAPILoader, DEFAULT_IMAGE_THUMBNAIL, SUPPORTED_IMAGE_TYPES) {
+  .directive('templateComponentImage', ['$log', 'templateEditorFactory', 'templateEditorUtils', 'storageAPILoader',
+    'DEFAULT_IMAGE_THUMBNAIL', 'SUPPORTED_IMAGE_TYPES',
+    function ($log, templateEditorFactory, templateEditorUtils, storageAPILoader, DEFAULT_IMAGE_THUMBNAIL, SUPPORTED_IMAGE_TYPES) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/components/component-image.html',
         link: function ($scope, element) {
+          var storagePanelSelector = '.storage-selector-container';
+
           $scope.factory = templateEditorFactory;
           $scope.validExtensions = SUPPORTED_IMAGE_TYPES;
           $scope.uploadManager = {
@@ -17,30 +19,36 @@ angular.module('risevision.template-editor.directives')
               $scope.isUploading = isUploading;
             },
             addFile: function (file) {
-              console.log('Added file to uploadManager', file);
-              var selectedImages = $scope.isDefaultImageList ? [] : _.cloneDeep($scope.selectedImages);
+              _addFilesToMetadata([file]);
+            }
+          };
+          $scope.storageManager = {
+            addSelectedItems: function (newSelectedItems) {
+              _addFilesToMetadata(newSelectedItems);
 
-              var newFile = {
-                file: file.name,
-                'thumbnail-url': file.metadata.thumbnail
-              };
-              var idx = _.findIndex(selectedImages, {
-                file: file.name
-              });
-
-              if (idx >= 0) {
-                selectedImages.splice(idx, 1, newFile);
-              } else {
-                selectedImages.push(newFile);
-              }
-
-              _setMetadata(selectedImages);
+              $scope.showPreviousPanel();
             }
           };
 
           function _reset() {
             _setSelectedImages([]);
             $scope.isUploading = false;
+          }
+
+          function _addFilesToMetadata (files) {
+            var selectedImages = $scope.isDefaultImageList ? [] : _.cloneDeep($scope.selectedImages);
+
+            files.forEach(function (file) {
+              _addFileToSet(selectedImages, file);
+            });
+
+            _setMetadata(selectedImages);
+          }
+
+          function _addFileToSet (selectedImages, file) {
+            var newFile = { file: file.name, 'thumbnail-url': file.metadata.thumbnail };
+
+            templateEditorUtils.addOrReplace(selectedImages, { file: file.name }, newFile);
           }
 
           function _loadSelectedImages() {
@@ -171,20 +179,20 @@ angular.module('risevision.template-editor.directives')
               $scope.showNextPanel('.image-component-container');
             },
             onBackHandler: function () {
-              return $scope.showPreviousPanel();
+              if ($scope.getCurrentPanel() !== storagePanelSelector || !$scope.storageManager.onBackHandler()) {
+                return $scope.showPreviousPanel();
+              }
+              else {
+                return true;
+              }
             }
           });
 
-          $scope.fileNameOf = function (path) {
-            return path.split('/').pop();
-          };
-
-          $scope.uploadImages = function () {
-            $scope.showNextPanel('.upload-images-container');
-          };
+          $scope.fileNameOf = templateEditorUtils.fileNameOf;
 
           $scope.selectFromStorage = function () {
-            $scope.showNextPanel('.storage-selector-container');
+            $scope.storageManager.refresh();
+            $scope.showNextPanel(storagePanelSelector);
           };
 
           $scope.getPartialPath = function (partial) {

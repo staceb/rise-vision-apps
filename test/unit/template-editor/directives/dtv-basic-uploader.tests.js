@@ -59,7 +59,7 @@ describe('directive: basicUploader', function () {
 
   beforeEach(inject(function($compile, $rootScope, $templateCache) {
     $rootScope.uploadManager = uploadManager;
-    $templateCache.put('partials/template-editor/common/basic-uploader.html', '<p>mock</p>');
+    $templateCache.put('partials/template-editor/basic-uploader.html', '<p>mock</p>');
 
     element = $compile('<basic-uploader upload-manager="uploadManager" valid-extensions="validExtensions"></basic-uploader>')($rootScope);
     $rootScope.$apply();
@@ -145,7 +145,7 @@ describe('directive: basicUploader', function () {
       }
     ];
 
-    expect($scope.activeUploadCount()).to.equal(2);
+    expect($scope.activeUploadCount()).to.equal(3);
   });
 
   describe('retryFailedUpload:', function () {
@@ -166,18 +166,15 @@ describe('directive: basicUploader', function () {
       $scope.retryFailedUpload(myItem);
       FileUploader.retryItem.should.not.have.been.called;
     });
-
   });
 
   describe('removeItem:', function () {
-
     it('should remove item from Uploader queue', function () {
       var myItem = 'item';
 
       $scope.removeItem(myItem);
       FileUploader.removeFromQueue.should.have.been.calledWith(myItem);
     });
-
   });
 
   describe('onCompleteItem:', function () {
@@ -204,5 +201,4 @@ describe('directive: basicUploader', function () {
       }, 10);               
     });      
   });
-
 });

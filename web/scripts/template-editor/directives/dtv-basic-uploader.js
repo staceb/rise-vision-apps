@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('basicUploader', ['storage', 'fileUploaderFactory', 'UploadURIService', 'STORAGE_UPLOAD_CHUNK_SIZE',
-    function (storage, fileUploaderFactory, UploadURIService, STORAGE_UPLOAD_CHUNK_SIZE) {
+  .directive('basicUploader', ['storage', 'fileUploaderFactory', 'UploadURIService', 'templateEditorUtils', 'STORAGE_UPLOAD_CHUNK_SIZE',
+    function (storage, fileUploaderFactory, UploadURIService, templateEditorUtils, STORAGE_UPLOAD_CHUNK_SIZE) {
       return {
         restrict: 'E',
         scope: {
@@ -10,7 +10,7 @@ angular.module('risevision.template-editor.directives')
           uploadManager: '=',
           validExtensions: '=?'
         },
-        templateUrl: 'partials/template-editor/common/basic-uploader.html',
+        templateUrl: 'partials/template-editor/basic-uploader.html',
         link: function ($scope) {
           var FileUploader = fileUploaderFactory();
 
@@ -26,9 +26,7 @@ angular.module('risevision.template-editor.directives')
           };
 
           $scope.activeUploadCount = function () {
-            return FileUploader.queue.filter(function (file) {
-              return !file.isUploaded || file.isError;
-            }).length;
+            return FileUploader.queue.length;
           };
 
           $scope.retryFailedUpload = function (file) {
@@ -36,6 +34,8 @@ angular.module('risevision.template-editor.directives')
               FileUploader.retryItem(file);
             }
           };
+
+          $scope.fileNameOf = templateEditorUtils.fileNameOf;
 
           FileUploader.onAfterAddingFile = function (fileItem) {
             console.info('onAfterAddingFile', fileItem.file.name);
@@ -68,14 +68,13 @@ angular.module('risevision.template-editor.directives')
           };
 
           FileUploader.onCompleteItem = function (item) {
-            $scope.uploadManager.onUploadStatus(_isUploading());
+            if (item.isCancel || !item.isSuccess) {
+              $scope.uploadManager.onUploadStatus(_isUploading());
 
-            if (item.isCancel) {
-              return;
-            }
+              if (!item.isSuccess) {
+                console.log('Failed to upload: ', item.file);
+              }
 
-            if (!item.isSuccess) {
-              console.log('Failed to upload: ', item.file);
               return;
             }
 
