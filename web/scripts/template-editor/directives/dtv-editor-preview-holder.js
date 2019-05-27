@@ -2,8 +2,9 @@
 
 angular.module('risevision.template-editor.directives')
   .directive('templateEditorPreviewHolder', ['$window', '$sce', 'templateEditorFactory', 'HTML_TEMPLATE_DOMAIN',
-    'HTML_TEMPLATE_URL',
-    function ($window, $sce, templateEditorFactory, HTML_TEMPLATE_DOMAIN, HTML_TEMPLATE_URL) {
+    'HTML_TEMPLATE_URL', 'templateEditorComponentsFactory',
+    function ($window, $sce, templateEditorFactory, HTML_TEMPLATE_DOMAIN, HTML_TEMPLATE_URL,
+      templateEditorComponentsFactory) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/preview-holder.html',
@@ -29,6 +30,8 @@ angular.module('risevision.template-editor.directives')
             iframeLoaded = true;
 
             _postAttributeData();
+
+            _setupComponents();
           };
 
           $scope.getEditorPreviewUrl = function (productCode) {
@@ -165,6 +168,13 @@ angular.module('risevision.template-editor.directives')
             iframe.contentWindow.postMessage(attributeDataText, HTML_TEMPLATE_DOMAIN);
 
             attributeDataText = null;
+          }
+
+          function _setupComponents() {
+            var setupData = {
+              components: templateEditorComponentsFactory.getSetupData($scope.factory.blueprintData.components)
+            };
+            iframe.contentWindow.postMessage(JSON.stringify(setupData), HTML_TEMPLATE_DOMAIN);
           }
         }
       };

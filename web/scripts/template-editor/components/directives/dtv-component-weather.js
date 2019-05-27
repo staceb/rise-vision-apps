@@ -35,7 +35,8 @@ angular.module('risevision.template-editor.directives')
               element.show();
               $scope.componentId = $scope.factory.selected.id;
               _load();
-            }
+            },
+            initDisplayAddres: true
           });
 
         }
