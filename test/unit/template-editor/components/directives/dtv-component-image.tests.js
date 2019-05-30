@@ -22,7 +22,7 @@ describe('directive: TemplateComponentImage', function() {
 
     $provide.service('storageAPILoader', function() {
       return function() {
-        return Promise.resolve({
+        return Q.resolve({
           files: {
             get: function() {
               return {
@@ -76,11 +76,14 @@ describe('directive: TemplateComponentImage', function() {
   it('should set image lists when available as attribute data', function() {
     var directive = $scope.registerDirective.getCall(0).args[0];
     var sampleImages = [
-      { "file": "image.png", "thumbnail-url": "http://image" }
+      { "file": 'image.png', "thumbnail-url": "http://image" }
     ];
 
-    $scope.getAttributeData = function() {
-      return sampleImages;
+    $scope.getAttributeData = function(componentId, key) {
+      switch(key) {
+        case 'metadata': return sampleImages;
+        case 'files': return 'image.png';
+      }
     };
 
     directive.show();
@@ -96,8 +99,11 @@ describe('directive: TemplateComponentImage', function() {
       { "file": "image.png", "thumbnail-url": "http://image" }
     ];
 
-    $scope.getAttributeData = function() {
-      return sampleImages;
+    $scope.getAttributeData = function(componentId, key) {
+      switch(key) {
+        case 'metadata': return sampleImages;
+        case 'files': return 'image.png';
+      }
     };
     $scope.getBlueprintData = function() {
       return "image.png";
@@ -116,8 +122,11 @@ describe('directive: TemplateComponentImage', function() {
       { "file": "image.png", "thumbnail-url": "http://image" }
     ];
 
-    $scope.getAttributeData = function() {
-      return sampleImages;
+    $scope.getAttributeData = function(componentId, key) {
+      switch(key) {
+        case 'metadata': return sampleImages;
+        case 'files': return 'image.png';
+      }
     };
     $scope.getBlueprintData = function() {
       return "default.png";
@@ -147,7 +156,8 @@ describe('directive: TemplateComponentImage', function() {
     setTimeout(function() {
       var expectedMetadata = [
         {
-          'file': TEST_FILE,
+          file: TEST_FILE,
+          exists: true,
           'thumbnail-url': 'http://thumbnail.png'
         }
       ];

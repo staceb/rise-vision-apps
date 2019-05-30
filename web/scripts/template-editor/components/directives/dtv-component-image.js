@@ -60,8 +60,10 @@ angular.module('risevision.template-editor.directives')
           function _addFileToSet(selectedImages, file) {
             var thumbnail = file.metadata && file.metadata.thumbnail ?
               file.metadata.thumbnail : DEFAULT_IMAGE_THUMBNAIL;
+            var filePath = file.bucket + '/' + file.name;
             var newFile = {
-              file: file.name,
+              file: filePath,
+              exists: true,
               'thumbnail-url': thumbnail
             };
 
@@ -71,22 +73,28 @@ angular.module('risevision.template-editor.directives')
           }
 
           function _loadSelectedImages() {
-            var selectedImages = $scope.getAttributeData($scope.componentId, 'metadata');
+            var files = _getAttribute('files') || '';
+            var selectedImages = _getAttribute('metadata');
 
             if (selectedImages) {
               _setSelectedImages(selectedImages);
             } else {
-              _buildSelectedImagesFromBlueprint();
+              files = _getDefaultFilesAttribute();
             }
+
+            _buildSelectedImagesFrom(files);
+          }
+
+          function _getAttribute(key) {
+            return $scope.getAttributeData($scope.componentId, key);
           }
 
           function _getDefaultFilesAttribute() {
             return $scope.getBlueprintData($scope.componentId, 'files');
           }
 
-          function _buildSelectedImagesFromBlueprint() {
+          function _buildSelectedImagesFrom(files) {
             $scope.factory.loadingPresentation = true;
-            var files = _getDefaultFilesAttribute();
 
             var metadata = [];
             var fileNames = files ? files.split('|') : [];
@@ -101,7 +109,7 @@ angular.module('risevision.template-editor.directives')
             if (!match) {
               $log.error('Filename is not a valid Rise Storage path: ' + fileName);
 
-              return Promise.resolve(DEFAULT_IMAGE_THUMBNAIL);
+              return Promise.resolve('');
             }
 
             return _requestFileData(match[1], match[2])
@@ -109,13 +117,17 @@ angular.module('risevision.template-editor.directives')
                 var file = resp && resp.result && resp.result.result &&
                   resp.result.files && resp.result.files[0];
 
-                return file && file.metadata && file.metadata.thumbnail ?
+                if (!file) {
+                  return '';
+                }
+
+                return file.metadata && file.metadata.thumbnail ?
                   file.metadata.thumbnail : DEFAULT_IMAGE_THUMBNAIL;
               })
               .catch(function (error) {
                 $log.error(error);
 
-                return DEFAULT_IMAGE_THUMBNAIL;
+                return '';
               });
           }
 
@@ -144,8 +156,9 @@ angular.module('risevision.template-editor.directives')
             _getThumbnailUrlFor(fileName)
               .then(function (url) {
                 var entry = {
-                  'file': fileName,
-                  'thumbnail-url': url || DEFAULT_IMAGE_THUMBNAIL
+                  file: fileName,
+                  exists: !!url,
+                  'thumbnail-url': url
                 };
 
                 metadata.push(entry);
