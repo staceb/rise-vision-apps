@@ -36,7 +36,7 @@ angular.module('risevision.template-editor.services')
         var modalInstance = $modal.open({
           templateUrl: 'partials/template-editor/expired-modal.html',
           controller: 'confirmInstance',
-          windowClass: 'template-editor-message-box',
+          windowClass: 'madero-style centered-modal',
           resolve: {
             confirmationTitle: function () {
               return 'template.expired-modal.expired-title';
@@ -63,6 +63,12 @@ angular.module('risevision.template-editor.services')
           });
       };
 
+      var _checkFinancialDataLicenseMessage = function (blueprintData) {
+        if (templateEditorUtils.needsFinancialDataLicense(blueprintData)) {
+          templateEditorUtils.showFinancialDataLicenseRequiredMessage();
+        }
+      };
+
       factory.addFromProduct = function (productDetails) {
         _clearMessages();
 
@@ -82,6 +88,8 @@ angular.module('risevision.template-editor.services')
         return factory.loadBlueprintData(factory.presentation.productCode)
           .then(function (blueprintData) {
             factory.blueprintData = blueprintData.data;
+
+            _checkFinancialDataLicenseMessage(factory.blueprintData);
           })
           .then(null, function (e) {
             _showErrorMessage('add', e);
