@@ -29,7 +29,7 @@ angular.module('risevision.template-editor.directives')
 
           function _load() {
             $scope.src = _loadAttributeData('src');
-            $scope.duration = parseInt(_loadAttributeData('duration'));
+            $scope.duration = parseInt(_loadAttributeData('duration')) || 10;
           }
 
           function _loadAttributeData(attributeName) {
@@ -93,14 +93,9 @@ angular.module('risevision.template-editor.directives')
               /^(http:|https:)\/\/docs\.google\.com\/presentation\/d\/e\/([^\s]+)\/(pub|embed)(\?|$)/i;
             var BROWSER_URL_REGEXP = /^(http:|https:)\/\/docs\.google\.com\/presentation\/d\/([\w-_]+)/i;
 
-            if (!$scope.src) {
-              //empty string is allowed
-              return true;
-            }
-
-            var _src = $scope.src.trim();
-
+            var _src = !$scope.src ? '' : $scope.src.trim();
             if (_src === '') {
+              //empty string is allowed
               return true;
             }
 
