@@ -36,7 +36,7 @@ angular.module('risevision.template-editor.directives')
             return $scope.getAttributeData($scope.componentId, attributeName);
           }
 
-          $scope.saveDiration = function () {
+          $scope.saveDuration = function () {
             $scope.setAttributeData($scope.componentId, 'duration', $scope.duration);
           };
 
