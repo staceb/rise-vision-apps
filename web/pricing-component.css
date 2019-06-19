@@ -1,0 +1,32 @@
+#pricingComponentContainer {
+  margin: 0.5em;
+}
+
+.pricing-component-modal .modal-dialog {
+  width: 65%;
+  max-width: 1000px;
+}
+
+.pricing-component-modal .modal-content {
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .pricing-component-modal .modal-dialog {
+    width: 100%;
+  }
+}
+#subscribeButton {
+  width: 100%;
+  background-color: #45b764;
+  color: white;
+  font-weight: bold;
+  font-size: large;
+  padding: 0.7em;
+  margin-bottom: 0.5em;
+}
+
+#subscribeButton[disabled] {
+  color: #c4c4c4;
+  opacity: 0.3;
+}

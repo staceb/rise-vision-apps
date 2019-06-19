@@ -248,7 +248,7 @@ gulp.task("fonts", function() {
 });
 
 gulp.task("static-html", function() {
-  return gulp.src('./web/loading-preview.html')
+  return gulp.src(['./web/loading-preview.html', './web/pricing-component.*'])
     .pipe(gulp.dest('dist/'));
 })
 
