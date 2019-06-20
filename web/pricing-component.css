@@ -1,4 +1,14 @@
-button .dismiss {
+#pricingComponentTitle {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 0;
+}
+
+#pricingComponentContainer {
+  margin: 0.5em;
+}
+
+.pricing-component-modal button.dismiss {
   display: block;
   width: 100%;
   text-align: center;
@@ -8,18 +18,8 @@ button .dismiss {
   text-align: right
 }
 
-button .dismiss i.fa {
+.pricing-component-modal button.dismiss i.fa {
   opacity: 0.4
-}
-
-#pricingComponentTitle {
-  font-weight: bold;
-  text-align: center;
-  margin-top: 0;
-}
-
-#pricingComponentContainer {
-  margin: 0.5em;
 }
 
 .pricing-component-modal .modal-dialog {
