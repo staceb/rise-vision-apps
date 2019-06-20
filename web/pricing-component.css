@@ -1,3 +1,23 @@
+button .dismiss {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.5em 0.5em 0 0;
+  background: none;
+  border: none;
+  text-align: right
+}
+
+button .dismiss i.fa {
+  opacity: 0.4
+}
+
+#pricingComponentTitle {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 0;
+}
+
 #pricingComponentContainer {
   margin: 0.5em;
 }
