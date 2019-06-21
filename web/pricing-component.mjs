@@ -1,8 +1,8 @@
-import {PolymerElement, html} from "https://unpkg.com/@polymer/polymer@3.2.0/polymer-element.js?module"
-import "https://widgets.risevision.com/stable/components/pricing/pricing-data-component.mjs"
-import "https://widgets.risevision.com/stable/components/pricing/pricing-selector-component.mjs"
-import "https://widgets.risevision.com/stable/components/pricing/pricing-summary-component.mjs"
-import "https://widgets.risevision.com/stable/components/pricing/pricing-grid-component.mjs"
+import {PolymerElement, html} from "@polymer/polymer/polymer-element.js"
+import "pricing-data-component/lib/pricing-data-component.js"
+import "pricing-selector-component/lib/pricing-selector-component.js"
+import "pricing-summary-component/lib/pricing-summary-component.js"
+import "pricing-grid-component/lib/pricing-grid-component.js"
 
 class PricingComponent extends PolymerElement {
   static get properties() {
