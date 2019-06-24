@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="risevision.apps" itemscope itemtype="http://schema.org/WebApplication" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 <head lang="en">
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
   <base href="/">
   <meta name="fragment" content="!">
   <meta charset="UTF-8">
@@ -47,6 +48,7 @@
   <link rel="stylesheet" type="text/css" href="bower_components/codemirror/theme/twilight.css"/>
   <link rel="stylesheet" type="text/css" href="bower_components/ng-tags-input/ng-tags-input.min.css">
   <link rel="stylesheet" type="text/css" href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="pricing-component.css">
   <!-- endbuild -->
 </head>
 <body>
@@ -63,6 +65,7 @@
   <script src="https://js.stripe.com/v2/" async></script>
 
   <!-- build:js js/website.min.js -->
+  <script src="/pricing-component.js"></script>
   <script src="bower_components/common-header/dist/js/dependencies.js"></script>
   <script src="bower_components/common-header/dist/js/common-header.js"></script>
 
@@ -324,6 +327,5 @@
   <script src="scripts/widgets/twitter/controllers/ctr-twitter-settings.js"></script>
 
   <!-- endbuild -->
-
 </body>
 </html>

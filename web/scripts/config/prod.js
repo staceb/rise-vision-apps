@@ -35,6 +35,7 @@
     .value('OAUTH_PUBLIC_KEY', 'EJMI-lB9hB55OYEsYmjXDNfRGoY')
     .value('CHARGEBEE_TEST_SITE', 'risevision-test')
     .value('CHARGEBEE_PROD_SITE', 'risevision')
+    .value('CHARGEBEE_PLANS_USE_PROD', 'true')
     .value('STRIPE_PROD_KEY', 'pk_live_31dWkTWQU125m2RcWpK4HQBR')
     .value('STRIPE_TEST_KEY', 'pk_test_GrMIAHSoqhaik4tcHepsxjOR');
 
