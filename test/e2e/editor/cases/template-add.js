@@ -9,7 +9,8 @@ var helper = require('rv-common-e2e').helper;
 var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
 var StoreProductsModalPage = require('./../pages/storeProductsModalPage.js');
 var ProductDetailsModalPage = require('./../pages/productDetailsModalPage.js');
-var PlansModalPage = require('./../../common/pages/plansModalPage.js');
+var PricingComponentModalPage = require('./../../common/pages/pricingComponentModalPage.js');
+var PurchaseFlowModalPage = require('./../../common/pages/purchaseFlowModalPage.js');
 
 var TemplateAddScenarios = function() {
 
@@ -23,12 +24,49 @@ var TemplateAddScenarios = function() {
     var workspacePage;
     var presentationPropertiesModalPage;
     var storeProductsModalPage;
+    var purchaseFlowModalPage;
     var productDetailsModalPage;
-    var plansModalPage;
+    var pricingComponentModalPage;
 
     function loadEditor() {
       homepage.getEditor();
       signInPage.signIn();
+    }
+
+    function purchaseSubscription() {
+      browser.call(()=>console.log("waiting for getSubscribeButton"));
+      helper.wait(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button');
+      helper.clickWhenClickable(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button');
+      browser.call(()=>console.log("clicked subscribe button"));
+
+      helper.waitDisappear(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button Disappear');
+
+      browser.call(()=>console.log("waiting purchase flow billing continue button"));
+      helper.wait(purchaseFlowModalPage.getContinueButton(), "Purchase flow Billing");
+      browser.sleep(1000);
+      helper.clickWhenClickable(purchaseFlowModalPage.getContinueButton(), 'Purchase flow Billing');
+      helper.waitDisappear(purchaseFlowModalPage.getEmailField(), "Purchase flow Billing");
+      browser.sleep(1000);
+      purchaseFlowModalPage.getCompanyNameField().sendKeys("same");
+      purchaseFlowModalPage.getStreet().sendKeys("2967 Dundas St. W #632");
+      purchaseFlowModalPage.getCity().sendKeys("Toronto");
+      purchaseFlowModalPage.getCountry().sendKeys("Can");
+      purchaseFlowModalPage.getProv().sendKeys("O");
+      purchaseFlowModalPage.getPC().sendKeys("M6P 1Z2");
+      browser.sleep(1000);
+      helper.clickWhenClickable(purchaseFlowModalPage.getContinueButton(), 'Purchase flow Shipping');
+      helper.waitDisappear(purchaseFlowModalPage.getCompanyNameField(), "Purchase flow Shipping");
+      purchaseFlowModalPage.getCardName().sendKeys("AAA");
+      purchaseFlowModalPage.getCardNumber().sendKeys("4242424242424242");
+      purchaseFlowModalPage.getCardExpMon().sendKeys("0");
+      purchaseFlowModalPage.getCardExpYr().sendKeys("222");
+      purchaseFlowModalPage.getCardCVS().sendKeys("222");
+      browser.sleep(1000);
+      helper.clickWhenClickable(purchaseFlowModalPage.getContinueButton(), 'Purchase flow Payment');
+      helper.wait(purchaseFlowModalPage.getPayButton(), "Purchase flow Payment");
+      browser.sleep(3000);
+      helper.clickWhenClickable(purchaseFlowModalPage.getPayButton(), 'Purchase flow Review');
+      helper.waitDisappear(purchaseFlowModalPage.getPayButton(), "Purchase flow Payment");
     }
 
     function openContentModal() {
@@ -57,7 +95,8 @@ var TemplateAddScenarios = function() {
       presentationPropertiesModalPage = new PresentationPropertiesModalPage();
       storeProductsModalPage = new StoreProductsModalPage();
       productDetailsModalPage = new ProductDetailsModalPage();
-      plansModalPage = new PlansModalPage();
+      pricingComponentModalPage = new PricingComponentModalPage();
+      purchaseFlowModalPage = new PurchaseFlowModalPage();
 
       loadEditor();
       createSubCompany();
@@ -142,6 +181,7 @@ var TemplateAddScenarios = function() {
     });
 
     it('should show preview modal selecting a premium template',function(){
+      browser.call(()=>console.log("should show preview modal"));
       storeProductsModalPage.getPremiumProducts().get(0).click();
 
       helper.wait(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
@@ -153,9 +193,11 @@ var TemplateAddScenarios = function() {
       productDetailsModalPage.getCloseButton().click();
 
       helper.waitDisappear(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
+      browser.call(()=>console.log("show preview modal done"));
     });
 
-    it('should start a trial',function(){
+    it('should show pricing component modal',function(){
+      browser.call(()=>console.log("should show pricing component modal"));
       storeProductsModalPage.getPremiumProducts().get(0).click();
 
       helper.wait(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
@@ -164,16 +206,14 @@ var TemplateAddScenarios = function() {
       expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
       expect(productDetailsModalPage.getStartTrialButton().isDisplayed()).to.eventually.be.true;
       productDetailsModalPage.getStartTrialButton().click();
-
-      helper.wait(plansModalPage.getPlansModal(), 'Plans Modal');
-      helper.wait(plansModalPage.getStartTrialBasicButton(), 'Basic Plan Start Trial');
-
-      plansModalPage.getStartTrialBasicButton().click();
-
-      helper.waitDisappear(plansModalPage.getPlansModal(), 'Plans Modal');
+      browser.call(()=>console.log("waiting for pricing component frame"));
+      helper.wait(pricingComponentModalPage.getSubscribeButton(), 'Pricing Component Modal');
+      browser.call(()=>console.log("subscribing"));
+      purchaseSubscription();
     });
     
     it('should show Select Template button', function() {
+      browser.call(()=>console.log("should show select template button"));
       // Sometimes the trial does not start in time; this section tries to reduce the number of times this step fails
       browser.sleep(5000);
       // Reload page and select company whose trial has just started

@@ -11,6 +11,10 @@ var usemin      = require("gulp-usemin");
 var minifyCss   = require('gulp-minify-css');
 var minifyHtml  = require('gulp-minify-html');
 var ngHtml2Js   = require("gulp-ng-html2js");
+var rollup      = require("rollup");
+var resolve     = require("rollup-plugin-node-resolve");
+var babel       = require("rollup-plugin-babel");
+var terser      = require("rollup-plugin-terser").terser;
 var concat      = require("gulp-concat");
 var gutil       = require("gulp-util");
 var rename      = require('gulp-rename');
@@ -131,6 +135,7 @@ gulp.task('bower-clean-install', ['bower-rm', 'bower-install']);
  */
 gulp.task('watch', function () {
   gulp.watch(partialsHTMLFiles, ['html2js']);
+  gulp.watch(['./web/pricing-component.mjs'], ['pricing']);
   gulp.watch(['./tmp/partials.js', './web/scripts/**/*.js', commonStyleLink, './web/index.html'], ['browser-sync-reload']);
   gulp.watch(unitTestFiles, ['test:unit']);
 });
@@ -218,6 +223,33 @@ gulp.task("html-selector", function () {
 
 gulp.task("html", ["lint", "html-index", "html-selector"]);
 
+gulp.task('pricing', function() {
+  return rollup.rollup({
+    input: ['web/pricing-component.mjs'],
+    plugins: [
+      resolve(),
+      babel({
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "targets": "> 1%, not dead, not ie 11",
+              "modules": false
+            }
+          ]
+        ]
+      }),
+      terser()
+    ]
+  })
+  .then(bundle=>{
+    return bundle.write({
+      file: 'web/pricing-component.js',
+      format: 'iife'
+    });
+  });
+});
+
 gulp.task("html2js", function() {
   return gulp.src(partialsHTMLFiles)
     .pipe(minifyHtml({
@@ -248,7 +280,7 @@ gulp.task("fonts", function() {
 });
 
 gulp.task("static-html", function() {
-  return gulp.src('./web/loading-preview.html')
+  return gulp.src(['./web/loading-preview.html', './web/pricing-component.js', './web/pricing-component.css'])
     .pipe(gulp.dest('dist/'));
 })
 
@@ -262,7 +294,7 @@ gulp.task("config", function() {
 });
 
 gulp.task('build', function (cb) {
-  runSequence(["clean", "config"], ['pretty', 'html2js'],["html", "static-html", "fonts", "locales", "images"], cb);
+  runSequence(["clean", "config"], ['pretty', 'pricing', 'html2js'],["html", "static-html", "fonts", "locales", "images"], cb);
 });
 
 /*---- testing ----*/
@@ -307,11 +339,11 @@ gulp.task("test:e2e:core", ["test:webdrive_update"],factory.testE2EAngular({
   }()
 }));
 gulp.task("test:e2e", function (cb) { 
-  runSequence(["config", "config-e2e", "html2js"], "server", "test:e2e:core", "server-close", cb);
+  runSequence(["config", "config-e2e", "pricing", "html2js"], "server", "test:e2e:core", "server-close", cb);
 });
 
 gulp.task("test",  function (cb) {
-  runSequence(["config", "html2js"], "test:unit", "coveralls", cb);
+  runSequence(["config", "pricing", "html2js"], "test:unit", "coveralls", cb);
 });
 
 //------------------------ Global ---------------------------------
@@ -327,7 +359,7 @@ gulp.task('default', [], function() {
   return true;
 });
 
-gulp.task('dev', ['config', 'html2js', 'browser-sync', 'watch']);
+gulp.task('dev', ['config', 'pricing', 'html2js', 'browser-sync', 'watch']);
 
 /**
  * Default task, running just `gulp` will compile the sass,

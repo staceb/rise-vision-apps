@@ -7,7 +7,7 @@ var PresentationsListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var PlaceholderPlaylistPage = require('./../pages/placeholderPlaylistPage.js');
 var StoreProductsModalPage = require('./../pages/storeProductsModalPage.js');
-var PlansModalPage = require('./../../common/pages/plansModalPage.js');
+var PricingComponentModalPage = require('./../../common/pages/pricingComponentModalPage.js');
 var PresentationItemModalPage = require('./../pages/presentationItemModalPage.js');
 var PresentationModalPage = require('./../../schedules/pages/presentationModalPage.js');
 var TwitterSettingsPage = require('./../pages/twitterSettingsPage.js');
@@ -27,7 +27,7 @@ var ProfessionalWidgetsScenarios = function() {
     var workspacePage;
     var placeholderPlaylistPage;
     var storeProductsModalPage;
-    var plansModalPage;
+    var pricingComponentModalPage;
     var presentationItemModalPage;
     var presentationModalPage;
     var twitterSettingsPage;
@@ -54,7 +54,7 @@ var ProfessionalWidgetsScenarios = function() {
       workspacePage = new WorkspacePage();
       placeholderPlaylistPage = new PlaceholderPlaylistPage();
       storeProductsModalPage = new StoreProductsModalPage();
-      plansModalPage = new PlansModalPage();
+      pricingComponentModalPage = new PricingComponentModalPage();
       presentationItemModalPage = new PresentationItemModalPage();
       presentationModalPage = new PresentationModalPage();
       twitterSettingsPage = new TwitterSettingsPage();
@@ -121,14 +121,13 @@ var ProfessionalWidgetsScenarios = function() {
       it('should show Plans Modal', function() {
         storeProductsModalPage.getUnlockButton().get(0).click();
 
-        helper.wait(plansModalPage.getPlansModal(), 'Plans Modal');
-        helper.wait(plansModalPage.getStartTrialBasicButton(), 'Basic Plan Start Trial');
+        helper.wait(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button');
       });
 
       it('should start a Trial',function(){
-        plansModalPage.getStartTrialBasicButton().click();
+        pricingComponentModalPage.getSubscribeButton().click();
 
-        helper.waitDisappear(plansModalPage.getPlansModal(), 'Plans Modal');
+        helper.waitDisappear(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button Disappear');
       });
 
       it('should unlock Professional Widgets', function() {
