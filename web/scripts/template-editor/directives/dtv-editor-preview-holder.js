@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('templateEditorPreviewHolder', ['$window', '$sce', 'templateEditorFactory', 'HTML_TEMPLATE_DOMAIN',
-    'HTML_TEMPLATE_URL', 'userState',
-    function ($window, $sce, templateEditorFactory, HTML_TEMPLATE_DOMAIN, HTML_TEMPLATE_URL, userState) {
+  .directive('templateEditorPreviewHolder', ['$window', '$timeout', '$sce', 'templateEditorFactory',
+    'HTML_TEMPLATE_DOMAIN', 'HTML_TEMPLATE_URL', 'userState',
+    function ($window, $timeout, $sce, templateEditorFactory, HTML_TEMPLATE_DOMAIN, HTML_TEMPLATE_URL, userState) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/preview-holder.html',
@@ -52,6 +52,14 @@ angular.module('risevision.template-editor.directives')
             return height ? parseInt(height) : DEFAULT_TEMPLATE_HEIGHT;
           }
 
+          function _getPreviewAreaWidth() {
+            return previewHolder.clientWidth;
+          }
+
+          function _getPreviewAreaHeight() {
+            return previewHolder.clientHeight;
+          }
+
           function _getHeightDividedByWidth() {
             return _getTemplateHeight() / _getTemplateWidth();
           }
@@ -59,9 +67,9 @@ angular.module('risevision.template-editor.directives')
           function _useFullWidth() {
             var offset = 2 * DESKTOP_MARGIN;
             var aspectRatio = _getHeightDividedByWidth();
-            var projectedHeight = (previewHolder.clientWidth - offset) * aspectRatio;
+            var projectedHeight = (_getPreviewAreaWidth() - offset) * aspectRatio;
 
-            return projectedHeight < previewHolder.clientHeight - offset;
+            return projectedHeight < _getPreviewAreaHeight() - offset;
           }
 
           function _getWidthFor(height) {
@@ -84,7 +92,7 @@ angular.module('risevision.template-editor.directives')
           };
 
           $scope.getDesktopWidth = function () {
-            var height = previewHolder.clientHeight;
+            var height = _getPreviewAreaHeight();
 
             return _getWidthFor(height).toFixed(0);
           };
@@ -111,17 +119,17 @@ angular.module('risevision.template-editor.directives')
             var offset = (isMobile ? MOBILE_MARGIN : DESKTOP_MARGIN) * 2;
 
             if (isMobile) {
-              viewHeight = previewHolder.clientHeight - offset;
+              viewHeight = _getPreviewAreaHeight() - offset;
               parentStyle = 'width: ' + $scope.getMobileWidth() + 'px';
               frameStyle = _getFrameStyle(viewHeight, _getTemplateHeight());
             } else if (_useFullWidth()) {
-              var viewWidth = previewHolder.clientWidth - offset;
+              var viewWidth = _getPreviewAreaWidth() - offset;
               var aspectRatio = $scope.getTemplateAspectRatio() + '%';
 
               parentStyle = 'padding-bottom: ' + aspectRatio + ';';
               frameStyle = _getFrameStyle(viewWidth, _getTemplateWidth());
             } else {
-              viewHeight = previewHolder.clientHeight - offset;
+              viewHeight = _getPreviewAreaHeight() - offset;
 
               parentStyle = 'height: 100%; width: ' + $scope.getDesktopWidth() + 'px';
               frameStyle = _getFrameStyle(viewHeight, _getTemplateHeight());
@@ -137,7 +145,7 @@ angular.module('risevision.template-editor.directives')
           ], function () {
             _applyAspectRatio();
 
-            setTimeout(_applyAspectRatio, PREVIEW_INITIAL_DELAY_MILLIS);
+            $timeout(_applyAspectRatio, PREVIEW_INITIAL_DELAY_MILLIS);
           });
 
           function _onResize() {
@@ -149,6 +157,12 @@ angular.module('risevision.template-editor.directives')
           angular.element($window).on('resize', _onResize);
           $scope.$on('$destroy', function () {
             angular.element($window).off('resize', _onResize);
+          });
+
+          $scope.$watch('factory.selected', function (selected) {
+            if (!selected) {
+              $timeout(_onResize);
+            }
           });
 
           $scope.$watch('factory.presentation.templateAttributeData', function (value) {
