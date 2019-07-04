@@ -32,19 +32,6 @@ var TextComponentScenarios = function () {
 
     describe('basic operations', function () {
 
-      it('should auto create Schedule when saving Presentation', function () {
-        browser.sleep(500);
-
-        helper.wait(autoScheduleModalPage.getAutoScheduleModal(), 'Auto Schedule Modal');
-
-        expect(autoScheduleModalPage.getAutoScheduleModal().isDisplayed()).to.eventually.be.true;
-
-        helper.clickWhenClickable(autoScheduleModalPage.getCloseButton(), 'Auto Schedule Modal - Close Button');
-
-        helper.waitDisappear(autoScheduleModalPage.getAutoScheduleModal(), 'Auto Schedule Modal');
-        helper.waitDisappear(presentationsListPage.getTemplateEditorLoader());
-      });
-
       it('should auto-save the Presentation after it has been created', function () {
         helper.waitDisappear(templateEditorPage.getDirtyText());
         helper.waitDisappear(templateEditorPage.getSavingText());
@@ -67,6 +54,21 @@ var TextComponentScenarios = function () {
         //save presentation
         helper.wait(templateEditorPage.getSavingText(), 'Text component auto-saving');
         helper.wait(templateEditorPage.getSavedText(), 'Text component auto-saved');
+      });
+
+      it('should auto create Schedule when publishing Presentation', function () {
+        helper.clickWhenClickable(templateEditorPage.getPublishButton(), 'Publish Button');
+
+        browser.sleep(500);
+
+        helper.wait(autoScheduleModalPage.getAutoScheduleModal(), 'Auto Schedule Modal');
+
+        expect(autoScheduleModalPage.getAutoScheduleModal().isDisplayed()).to.eventually.be.true;
+
+        helper.clickWhenClickable(autoScheduleModalPage.getCloseButton(), 'Auto Schedule Modal - Close Button');
+
+        helper.waitDisappear(autoScheduleModalPage.getAutoScheduleModal(), 'Auto Schedule Modal');
+        helper.waitDisappear(presentationsListPage.getTemplateEditorLoader());
       });
 
       it('should auto-save the Presentation, reload it, and validate changes were saved', function () {
