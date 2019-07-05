@@ -33,7 +33,7 @@ var SlidesComponentScenarios = function () {
       it('should open properties of Slides Component', function () {
         templateEditorPage.selectComponent(componentLabel);
         expect(slidesComponentPage.getSrcInput().isEnabled()).to.eventually.be.true;
-        expect(slidesComponentPage.getSrcInput().getAttribute('value')).to.eventually.equal("");
+        expect(slidesComponentPage.getSrcInput().getAttribute('value')).to.eventually.equal("https://docs.google.com/presentation/d/e/2PACX-1vRK9noBs7XGTp-jRNkkxSR_bvTIPFq415ff2EKZIpUAOQJcYoV42XtxPGnGEd6bvjl36yZvjcn_eYDS/pub");
       });
 
       it('should auto-save the Presentation after a duration change', function () {
