@@ -36,30 +36,6 @@ var SlidesComponentScenarios = function () {
         expect(slidesComponentPage.getSrcInput().getAttribute('value')).to.eventually.equal("https://docs.google.com/presentation/d/e/2PACX-1vRK9noBs7XGTp-jRNkkxSR_bvTIPFq415ff2EKZIpUAOQJcYoV42XtxPGnGEd6bvjl36yZvjcn_eYDS/pub");
       });
 
-      it('should auto-save the Presentation after a duration change', function () {
-
-        //change duration
-        expect(slidesComponentPage.getDurationInput().isEnabled()).to.eventually.be.true;
-        slidesComponentPage.getDurationInput().clear();
-        slidesComponentPage.getDurationInput().sendKeys("999" + protractor.Key.ENTER);
-
-        //save presentation
-        helper.wait(templateEditorPage.getSavingText(), 'Slides component auto-saving');
-        helper.wait(templateEditorPage.getSavedText(), 'Slides component auto-saved');
-      });
-
-      it('should auto-save the Presentation after a src change', function () {
-
-        //change slides URL
-        expect(slidesComponentPage.getSrcInput().isEnabled()).to.eventually.be.true;
-        slidesComponentPage.getSrcInput().clear();
-        slidesComponentPage.getSrcInput().sendKeys("randomSlideId" + protractor.Key.ENTER);
-
-        //save presentation
-        helper.wait(templateEditorPage.getSavingText(), 'Slides component auto-saving');
-        helper.wait(templateEditorPage.getSavedText(), 'Slides component auto-saved');
-      });
-
       it('should show validation error', function () {
 
         //change slides URL
@@ -102,6 +78,8 @@ var SlidesComponentScenarios = function () {
         expect(slidesComponentPage.getSrcInput().isEnabled()).to.eventually.be.true;
         slidesComponentPage.getSrcInput().clear();
         slidesComponentPage.getSrcInput().sendKeys("https://docs.google.com/presentation/d/e/fakeSlidesId/pub" + protractor.Key.ENTER);
+        slidesComponentPage.getDurationInput().clear();
+        slidesComponentPage.getDurationInput().sendKeys("999" + protractor.Key.ENTER);
 
         //wait for validation to complete
         helper.waitDisappear(slidesComponentPage.getLoader(), 'Validation spinner');
@@ -125,6 +103,8 @@ var SlidesComponentScenarios = function () {
         templateEditorPage.selectComponent(componentLabel);
         expect(slidesComponentPage.getSrcInput().isEnabled()).to.eventually.be.true;
         expect(slidesComponentPage.getSrcInput().getAttribute('value')).to.eventually.equal("https://docs.google.com/presentation/d/e/fakeSlidesId/pub");
+        expect(slidesComponentPage.getDurationInput().isEnabled()).to.eventually.be.true;
+        expect(slidesComponentPage.getDurationInput().getAttribute('value')).to.eventually.equal("999");
       });
     });
   });
