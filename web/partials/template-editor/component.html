@@ -7,11 +7,13 @@
   </a>
   <component-icon ng-if="!panelIcon"
                   icon="{{ getComponentIcon(factory.selected) }}"
-                  type="{{ getComponentIconType(factory.selected) }}">
+                  type="{{ getComponentIconType(factory.selected) }}"
+                  class="component-icon">
   </component-icon>
   <component-icon ng-if="panelIcon"
                   icon="{{ panelIcon }}"
-                  type="{{ panelIconType }}">
+                  type="{{ panelIconType }}"
+                  class="component-icon">
   </component-icon>
   <span ng-show="!panelTitle">
     {{ ( "template." + factory.selected.type ) | translate }} -
