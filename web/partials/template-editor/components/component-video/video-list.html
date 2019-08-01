@@ -1,0 +1,34 @@
+<div class="video-component-list file-component-list te-scrollable-container"
+     rv-spinner rv-spinner-key="template-editor-loader"
+     rv-spinner-start-active="1">
+  <template-editor-file-entry
+     ng-repeat="file in selectedFiles track by $index"
+     ng-show="selectedFiles.length > 0 && !isUploading"
+     entry="file"
+     file-type="video"
+     remove-action="removeFileFromList">
+  </template-editor-file-entry>
+
+  <template-editor-empty-file-list file-type="video"
+     ng-hide="isUploading || selectedFiles.length !== 0 || factory.loadingPresentation">
+  </template-editor-empty-file-list>
+
+  <basic-uploader uploader-id="video-list-uploader"
+     upload-manager="uploadManager"
+     valid-extensions="validExtensions"
+     ng-show="isUploading">
+  </basic-uploader>
+</div>
+
+<div class="file-component-list-action-button-bar">
+  <div class="upload-files">
+    <label id="video-list-uploader-label" class="btn btn-primary btn-block" for="video-list-uploader" ng-disabled="isUploading">
+      <strong>Upload Videos</strong>
+    </label>
+  </div>
+  <div class="select-from-storage">
+    <button id="video-list-storage-button" class="btn btn-primary btn-block" ng-click="selectFromStorage()" ng-disabled="isUploading">
+      <strong>Select from Storage</strong>
+    </button>
+  </div>
+</div>
