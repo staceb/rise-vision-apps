@@ -343,7 +343,8 @@ gulp.task("test:e2e", function (cb) {
 });
 
 gulp.task("test",  function (cb) {
-  runSequence(["config", "pricing", "html2js"], "test:unit", "coveralls", cb);
+  // runSequence(["config", "pricing", "html2js"], "test:unit", "coveralls", cb);
+  runSequence(["config", "pricing", "html2js"], "test:unit", cb);
 });
 
 //------------------------ Global ---------------------------------
