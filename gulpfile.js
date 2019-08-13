@@ -313,7 +313,7 @@ gulp.task("test:unit", factory.testUnitAngular({
     testFiles: unitTestFiles
 }));
 
-gulp.task("coveralls", factory.coveralls());
+// gulp.task("coveralls", factory.coveralls());
 
 gulp.task("server", factory.testServer({
   html5mode: true,
