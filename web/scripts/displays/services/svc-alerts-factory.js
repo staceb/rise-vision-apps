@@ -194,7 +194,7 @@ angular.module('risevision.displays.services')
           factory.savingAlerts = false;
           factory.errorSaving = true;
           factory.errorMessage = 'Failed to update Alerts.';
-          factory.apiError = humanReadableError(error.result?error.result:error);
+          factory.apiError = humanReadableError(error && error.result || error);
           $log.error(factory.errorMessage, error);
         });
       };
