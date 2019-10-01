@@ -1,4 +1,5 @@
 'use strict';
+
 angular.module('risevision.apps', [
     'ui.router',
     'ngTouch',
@@ -9,7 +10,6 @@ angular.module('risevision.apps', [
     'ngTagsInput',
     'ngStorage',
     'risevision.common.header',
-    'risevision.common.header.templates',
     'risevision.common.components.last-modified',
     'risevision.common.components.loading',
     'risevision.common.components.search-filter',
