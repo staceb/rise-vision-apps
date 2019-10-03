@@ -27,20 +27,20 @@
         safeDeleteModalPage = new SafeDeleteModalPage();
         signInPage = new SignInPage();
 
+        homepage.get();
 
-        homepage.get();        
-        signInPage.signIn(browser.params.login.user1, browser.params.login.pass1);
+        signInPage.customAuthSignIn(commonHeaderPage.getStageEmailAddress(), commonHeaderPage.getPassword());
       });
 
       it("Deletes company", function() {
-        commonHeaderPage.getProfilePic().click();
+        commonHeaderPage.openProfileMenu();
         homepage.getCompanySettingsButton().click();        
         
         helper.wait(companySettingsModalPage.getCompanySettingsModal(), "Comapny Settings Modal");
         helper.waitDisappear(companySettingsModalPage.getLoader(), "Load Company Settings");
         
         // Ensure the right Company is being deleted
-        expect(companySettingsModalPage.getNameField().getAttribute("value")).to.eventually.equal("Public School #5");
+        expect(companySettingsModalPage.getNameField().getAttribute("value")).to.eventually.equal(commonHeaderPage.addStageSuffix("Public School"));
 
         companySettingsModalPage.getDeleteButton().click();
     
