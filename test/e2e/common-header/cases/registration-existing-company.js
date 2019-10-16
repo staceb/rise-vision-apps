@@ -77,7 +77,7 @@
         });
 
         it('should send an email to the added user',function(){
-          browser.controlFlow().wait(mailListener.getLastEmail(), 45000).then(function (email) {
+          browser.controlFlow().wait(mailListener.getLastEmail(), 60000).then(function (email) {
             expect(email.subject).to.equal("You've been added to a Rise Vision account!");
           }); 
         });
@@ -121,7 +121,7 @@
         });
 
         it('should wait for confirmation email', function() {        
-          browser.controlFlow().wait(signUpPage.getConfirmationLink(mailListener), 45000).then(function(link){
+          browser.controlFlow().wait(signUpPage.getConfirmationLink(mailListener), 60000).then(function(link){
             confirmationLink = link;
             expect(confirmationLink).to.contain("http://localhost:8099/confirmaccount/"+EMAIL_ADDRESS);
           });
@@ -177,20 +177,31 @@
           homepage.getUserSettingsButton().click();
 
           helper.wait(userSettingsModalPage.getUserSettingsModal(), "User Settings Modal");
-
           helper.waitDisappear(userSettingsModalPage.getLoader(), "User Settings Modal Loader");
+
+          expect(userSettingsModalPage.getUserSettingsModal().isPresent()).to.eventually.be.true;
         });
 
-        it("deletes a user", function() {
+        it("User deletes themselves", function() {
           browser.sleep(500);
           // Ensure the right User is being deleted
           expect(userSettingsModalPage.getUsernameLabel().getText()).to.eventually.equal(EMAIL_ADDRESS);
+          expect(userSettingsModalPage.getDeleteButton().isPresent()).to.eventually.be.true;
 
-          userSettingsModalPage.getDeleteButton().click();
-          
-          browser.switchTo().alert().accept();  // Use to accept (simulate clicking ok)
-          
+          helper.clickWhenClickable(userSettingsModalPage.getDeleteButton(), 'User Delete Button');
+
+          browser.sleep(500);
+          helper.wait(userSettingsModalPage.getDeleteForeverButton(), 'User Delete Forever Button');      
+          helper.clickWhenClickable(userSettingsModalPage.getDeleteForeverButton(), 'User Delete Forever Button');
+
           helper.waitDisappear(userSettingsModalPage.getLoader(), "User Settings Modal");
+          helper.waitDisappear(userSettingsModalPage.getUserSettingsModal(), "User Settings Modal");
+        });
+        
+        it("Signs user out when deleting themselves", function() {
+          helper.waitDisappear(commonHeaderPage.getLoader(), 'CH spinner loader');
+          
+          expect(signInPage.getSignInGoogleLink().isDisplayed()).to.eventually.be.true;
         });
         
       });
