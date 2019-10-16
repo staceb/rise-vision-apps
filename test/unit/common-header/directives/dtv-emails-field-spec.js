@@ -40,6 +40,7 @@ describe("directive: emails field", function() {
       expect(elemScope.isValidEmail({ text: "aaaa" })).to.be.false;
       expect(elemScope.isValidEmail({ text: "aaaa@" })).to.be.false;
       expect(elemScope.isValidEmail({ text: "aaaa@a" })).to.be.true;
+      expect(elemScope.isValidEmail({ text: "aaaa@a.b.c" })).to.be.true;
       expect(elemScope.isValidEmail({ text: "aaaa@a.com" })).to.be.true;
     });
   });
