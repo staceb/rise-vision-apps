@@ -52,10 +52,10 @@
     .factory('registerAccount', ['$q', '$log',
       'addAccount', 'updateUser',
       function ($q, $log, addAccount, updateUser) {
-        return function (userFirst, userLast, companyName, companyIndustry) {
-          $log.debug('registerAccount called.', userFirst, userLast, companyName, companyIndustry);
+        return function (userFirst, userLast, companyName, companyIndustry, userPhone, mailSyncEnabled) {
+          $log.debug('registerAccount called.', userFirst, userLast, companyName, companyIndustry, userPhone, mailSyncEnabled);
           var deferred = $q.defer();
-          addAccount(userFirst, userLast, companyName, companyIndustry).then(function () {
+          addAccount(userFirst, userLast, companyName, companyIndustry, userPhone, mailSyncEnabled).then(function () {
             deferred.resolve();
           }).finally(function () {
             deferred.reject();
@@ -67,15 +67,17 @@
 
     .factory('addAccount', ['$q', 'riseAPILoader', '$log',
       function ($q, riseAPILoader, $log) {
-        return function (userFirst, userLast, companyName, companyIndustry) {
+        return function (userFirst, userLast, companyName, companyIndustry, userPhone, mailSyncEnabled) {
           $log.debug('addAccount called.');
           var deferred = $q.defer();
           riseAPILoader().then(function (riseApi) {
             var request = riseApi.account.addWithDetails({
               userFirst: userFirst,
               userLast: userLast,
+              userPhone: userPhone,
               companyName: companyName,
-              companyIndustry: companyIndustry
+              companyIndustry: companyIndustry,
+              mailSyncEnabled: mailSyncEnabled
             });
 
             request.execute(function (resp) {
