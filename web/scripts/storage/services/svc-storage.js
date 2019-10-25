@@ -4,8 +4,8 @@
 
 angular.module('risevision.storage.services')
   .service('storage', ['$q', '$log', 'storageAPILoader',
-    'userState', '$window',
-    function ($q, $log, storageAPILoader, userState, $window) {
+    'userState', '$window', 'processErrorCode',
+    function ($q, $log, storageAPILoader, userState, $window, processErrorCode) {
       var service = {
         files: {
           get: function (search) {
@@ -33,7 +33,8 @@ angular.module('risevision.storage.services')
                 deferred.resolve(resp.result);
               })
               .then(null, function (e) {
-                console.error('Failed to get storage files', e);
+                var apiError = processErrorCode('Files', 'list', e);
+                console.error('Failed to get storage files', apiError);
                 deferred.reject(e);
               });
 
@@ -287,6 +288,29 @@ angular.module('risevision.storage.services')
             });
 
           return deferred.promise;
+        },
+
+        refreshFileMetadata: function (fileName) {
+          return _refreshFileMetadata(fileName, 3);
+
+          function _refreshFileMetadata(fileName, remainingAttempts) {
+            console.log('Attempt #' + remainingAttempts + ' to get metadata for: ' + fileName);
+
+            return service.files.get({
+                file: fileName
+              })
+              .then(function (resp) {
+                var file = resp && resp.files && resp.files[0];
+
+                if (file && (!file.metadata || file.metadata['needs-thumbnail-update'] !== 'true')) {
+                  return $q.resolve(file);
+                } else if (file && remainingAttempts > 0) {
+                  return _refreshFileMetadata(fileName, remainingAttempts - 1);
+                } else {
+                  return $q.reject();
+                }
+              });
+          }
         }
 
 

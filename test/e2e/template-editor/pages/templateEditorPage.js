@@ -1,5 +1,7 @@
 'use strict';
 
+var helper = require('rv-common-e2e').helper;
+
 var TemplateEditorPage = function() {
   var seePlansLink = element(by.xpath('//a[contains(text(), "See Our Plans")]'));
   var presentationsListLink = element(by.css('[ng-href="/editor"]'));
@@ -9,19 +11,22 @@ var TemplateEditorPage = function() {
   var presentationName = element(by.id('presentationName'));
   var editNameButton = element(by.id('editNameButton'));
   var deleteButton = element(by.id('deleteButton'));
-  var saveButton = element(by.id('saveButtonDesktop'));
+  var deleteForeverButton = element(by.buttonText('Delete Forever'));
+  var errorModal = element(by.xpath('//h4[contains(text(), "Failed to")]'));
   var publishButton = element(by.id('publishButtonDesktop'));
   var imageComponentSelector = '//div[div/span[contains(text(), "Image - ")]]';
   var imageComponent = element(by.xpath('(' + imageComponentSelector + ')[1]'));
   var imageComponentEdit = element(by.xpath('(' + imageComponentSelector + '/div/a)[1]'));
   var backToComponentsButton = element(by.css('[ng-click="onBackButton();"]'));
-  var financialComponentSelector = '//div[div/span[contains(text(), "Financial - ")]]';
-  var financialComponent = element(by.xpath(financialComponentSelector));
-  var financialComponentEdit = element(by.xpath(financialComponentSelector + '/div/a'));
-  var instrumentItems = element.all(by.repeater('instr in instruments track by $index'));
-  var addCurrenciesButton = element(by.css('[ng-click="showSymbolSearch()"]'));
-  var addInstrumentButton = element(by.css('[ng-click="addInstrument()"]'));
-  var jpyUsdSelector = element(by.css('[for="JPYUSD=X"]'));
+  var financialDataLicenseMessage = element(by.css('.financial-data-license-message'));
+  var financialDataLicenseCloseButton = element(by.css('#confirmForm .close'));
+  var brandingContainer = element(by.id('branding'));
+  var brandingEditLink = element(by.id('branding-edit'));
+
+  var autoSaveXPath = '//div[@id="autoSavingDesktop"]//div[contains(text(), "TEXT")]';
+  var dirtyText = element(by.xpath(autoSaveXPath.replace('TEXT', 'Unsaved changes')));
+  var savedText = element(by.xpath(autoSaveXPath.replace('TEXT', 'All changes saved')));
+  var savingText = element(by.xpath(autoSaveXPath.replace('TEXT', 'Saving changes')));
 
   this.seePlansLink = function () {
     return seePlansLink;
@@ -59,8 +64,24 @@ var TemplateEditorPage = function() {
     return deleteButton;
   };
 
-  this.getSaveButton = function () {
-    return saveButton;
+  this.getDeleteForeverButton = function () {
+    return deleteForeverButton;
+  };
+
+  this.getErrorModal = function () {
+    return errorModal;
+  };
+
+  this.getSavedText = function () {
+    return savedText;
+  };
+
+  this.getSavingText = function () {
+    return savingText;
+  };
+
+  this.getDirtyText = function () {
+    return dirtyText;
   };
 
   this.getPublishButton = function () {
@@ -79,29 +100,48 @@ var TemplateEditorPage = function() {
     return backToComponentsButton;
   };
 
-  this.getFinancialComponent = function () {
-    return financialComponent;
+  this.getFinancialDataLicenseMessage = function() {
+    return financialDataLicenseMessage;
   };
 
-  this.getFinancialComponentEdit = function () {
-    return financialComponentEdit;
+  this.getFinancialDataLicenseCloseButton = function() {
+    return financialDataLicenseCloseButton;
+  }
+
+  this.getBrandingContainer = function () {
+    return brandingContainer;
   };
 
-  this.getInstrumentItems = function () {
-    return instrumentItems;
+  this.getBrandingEditLink = function () {
+    return brandingEditLink;
   };
 
-  this.getAddCurrenciesButton = function () {
-    return addCurrenciesButton;
+  this.waitForAutosave = function() {
+    savedText.isDisplayed().then(function(isDisplayed) {
+      if (!isDisplayed) {
+        //wait for presentation to be auto-saved
+        helper.waitDisappear(dirtyText);
+        helper.waitDisappear(savingText, 'Template Editor auto-saving');
+        helper.wait(savedText, 'Template Editor auto-saved');        
+      }
+    });
   };
 
-  this.getAddInstrumentButton = function () {
-    return addInstrumentButton;
-  };
+  this.dismissFinancialDataLicenseMessage = function() {
+    helper.wait(financialDataLicenseMessage, 'Financial Data License Message');
 
-  this.getJpyUsdSelector = function () {
-    return jpyUsdSelector;
-  };
+    //workaround as protractor doesn't click a modal in front of the preview iframe
+    financialDataLicenseCloseButton.sendKeys(protractor.Key.ESCAPE);
+    // helper.clickWhenClickable(financialDataLicenseCloseButton, 'Financial Data License Close Button');
+  }
+
+  this.selectComponent = function (selectorLabel) {
+    var componentEditLink = element(by.xpath('//div[div/span[contains(text(), "' + selectorLabel + '")]]/div/a'));
+
+    helper.wait(this.getAttributeList(), 'Attribute List');
+    helper.wait(componentEditLink, 'Component Edit');
+    helper.clickWhenClickable(componentEditLink, 'Component Edit');
+  }
 };
 
 module.exports = TemplateEditorPage;

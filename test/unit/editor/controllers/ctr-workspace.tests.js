@@ -2,7 +2,7 @@
 describe('controller: Workspace', function() {
   beforeEach(module('risevision.editor.controllers'));
   beforeEach(module('risevision.editor.services'));
-  beforeEach(module(mockTranlate()));
+  beforeEach(module(mockTranslate()));
   beforeEach(module(function ($provide) {
     $provide.factory('editorFactory',function(){
       return { 
@@ -59,9 +59,7 @@ describe('controller: Workspace', function() {
   });
 
   it('should exist',function(){
-    expect($scope).to.be.truely;
-    expect($scope.isSubcompanySelected).to.be.a('function');
-    expect($scope.isTestCompanySelected).to.be.a('function');
+    expect($scope).to.be.ok;
 
     expect($scope.factory).to.be.ok;
     expect($scope.artboardFactory).to.be.ok;

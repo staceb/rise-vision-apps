@@ -2,7 +2,8 @@
 
 angular.module('risevision.template-editor.directives')
   .directive('templateEditorToolbar', ['templateEditorFactory', '$templateCache', '$modal',
-    function (templateEditorFactory, $templateCache, $modal) {
+    '$window', '$timeout',
+    function (templateEditorFactory, $templateCache, $modal, $window, $timeout) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/toolbar.html',
@@ -12,17 +13,25 @@ angular.module('risevision.template-editor.directives')
           $scope.defaultNameValue = templateEditorFactory.presentation.name;
           $scope.defaultNameWidth = '';
 
-          $scope.onPresentationNameBlur = function() {
+          $scope.onPresentationNameBlur = function () {
             $scope.isEditingName = false;
           };
 
-          $scope.$watch('isEditingName', function(editing) {
+          var _initStretchy = function () {
             var templateNameInput = element.find('input.presentation-name');
+
+            $window.Stretchy.resize(templateNameInput[0]);
 
             if (!$scope.defaultNameWidth) {
               // first time editing, store the width of the field when default name is displayed
-              $scope.defaultNameWidth = templateNameInput[0].style.width;
+              $scope.defaultNameWidth = $window.getComputedStyle(templateNameInput[0]).getPropertyValue('width');
             }
+          };
+
+          $timeout(_initStretchy);
+
+          $scope.$watch('isEditingName', function (editing) {
+            var templateNameInput = element.find('input.presentation-name');
 
             if (editing) {
               setFocus(templateNameInput[0]);
@@ -40,16 +49,16 @@ angular.module('risevision.template-editor.directives')
           $scope.confirmDelete = function () {
             $scope.modalInstance = $modal.open({
               template: $templateCache.get('partials/template-editor/confirm-modal.html'),
-              controller: 'confirmInstance',
-              windowClass: 'template-editor-confirm-modal',
+              controller: 'confirmModalController',
+              windowClass: 'primary-btn-danger madero-style centered-modal',
               resolve: {
-                confirmationMessage: function () {
+                confirmationTitle: function () {
                   return 'template.confirm-modal.delete-warning';
                 },
                 confirmationButton: function () {
                   return 'common.delete-forever';
                 },
-                confirmationTitle: null,
+                confirmationMessage: null,
                 cancelButton: null
               }
             });
@@ -60,9 +69,9 @@ angular.module('risevision.template-editor.directives')
             });
           };
 
-          $scope.presentationNameKeyUp = function(keyEvent) {
+          $scope.presentationNameKeyUp = function (keyEvent) {
             // handle enter key
-            if ( keyEvent.which === 13 && $scope.isEditingName) {
+            if (keyEvent.which === 13 && $scope.isEditingName) {
               $scope.isEditingName = false;
             }
           };

@@ -1,31 +1,29 @@
 'use strict';
 
 angular.module('risevision.apps.launcher.directives')
-  .directive('weeklyTemplates', ['productsFactory', 'ScrollingListService', 'presentationUtils',
-    'editorFactory', 'templateEditorFactory', 'userState', '$sessionStorage',
-    function (productsFactory, ScrollingListService, presentationUtils, editorFactory,
-      templateEditorFactory, userState, $sessionStorage) {
+  .directive('weeklyTemplates', ['productsFactory', 'ScrollingListService',
+    'editorFactory', 'userState', '$sessionStorage',
+    function (productsFactory, ScrollingListService, editorFactory,
+      userState, $sessionStorage) {
       return {
         restrict: 'E',
         scope: {},
         templateUrl: 'partials/launcher/weekly-templates.html',
         link: function ($scope) {
-          $sessionStorage.$default({weeklyTemplatesFullView: true});
+          $sessionStorage.$default({
+            weeklyTemplatesFullView: true
+          });
 
           $scope.fullView = $sessionStorage.weeklyTemplatesFullView;
 
           $scope.search = {
             // sortBy: 'templateReleaseDate DESC',
-            query: 'templateOfTheWeek:1',
+            filter: 'templateOfTheWeek:1',
             category: 'Templates',
             count: 4
           };
 
-          var company = userState.getCopyOfSelectedCompany();
-
-          if (company.companyIndustry === "PRIMARY_SECONDARY_EDUCATION" ||
-              company.companyIndustry === "HIGHER_EDUCATION") {
-
+          if (userState.isEducationCustomer()) {
             $scope.factory = new ScrollingListService(productsFactory.loadProducts,
               $scope.search);
           }
@@ -36,11 +34,7 @@ angular.module('risevision.apps.launcher.directives')
           };
 
           $scope.select = function (product) {
-            if (!presentationUtils.isHtmlTemplate(product)) {
-              editorFactory.copyTemplate(product);
-            } else {
-              templateEditorFactory.createFromTemplate(product);
-            }
+            editorFactory.addFromProduct(product);
           };
 
         } //link()

@@ -1,21 +1,34 @@
-<div class="component-header"
-    ng-class="{ 'visible-bottom-rule': isHeaderBottomRuleVisible(factory.selected) }">
-  <div class="attribute-desc">
-    <a ng-click="onBackButton();">
-      <span class="attribute-edit text-nowrap">
-        <i class="fa fa-lg fa-angle-left arrow-icon"></i>
-        <span translate>template.attribute-editor.back-to-list</span>
-      </span>
-    </a>
-    <i class="ml-2 mr-2 fa fa-lg {{ getComponentIcon(factory.selected) }}"></i>
-    <span>
-      {{ ( "template." + factory.selected.type ) | translate }} -
-      {{ factory.selected.label }}
+<div class="component-header" ng-class="{ 'visible-bottom-rule': isHeaderBottomRuleVisible(factory.selected) }">
+  <a ng-click="onBackButton();">
+    <span class="attribute-edit text-nowrap">
+      <i class="fa fa-lg fa-angle-left arrow-icon"></i>
+      <span translate>template.attribute-editor.back-to-list</span>
     </span>
-  </div>
+  </a>
+  <component-icon ng-if="!panelIcon"
+                  icon="{{ getComponentIcon(factory.selected) }}"
+                  type="{{ getComponentIconType(factory.selected) }}"
+                  class="component-icon">
+  </component-icon>
+  <component-icon ng-if="panelIcon"
+                  icon="{{ panelIcon }}"
+                  type="{{ panelIconType }}"
+                  class="component-icon">
+  </component-icon>
+  <span ng-show="!panelTitle">
+    {{ factory.selected && getComponentTitle(factory.selected) | translate }} -
+    {{ factory.selected.label }}
+  </span>
+  <span ng-show="panelTitle">{{ panelTitle }}</span>
 </div>
 <div class="component-container">
+  <template-component-branding></template-component-branding>
   <template-component-financial></template-component-financial>
   <template-component-image></template-component-image>
+  <template-component-slides></template-component-slides>
   <template-component-text></template-component-text>
+  <template-component-video></template-component-video>
+  <template-component-rss></template-component-rss>
+  <template-component-counter></template-component-counter>
+  <template-component-weather></template-component-weather>
 </div>

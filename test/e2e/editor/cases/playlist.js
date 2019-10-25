@@ -1,8 +1,8 @@
 'use strict';
 var expect = require('rv-common-e2e').expect;
-var HomePage = require('./../../launcher/pages/homepage.js');
-var SignInPage = require('./../../launcher/pages/signInPage.js');
-var CommonHeaderPage = require('./../../../../web/bower_components/common-header/test/e2e/pages/commonHeaderPage.js');
+var HomePage = require('./../../common/pages/homepage.js');
+var SignInPage = require('./../../common/pages/signInPage.js');
+var CommonHeaderPage = require('./../../common-header/pages/commonHeaderPage.js');
 var PresentationsListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var PlaceholdersListPage = require('./../pages/placeholdersListPage.js');
@@ -112,10 +112,6 @@ var PlaylistScenarios = function() {
         helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader()).then(function () {
           expect(storeProductsModalPage.getStoreProducts().count()).to.eventually.be.above(0);
         });
-      });
-      
-      it('should hide search categories', function() {
-        expect(storeProductsModalPage.getSearchCategories().count()).to.eventually.equal(0);
       });
 
       it('should search products',function(){

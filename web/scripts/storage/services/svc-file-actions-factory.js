@@ -19,7 +19,9 @@ angular.module('risevision.storage.services')
         };
 
         factory.trashButtonClick = function () {
-          factory.processFilesAction(storage.trash.move, 'delete');
+          return _showBreakLinkWarning().then(function () {
+            factory.processFilesAction(storage.trash.move, 'delete');
+          });
         };
 
         factory.restoreButtonClick = function () {
@@ -58,8 +60,8 @@ angular.module('risevision.storage.services')
               'singular' : 'plural');
 
           var modalInstance = $modal.open({
-            templateUrl: 'confirm-instance/confirm-modal.html',
-            controller: 'confirmInstance',
+            templateUrl: 'partials/components/confirm-modal/confirm-modal.html',
+            controller: 'confirmModalController',
             windowClass: 'modal-custom',
             resolve: {
               confirmationTitle: function () {
@@ -195,8 +197,7 @@ angular.module('risevision.storage.services')
 
         var _showBreakLinkWarning = function () {
           var localStorageKey = 'breakingLinkWarning.hideWarning';
-          var hideWarning = localStorageService.get(localStorageKey) ===
-            'true';
+          var hideWarning = localStorageService.get(localStorageKey) === true;
 
           if (hideWarning) {
             return $q.resolve();

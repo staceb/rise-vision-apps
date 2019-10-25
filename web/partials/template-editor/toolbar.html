@@ -3,28 +3,30 @@
        ng-model="factory.presentation.name" ng-blur="onPresentationNameBlur()" ng-disabled="!isEditingName">
 <div>
   <button id="editNameButton" ng-disabled="isEditingName" type="button" class="edit-name pr-0" ng-click="isEditingName=true">
-    <i class="fa fa-pencil u_margin-left"></i>
+    <streamline-icon class="u_margin-left streamline-component-icon" name="pencil" width="16" height="16"></streamline-icon>
   </button>
-  <button id="deleteButton" ng-disabled="isEditingName" ng-click="confirmDelete()" class="delete-presentation pl-0">
-    <i class="fa fa-trash-o u_margin-left"></i>
+  <button id="deleteButton" ng-disabled="isEditingName || !factory.presentation.id" ng-click="confirmDelete()" class="delete-presentation pl-0">
+    <streamline-icon class="u_margin-left streamline-component-icon" name="trash" width="16" height="16"></streamline-icon>
   </button>
 </div>
 
 <div class="toolbar-right">
-  <button id="saveButtonDesktop" require-role="ce cp"
-          class="btn btn-primary btn-fixed-width u_margin-right hidden-xs"
-          ng-disabled="factory.savingPresentation"
-          ng-click="factory.save()">
-    <strong>
-      {{ factory.savingPresentation ?
-        ( 'common.saving' | translate ) : ( 'common.save' | translate )
-      }}
-    </strong>
-  </button>
-
+  <div id="autoSavingDesktop" class="auto-saving-changes hidden-xs">
+    <div ng-show="!factory.savingPresentation && factory.isUnsaved()">
+      Unsaved changes
+    </div>
+    <div ng-show="factory.savingPresentation">
+      Saving changes...
+    </div>
+    <div ng-show="!factory.savingPresentation && !factory.isUnsaved()">
+      <div>
+        All changes saved <streamline-icon name="checkmark" width="12" height="12"></streamline-icon>
+      </div>
+    </div>
+  </div>
   <button id="publishButtonDesktop" require-role="cp" class="btn btn-primary btn-fixed-width hidden-xs"
-          ng-disabled="hasUnsavedChanges || !factory.isRevised() || factory.savingPresentation"
-          ng-click="factory.publishPresentation()">
-    <strong translate>common.publish</strong>
+          ng-disabled="isPublishDisabled()"
+          ng-click="factory.publish()">
+    Publish To Display
   </button>
 </div>

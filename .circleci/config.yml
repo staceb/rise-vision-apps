@@ -57,6 +57,14 @@ jobs:
           root: ~/
           paths:
             - rise-vision-apps/*
+  test_build:
+    working_directory: ~/rise-vision-apps
+    docker: *BUILDIMAGE
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: 
+          command: NODE_ENV=test npm run ci-build
   test_unit:
     working_directory: ~/rise-vision-apps
     docker: *BUILDIMAGE
@@ -70,12 +78,6 @@ jobs:
           path: ~/rise-vision-apps/reports
       - store_artifacts:
           path: ~/rise-vision-apps/reports
-  e2e_launcher:
-    working_directory: ~/rise-vision-apps
-    docker: *BUILDIMAGE
-    steps:
-      - run_e2e_cases:
-          casesfile: "test/e2e/launcher/launcher.cases.js"
   e2e_schedules:
     working_directory: ~/rise-vision-apps
     docker: *BUILDIMAGE
@@ -88,6 +90,18 @@ jobs:
     steps:
       - run_e2e_cases:
           casesfile: "test/e2e/common/common.cases.js"
+  e2e_common_header:
+    working_directory: ~/rise-vision-apps
+    docker: *BUILDIMAGE
+    steps:
+      - run_e2e_cases:
+          casesfile: "test/e2e/common-header/common-header.cases.js"
+  e2e_registration:
+    working_directory: ~/rise-vision-apps
+    docker: *BUILDIMAGE
+    steps:
+      - run_e2e_cases:
+          casesfile: "test/e2e/registration/registration.cases.js"
   e2e_editor:
     working_directory: ~/rise-vision-apps
     docker: *BUILDIMAGE
@@ -112,12 +126,22 @@ jobs:
     steps:
       - run_e2e_cases:
           casesfile: "test/e2e/template-editor/template-editor.cases.js"
+  e2e_template_editor2:
+    working_directory: ~/rise-vision-apps
+    docker: *BUILDIMAGE
+    steps:
+      - run_e2e_cases:
+          casesfile: "test/e2e/template-editor/template-editor2.cases.js"
+  e2e_template_editor3:
+    working_directory: ~/rise-vision-apps
+    docker: *BUILDIMAGE
+    steps:
+      - run_e2e_cases:
+          casesfile: "test/e2e/template-editor/template-editor3.cases.js"
   test_e2e:
     working_directory: ~/rise-vision-apps
     docker: *BUILDIMAGE
     steps:
-      - attach_workspace:
-          at: ~/
       - run: echo "e2e tests finished"
   deploy_staging:
     working_directory: ~/rise-vision-apps
@@ -194,39 +218,50 @@ workflows:
   test_and_deploy:
     jobs: 
       - dependencies
+      - test_build:
+          requires:
+            - dependencies
       - test_unit:
           requires:
-            - dependencies
-      - e2e_launcher:
-          requires:
-            - dependencies
+            - test_build
       - e2e_schedules:
           requires:
-            - dependencies
+            - test_build
       - e2e_common:
           requires:
-            - dependencies
+            - test_build
+      - e2e_common_header:
+          requires:
+            - test_build
+      - e2e_registration:
+          requires:
+            - test_build
       - e2e_editor:
           requires:
-            - dependencies
+            - test_build
       - e2e_displays:
           requires:
-            - dependencies
+            - test_build
       - e2e_storage:
           requires:
-            - dependencies
+            - test_build
       - e2e_template_editor:
           requires:
-            - dependencies
+            - test_build
+      - e2e_template_editor2:
+          requires:
+            - test_build
       - test_e2e:
           requires:
-            - e2e_launcher
             - e2e_schedules
             - e2e_common
+            - e2e_common_header
+            - e2e_registration
             - e2e_editor
             - e2e_displays
             - e2e_storage
             - e2e_template_editor
+            - e2e_template_editor2
       - deploy_production:
           requires:
             - test_unit
@@ -236,7 +271,7 @@ workflows:
               only: master
       - deploy_staging:
           requires:
-            - dependencies
+            - test_build
           filters:
             branches:
               only: /(feature|fix|chore).*/

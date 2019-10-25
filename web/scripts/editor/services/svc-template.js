@@ -13,7 +13,7 @@ angular.module('risevision.editor.services')
       var createSearchQuery = function (fields, search) {
         var query = '';
         for (var i in fields) {
-          query += 'OR ' + fields[i] + ':~\'' + search + '\' ';
+          query += 'OR ' + fields[i] + ':~\"' + search + '\" ';
         }
         query = query.substring(3);
         return query.trim();

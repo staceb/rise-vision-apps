@@ -6,7 +6,7 @@ describe('controller: display details', function() {
 
   beforeEach(module('risevision.displays.services'));
   beforeEach(module('risevision.displays.controllers'));
-  beforeEach(module(mockTranlate()));
+  beforeEach(module(mockTranslate()));
   beforeEach(module(function ($provide) {
     $provide.service('$q', function() {return Q;});
     $provide.service('displayFactory', function() {
@@ -458,10 +458,10 @@ describe('controller: display details', function() {
       $scope.display = { playerProAuthorized: false };
     });
 
-    it('should return false if it is an unsupported player', function () {
+    it('should return true if it is an unsupported player (the restriction was removed)', function () {
       sandbox.stub(playerProFactory, 'isUnsupportedPlayer').returns(true);
 
-      expect($scope.isProToggleEnabled()).to.be.false;
+      expect($scope.isProToggleEnabled()).to.be.true;
     });
 
     it('should return true if playerProAuthorized = true', function () {

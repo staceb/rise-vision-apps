@@ -21,7 +21,7 @@ describe('directive: artboard-presentation', function() {
 
   beforeEach(module('risevision.editor.services'));
   beforeEach(module('risevision.editor.directives'));
-  beforeEach(module(mockTranlate()));
+  beforeEach(module(mockTranslate()));
   beforeEach(module(function ($provide) {
     $provide.service('editorFactory', function() {
       return {
@@ -88,7 +88,7 @@ describe('directive: artboard-presentation', function() {
       var zoomOutSpy = sinon.spy(artboardFactory,'zoomOut')
       var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
       $scope.$apply();
-      element.triggerHandler({type:'mousewheel',ctrlKey:true,pageX:30,pageY:30, originalEvent: {detail:-130}});
+      element.triggerHandler({type:'mousewheel', ctrlKey:true,pageX:30,pageY:30, originalEvent: new CustomEvent('dummy',{detail:-130})});
       $scope.$apply();
       zoomOutSpy.should.have.been.called;
     });
@@ -97,7 +97,7 @@ describe('directive: artboard-presentation', function() {
       var zoomInSpy = sinon.spy(artboardFactory,'zoomIn')
       var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
       $scope.$apply();
-      element.triggerHandler({type:'mousewheel',ctrlKey:true,pageX:30,pageY:30, originalEvent: {detail:0}});
+      element.triggerHandler({type:'mousewheel',ctrlKey:true,pageX:30,pageY:30, originalEvent: new CustomEvent('dummy',{detail:0})});
       $scope.$apply();
       zoomInSpy.should.have.been.called;
     });
@@ -163,7 +163,7 @@ describe('directive: artboard-presentation', function() {
 
 
     it('should not show empty state for Templates',function(){
-      $stateParams.copyPresentation = true;
+      $stateParams.copyOf = true;
       var element = $compile("<artboard-presentation></artboard-presentation>")($scope);
       $scope.$apply();
       expect(element.scope().showEmptyState()).to.be.false;

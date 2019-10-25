@@ -14,7 +14,7 @@
 
   angular.module('risevision.common.i18n.config', [])
     .constant('LOCALES_PREFIX',
-      'bower_components/common-header/dist/locales/translation_')
+      'tmp/locales/translation_')
     .constant('LOCALES_SUFIX', '.json');
 
   angular.module('risevision.common.config')
@@ -44,7 +44,10 @@
     .value('OAUTH_PUBLIC_KEY', 'EJMI-lB9hB55OYEsYmjXDNfRGoY')
     .value('CHARGEBEE_TEST_SITE', 'risevision-test')
     .value('CHARGEBEE_PROD_SITE', 'risevision-test')
+    .value('CHARGEBEE_PLANS_USE_PROD', 'false')
     .value('STRIPE_PROD_KEY', 'pk_test_GrMIAHSoqhaik4tcHepsxjOR')
-    .value('STRIPE_TEST_KEY', 'pk_test_GrMIAHSoqhaik4tcHepsxjOR');
+    .value('STRIPE_TEST_KEY', 'pk_test_GrMIAHSoqhaik4tcHepsxjOR')
+    .value('HTML_TEMPLATE_URL', 'https://widgets.risevision.com/staging/templates/PRODUCT_CODE/src/template.html')
+    .value('BLUEPRINT_URL', 'https://widgets.risevision.com/staging/templates/PRODUCT_CODE/blueprint.json');
 
 })(angular);

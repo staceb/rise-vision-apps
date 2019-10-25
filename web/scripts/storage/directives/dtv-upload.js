@@ -7,10 +7,10 @@
       var GOOGLES_REQUIRED_CHUNK_MULTIPLE = 256 * 1024;
       return GOOGLES_REQUIRED_CHUNK_MULTIPLE * 4 * 25;
     }()))
-    .directive('upload', ['$rootScope', '$timeout', '$translate', 'storage',
-      'FileUploader', 'UploadURIService', 'STORAGE_UPLOAD_CHUNK_SIZE',
-      function ($rootScope, $timeout, $translate, storage, FileUploader,
-        UploadURIService, STORAGE_UPLOAD_CHUNK_SIZE) {
+    .directive('upload', ['$rootScope', '$timeout', '$translate', '$q', 'storage',
+      'FileUploader', 'UploadURIService', 'STORAGE_UPLOAD_CHUNK_SIZE', 'uploadOverwriteWarning',
+      function ($rootScope, $timeout, $translate, $q, storage, FileUploader,
+        UploadURIService, STORAGE_UPLOAD_CHUNK_SIZE, uploadOverwriteWarning) {
         return {
           restrict: 'E',
           scope: {
@@ -18,6 +18,7 @@
           },
           templateUrl: 'partials/storage/upload-panel.html',
           link: function ($scope) {
+            var confirmOverwriteModal;
             var videoTypesNotSupported = ['mov', 'wmv', 'm4v', 'flv', 'avi', 'ogg', 'ogv'];
             var imageTypesNotSupported = ['tiff', 'tif'];
 
@@ -88,6 +89,10 @@
               }
             }
 
+            FileUploader.onAddingFiles = function () {
+              uploadOverwriteWarning.resetConfirmation();
+            };
+
             FileUploader.onAfterAddingFile = function (fileItem) {
               console.info('onAfterAddingFile', fileItem.file.name);
 
@@ -107,10 +112,14 @@
                   $rootScope.$emit('refreshSubscriptionStatus',
                     'trial-available');
 
-                  fileItem.url = resp;
-                  fileItem.chunkSize =
-                    STORAGE_UPLOAD_CHUNK_SIZE;
-                  FileUploader.uploadItem(fileItem);
+                  uploadOverwriteWarning.checkOverwrite(resp).then(function () {
+                    fileItem.url = resp.message;
+                    fileItem.chunkSize =
+                      STORAGE_UPLOAD_CHUNK_SIZE;
+                    FileUploader.uploadItem(fileItem);
+                  }).catch(function () {
+                    FileUploader.removeFromQueue(fileItem);
+                  });
                 })
                 .then(null, function (resp) {
                   console.log('getURI error', resp);
@@ -158,14 +167,12 @@
               };
 
               //retrieve to generate thumbnail
-              storage.files.get({
-                  file: item.file.name
-                })
-                .then(function (resp) {
-                  var file = resp && resp.files && resp.files[0] ?
-                    resp.files[0] : baseFile;
+              storage.refreshFileMetadata(item.file.name)
+                .then(function (file) {
+                  console.log('Add file to list of available files', file);
                   $scope.filesFactory.addFile(file);
                 }, function (err) {
+                  console.log('Error refreshing metadata', item.file.name, err);
                   $scope.filesFactory.addFile(baseFile);
                 })
                 .finally(function () {

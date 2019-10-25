@@ -1,26 +1,40 @@
 'use strict';
 
 angular.module('risevision.template-editor.services')
-  .constant('BLUEPRINT_URL', 'https://widgets.risevision.com/stable/templates/PRODUCT_CODE/blueprint.json')
-  .constant('HTML_TEMPLATE_URL', 'https://widgets.risevision.com/stable/templates/PRODUCT_CODE/src/template.html')
   .constant('HTML_TEMPLATE_DOMAIN', 'https://widgets.risevision.com')
-  .factory('templateEditorFactory', ['$q', '$log', '$state', '$rootScope', '$http', 'messageBox', 'presentation',
-    'processErrorCode', 'userState', 'checkTemplateAccess', '$modal', 'plansFactory', 'store',
-    'HTML_PRESENTATION_TYPE', 'BLUEPRINT_URL', 'REVISION_STATUS_REVISED', 'REVISION_STATUS_PUBLISHED',
-    function ($q, $log, $state, $rootScope, $http, messageBox, presentation, processErrorCode, userState,
-      checkTemplateAccess, $modal, plansFactory, store,
-      HTML_PRESENTATION_TYPE, BLUEPRINT_URL, REVISION_STATUS_REVISED, REVISION_STATUS_PUBLISHED) {
-      var factory = {};
-
-      var _setPresentation = function (presentation) {
-        presentation.templateAttributeData =
-          _parseJSON(presentation.templateAttributeData) || {};
-
-        factory.presentation = presentation;
-        factory.selected = null;
+  .factory('templateEditorFactory', ['$q', '$log', '$state', '$rootScope', 'presentation',
+    'processErrorCode', 'userState', 'checkTemplateAccess', '$modal', 'scheduleFactory', 'plansFactory',
+    'templateEditorUtils', 'brandingFactory', 'blueprintFactory', 'financialLicenseFactory', 'presentationTracker',
+    'HTML_PRESENTATION_TYPE', 'REVISION_STATUS_REVISED', 'REVISION_STATUS_PUBLISHED',
+    function ($q, $log, $state, $rootScope, presentation, processErrorCode, userState,
+      checkTemplateAccess, $modal, scheduleFactory, plansFactory, templateEditorUtils, brandingFactory,
+      blueprintFactory, financialLicenseFactory,
+      presentationTracker, HTML_PRESENTATION_TYPE, REVISION_STATUS_REVISED, REVISION_STATUS_PUBLISHED) {
+      var factory = {
+        hasUnsavedChanges: false
       };
 
-      var _getPresentationForUpdate = function() {
+      var _setPresentation = function (presentation, isUpdate) {
+
+        if (isUpdate) {
+          factory.presentation.id = presentation.id;
+          factory.presentation.companyId = presentation.companyId;
+          factory.presentation.revisionStatus = presentation.revisionStatus;
+          factory.presentation.revisionStatusName = presentation.revisionStatusName;
+          factory.presentation.creationDate = presentation.creationDate;
+          factory.presentation.changeDate = presentation.changeDate;
+          factory.presentation.changedBy = presentation.changedBy;
+        } else {
+          presentation.templateAttributeData =
+            _parseJSON(presentation.templateAttributeData) || {};
+
+          factory.presentation = presentation;
+        }
+
+        $rootScope.$broadcast('presentationUpdated');
+      };
+
+      var _getPresentationForUpdate = function () {
         var presentationVal = JSON.parse(JSON.stringify(factory.presentation));
 
         presentationVal.templateAttributeData =
@@ -29,11 +43,11 @@ angular.module('risevision.template-editor.services')
         return presentationVal;
       };
 
-      var _openExpiredModal = function() {
+      var _openExpiredModal = function () {
         var modalInstance = $modal.open({
-          templateUrl: 'partials/template-editor/expired-modal.html',
-          controller: 'confirmInstance',
-          windowClass: 'template-editor-message-box',
+          templateUrl: 'partials/template-editor/more-info-modal.html',
+          controller: 'confirmModalController',
+          windowClass: 'madero-style centered-modal',
           resolve: {
             confirmationTitle: function () {
               return 'template.expired-modal.expired-title';
@@ -53,44 +67,17 @@ angular.module('risevision.template-editor.services')
         });
       };
 
-      var _checkTemplateAccess = function(productCode) {
+      var _checkTemplateAccess = function (productCode) {
         checkTemplateAccess(productCode)
-          .catch(function() {
+          .catch(function () {
             _openExpiredModal();
           });
       };
 
-      factory.createFromProductId = function (productId) {
-        return store.product.get(productId)
-          .then(function (productDetails) {
-            if (productDetails.productCode) {
-              return $q.resolve(productDetails);
-            }
-            else {
-              return $q.reject({ result: { error: { message: 'Invalid Product Id' } } });
-            }
-          })
-          .then(function (productDetails) {
-            return checkTemplateAccess(productDetails.productCode)
-            .then(function () {
-              return factory.createFromTemplate(productDetails);
-            })
-            .catch(function (err) {
-              plansFactory.showPlansModal('editor-app.templatesLibrary.access-warning');
-
-              $state.go('apps.editor.list');
-              $log.error('checkTemplateAccess', err);
-              return $q.reject(err);
-            });
-          }, function (err) {
-            _showErrorMessage('add', err);
-            $state.go('apps.editor.list');
-            return $q.reject(err);
-          });
-      };
-
-      factory.createFromTemplate = function (productDetails) {
+      factory.addFromProduct = function (productDetails) {
         _clearMessages();
+
+        factory.selected = null;
 
         factory.presentation = {
           id: undefined,
@@ -103,11 +90,11 @@ angular.module('risevision.template-editor.services')
           isStoreProduct: false
         };
 
-        return factory.loadBlueprintData(factory.presentation.productCode)
-          .then(function (blueprintData) {
-            factory.blueprintData = blueprintData.data;
+        presentationTracker('HTML Template Copied', productDetails.productCode, productDetails.name);
 
-            $state.go('apps.editor.templates.add');
+        return blueprintFactory.load(factory.presentation.productCode)
+          .then(function () {
+            financialLicenseFactory.checkFinancialDataLicenseMessage();
           })
           .then(null, function (e) {
             _showErrorMessage('add', e);
@@ -116,60 +103,74 @@ angular.module('risevision.template-editor.services')
       };
 
       factory.addPresentation = function () {
-        var deferred = $q.defer(),
-          presentationVal = _getPresentationForUpdate();
+        var presentationVal = _getPresentationForUpdate();
 
-        _clearMessages();
-
-        //show loading spinner
-        factory.loadingPresentation = true;
-        factory.savingPresentation = true;
-
-        presentation.add(presentationVal)
+        return presentation.add(presentationVal)
           .then(function (resp) {
             if (resp && resp.item && resp.item.id) {
               $rootScope.$broadcast('presentationCreated');
 
-              factory.presentation.id = resp.item.id;
-              $state.go('apps.editor.templates.add', {
-                presentationId: resp.item.id
+              presentationTracker('Presentation Created', resp.item.id, resp.item.name);
+
+              $state.go('apps.editor.templates.edit', {
+                presentationId: resp.item.id,
+                productId: undefined
+              }, {
+                notify: false,
+                location: 'replace'
               });
 
-              deferred.resolve(resp.item.id);
+              return $q.resolve(resp.item.id);
             }
-          })
-          .then(null, function (e) {
-            _showErrorMessage('add', e);
-
-            deferred.reject(e);
-          })
-          .finally(function () {
-            factory.loadingPresentation = false;
-            factory.savingPresentation = false;
           });
-
-        return deferred.promise;
       };
 
       factory.updatePresentation = function () {
+        if (!factory.hasUnsavedChanges) {
+          //Factory has no Changes.
+          return $q.resolve();
+        }
+
+        var presentationVal = _getPresentationForUpdate();
+
+        return presentation.update(presentationVal.id, presentationVal)
+          .then(function (resp) {
+            presentationTracker('Presentation Updated', resp.item.id, resp.item.name);
+
+            _setPresentation(resp.item, true);
+
+            return $q.resolve(resp.item.id);
+          });
+      };
+
+      factory.isUnsaved = function () {
+        return !!(factory.hasUnsavedChanges || brandingFactory.hasUnsavedChanges);
+      };
+
+      factory.save = function () {
         var deferred = $q.defer(),
-          presentationVal = _getPresentationForUpdate();
+          saveFunction;
+
+        if (factory.presentation.id) {
+          saveFunction = factory.updatePresentation;
+        } else {
+          saveFunction = factory.addPresentation;
+        }
 
         _clearMessages();
 
-        //show loading spinner
+        //show spinner
         factory.loadingPresentation = true;
         factory.savingPresentation = true;
 
-        presentation.update(presentationVal.id, presentationVal)
-          .then(function (resp) {
-            _setPresentation(resp.item);
-            $rootScope.$broadcast('presentationUpdated');
-
-            deferred.resolve(resp.item.id);
+        $q.all([brandingFactory.saveBranding(), saveFunction()])
+          .then(function () {
+            deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('update', e);
+            // If adding, and there is a Presentation Id it means save was successful
+            // and the failure was to update Branding
+            _showErrorMessage(factory.presentation.id ? 'update' : 'add', e);
 
             deferred.reject(e);
           })
@@ -181,13 +182,6 @@ angular.module('risevision.template-editor.services')
         return deferred.promise;
       };
 
-      factory.save = function () {
-        if (factory.presentation.id) {
-          return factory.updatePresentation();
-        } else {
-          return factory.addPresentation();
-        }
-      };
 
       factory.getPresentation = function (presentationId) {
         var deferred = $q.defer();
@@ -201,10 +195,9 @@ angular.module('risevision.template-editor.services')
           .then(function (result) {
             _setPresentation(result.item);
 
-            return factory.loadBlueprintData(factory.presentation.productCode);
+            return blueprintFactory.load(factory.presentation.productCode);
           })
-          .then(function (blueprintData) {
-            factory.blueprintData = blueprintData.data;
+          .then(function () {
             _checkTemplateAccess(factory.presentation.productCode);
 
             deferred.resolve();
@@ -212,7 +205,7 @@ angular.module('risevision.template-editor.services')
           .then(null, function (e) {
             _showErrorMessage('get', e);
             factory.presentation = null;
-            factory.blueprintData = null;
+            blueprintFactory.blueprintData = null;
 
             deferred.reject(e);
           })
@@ -221,12 +214,6 @@ angular.module('risevision.template-editor.services')
           });
 
         return deferred.promise;
-      };
-
-      factory.loadBlueprintData = function (productCode) {
-        var url = BLUEPRINT_URL.replace('PRODUCT_CODE', productCode);
-
-        return $http.get(url);
       };
 
       factory.deletePresentation = function () {
@@ -240,8 +227,11 @@ angular.module('risevision.template-editor.services')
 
         presentation.delete(factory.presentation.id)
           .then(function () {
-            factory.presentation = {};
+            presentationTracker('Presentation Deleted', factory.presentation.id, factory.presentation.name);
+
             $rootScope.$broadcast('presentationDeleted');
+
+            factory.presentation = {};
 
             $state.go('apps.editor.list');
             deferred.resolve();
@@ -262,7 +252,7 @@ angular.module('risevision.template-editor.services')
         return factory.presentation.revisionStatusName === REVISION_STATUS_REVISED;
       };
 
-      factory.publishPresentation = function () {
+      factory.publish = function () {
         var deferred = $q.defer();
 
         _clearMessages();
@@ -271,13 +261,8 @@ angular.module('risevision.template-editor.services')
         factory.loadingPresentation = true;
         factory.savingPresentation = true;
 
-        presentation.publish(factory.presentation.id)
+        $q.all([brandingFactory.publishBranding(), _publishPresentation()])
           .then(function () {
-            factory.presentation.revisionStatusName = REVISION_STATUS_PUBLISHED;
-            factory.presentation.changeDate = new Date();
-            factory.presentation.changedBy = userState.getUsername();
-            $rootScope.$broadcast('presentationPublished');
-
             deferred.resolve();
           })
           .then(null, function (e) {
@@ -291,6 +276,81 @@ angular.module('risevision.template-editor.services')
           });
 
         return deferred.promise;
+      };
+
+      factory.getAttributeData = function (componentId, attributeKey) {
+        if (!componentId) {
+          return null;
+        }
+
+        var component = _componentFor(componentId, false);
+
+        // if the attributeKey is not provided, it returns the full component structure
+        return attributeKey ? component[attributeKey] : component;
+      };
+
+      factory.setAttributeData = function (componentId, attributeKey, value) {
+        if (!componentId) {
+          return null;
+        }
+
+        var component = _componentFor(componentId, true);
+
+        component[attributeKey] = value;
+      };
+
+      // updateAttributeData: do not update the object on getAttributeData
+      // or it will unnecessarily trigger hasUnsavedChanges = true
+      var _componentFor = function (componentId, updateAttributeData) {
+        var attributeData = factory.presentation.templateAttributeData;
+        var component;
+
+        if (attributeData.components) {
+          component = _.find(attributeData.components, {
+            id: componentId
+          });
+        } else if (updateAttributeData) {
+          attributeData.components = [];
+        }
+
+        if (!component) {
+          component = {
+            id: componentId
+          };
+
+          if (updateAttributeData) {
+            attributeData.components.push(component);
+          }
+        }
+
+        return component;
+      };
+
+      var _publishPresentation = function () {
+        if (!factory.isRevised()) {
+          // template is already published
+          return $q.resolve();
+        }
+
+        return presentation.publish(factory.presentation.id)
+          .then(function () {
+            presentationTracker('Presentation Published', factory.presentation.id, factory.presentation.name);
+
+            factory.presentation.revisionStatusName = REVISION_STATUS_PUBLISHED;
+            factory.presentation.changeDate = new Date();
+            factory.presentation.changedBy = userState.getUsername();
+            $rootScope.$broadcast('presentationPublished');
+
+            return _createFirstSchedule();
+          });
+      };
+
+      var _createFirstSchedule = function () {
+        return scheduleFactory.createFirstSchedule(factory.presentation.id, factory.presentation.name, factory
+            .presentation.presentationType)
+          .catch(function (err) {
+            return err === 'Already have Schedules' ? $q.resolve() : $q.reject(err);
+          });
       };
 
       var _parseJSON = function (json) {
@@ -308,7 +368,7 @@ angular.module('risevision.template-editor.services')
 
         $log.error(factory.errorMessage, e);
 
-        messageBox(factory.errorMessage, factory.apiError, null, 'template-editor-message-box', 'partials/template-editor/message-box.html');
+        templateEditorUtils.showMessageWindow(factory.errorMessage, factory.apiError);
       };
 
       var _clearMessages = function () {
@@ -326,9 +386,6 @@ angular.module('risevision.template-editor.services')
       };
 
       _init();
-
-      $log.info('Current user is: ' + userState.getUsername());
-      $log.info(factory.presentation);
 
       return factory;
     }

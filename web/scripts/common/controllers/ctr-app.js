@@ -20,7 +20,8 @@ angular.module('risevision.apps.controllers')
           'apps.editor.home',
           'apps.editor.list',
           'apps.editor.workspace.artboard',
-          'apps.editor.workspace.htmleditor'
+          'apps.editor.workspace.htmleditor',
+          'apps.editor.templates.edit'
         ]
       }, {
         title: 'Schedules',

@@ -4,7 +4,6 @@ var StoreProductsModalPage = function() {
   var modalTitle = element(by.id('storeModalTitle'));
   var searchFilter = element(by.tagName('search-filter'));
   var searchInput = element(by.id('storeProductsSearchInput'));
-  var searchCategories = element.all(by.repeater('category in paymentCategories'));
 
   var storeProductsLoader = element(by.css('#addStoreProductModal .spinner-backdrop'));
   var productListLoader = element(by.xpath('//ul[@spinner-key="product-list-loader"]'));
@@ -28,8 +27,6 @@ var StoreProductsModalPage = function() {
 
   var addWidgetByUrlButton = element(by.id('addWidgetByUrl'));
   var closeButton = element(by.css('.close'));
-
-  var addExampleTemplate = element(by.id('example-financial-template'));
 
   this.getFreeProducts = function() {
     return freeProducts;
@@ -62,10 +59,6 @@ var StoreProductsModalPage = function() {
   this.getSearchInput = function() {
     return searchInput;
   };
-  
-  this.getSearchCategories = function() {
-    return searchCategories;
-  }
 
   this.getStoreProductsList = function() {
     return storeProductsList;
@@ -131,8 +124,8 @@ var StoreProductsModalPage = function() {
     return closeButton;
   };
 
-  this.getAddExampleTemplate = function() {
-    return addExampleTemplate;
+  this.getAddButtonById = function(id) {
+    return element(by.id(id));
   };
 };
 

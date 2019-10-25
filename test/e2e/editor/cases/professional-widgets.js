@@ -1,17 +1,17 @@
 'use strict';
 var expect = require('rv-common-e2e').expect;
-var HomePage = require('./../../launcher/pages/homepage.js');
-var SignInPage = require('./../../launcher/pages/signInPage.js');
-var CommonHeaderPage = require('./../../../../web/bower_components/common-header/test/e2e/pages/commonHeaderPage.js');
+var HomePage = require('./../../common/pages/homepage.js');
+var SignInPage = require('./../../common/pages/signInPage.js');
+var CommonHeaderPage = require('./../../common-header/pages/commonHeaderPage.js');
 var PresentationsListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var PlaceholderPlaylistPage = require('./../pages/placeholderPlaylistPage.js');
 var StoreProductsModalPage = require('./../pages/storeProductsModalPage.js');
-var PlansModalPage = require('./../../common/pages/plansModalPage.js');
+var PricingComponentModalPage = require('./../../registration/pages/pricingComponentModalPage.js');
 var PresentationItemModalPage = require('./../pages/presentationItemModalPage.js');
 var PresentationModalPage = require('./../../schedules/pages/presentationModalPage.js');
 var TwitterSettingsPage = require('./../pages/twitterSettingsPage.js');
-var AutoScheduleModalPage = require('./../../editor/pages/autoScheduleModalPage.js');
+var AutoScheduleModalPage = require('./../../schedules/pages/autoScheduleModalPage.js');
 
 var helper = require('rv-common-e2e').helper;
 
@@ -27,7 +27,7 @@ var ProfessionalWidgetsScenarios = function() {
     var workspacePage;
     var placeholderPlaylistPage;
     var storeProductsModalPage;
-    var plansModalPage;
+    var pricingComponentModalPage;
     var presentationItemModalPage;
     var presentationModalPage;
     var twitterSettingsPage;
@@ -38,14 +38,6 @@ var ProfessionalWidgetsScenarios = function() {
       signInPage.signIn();
     }
 
-    function createSubCompany() {
-      commonHeaderPage.createSubCompany(subCompanyName);
-    }
-
-    function selectSubCompany() {
-      commonHeaderPage.selectSubCompany(subCompanyName);
-    }
-
     before(function () {
       homepage = new HomePage();
       signInPage = new SignInPage();
@@ -54,20 +46,20 @@ var ProfessionalWidgetsScenarios = function() {
       workspacePage = new WorkspacePage();
       placeholderPlaylistPage = new PlaceholderPlaylistPage();
       storeProductsModalPage = new StoreProductsModalPage();
-      plansModalPage = new PlansModalPage();
+      pricingComponentModalPage = new PricingComponentModalPage();
       presentationItemModalPage = new PresentationItemModalPage();
       presentationModalPage = new PresentationModalPage();
       twitterSettingsPage = new TwitterSettingsPage();
       autoScheduleModalPage = new AutoScheduleModalPage();
 
       loadEditor();
-      createSubCompany();
-      selectSubCompany();
+      commonHeaderPage.createUnsubscribedSubCompany(subCompanyName);
+      commonHeaderPage.selectSubCompany(subCompanyName);
     });
 
     after(function() {
       loadEditor();
-      commonHeaderPage.deleteAllSubCompanies();
+      commonHeaderPage.deleteCurrentCompany(subCompanyName);
     });
 
     before('Add a Blank Presentation: ', function() {
@@ -121,14 +113,13 @@ var ProfessionalWidgetsScenarios = function() {
       it('should show Plans Modal', function() {
         storeProductsModalPage.getUnlockButton().get(0).click();
 
-        helper.wait(plansModalPage.getPlansModal(), 'Plans Modal');
-        helper.wait(plansModalPage.getStartTrialBasicButton(), 'Basic Plan Start Trial');
+        helper.wait(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button');
       });
 
       it('should start a Trial',function(){
-        plansModalPage.getStartTrialBasicButton().click();
+        pricingComponentModalPage.getSubscribeButton().click();
 
-        helper.waitDisappear(plansModalPage.getPlansModal(), 'Plans Modal');
+        helper.waitDisappear(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button Disappear');
       });
 
       it('should unlock Professional Widgets', function() {

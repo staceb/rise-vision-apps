@@ -127,7 +127,9 @@ angular.module('risevision.editor.services')
           if (cachedGadget) {
             items[i].gadget = cachedGadget;
           } else {
-            nonCachedIds.push(items[i].objectReference);
+            if (nonCachedIds.indexOf(items[i].objectReference) === -1) {
+              nonCachedIds.push(items[i].objectReference);
+            }
           }
         }
         if (nonCachedIds.length === 0) {
@@ -190,7 +192,7 @@ angular.module('risevision.editor.services')
                 for (var i = 0; i < statusItems.length; i++) {
                   var statusItem = statusItems[i];
                   var gadget = productCodeItemMap[statusItem.pc].gadget;
-                  if (!statusItem.isSubscribed && widgetUtils.isProfessionalWidget(gadget.id) && 
+                  if (!statusItem.isSubscribed && widgetUtils.isProfessionalWidget(gadget.id) &&
                     playerLicenseFactory.hasProfessionalLicenses()) {
                     gadget.isSubscribed = true;
                     gadget.subscriptionStatus = 'Subscribed';
@@ -198,7 +200,7 @@ angular.module('risevision.editor.services')
                   } else {
                     gadget.isSubscribed = statusItem.isSubscribed;
                     gadget.subscriptionStatus = statusItem.status;
-                    gadget.isLicensed = false;                 
+                    gadget.isLicensed = false;
                   }
                   gadget.expiry = statusItem.expiry;
                   gadget.trialPeriod = statusItem.trialPeriod;

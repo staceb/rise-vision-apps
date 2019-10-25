@@ -89,7 +89,8 @@ angular.module('risevision.displays.controllers')
       };
 
       $scope.isProAvailable = function () {
-        return playerLicenseFactory.hasProfessionalLicenses() && $scope.getProLicenseCount() > 0 && !$scope.areAllProLicensesUsed();
+        return playerLicenseFactory.hasProfessionalLicenses() && $scope.getProLicenseCount() > 0 && !$scope
+          .areAllProLicensesUsed();
       };
 
       $scope.isProSupported = function () {
@@ -99,15 +100,15 @@ angular.module('risevision.displays.controllers')
       };
 
       $scope.isProToggleEnabled = function () {
-        return ($scope.display && $scope.display.playerProAuthorized) || ($scope.isProSupported() &&
-          ($scope.areAllProLicensesUsed() ? !currentPlanFactory.currentPlan.isPurchasedByParent : true));
+        return ($scope.display && $scope.display.playerProAuthorized) ||
+          ($scope.areAllProLicensesUsed() ? !currentPlanFactory.currentPlan.isPurchasedByParent : true);
       };
 
       $scope.confirmDelete = function () {
         $scope.modalInstance = $modal.open({
           template: $templateCache.get(
-            'confirm-instance/confirm-modal.html'),
-          controller: 'confirmInstance',
+            'partials/components/confirm-modal/confirm-modal.html'),
+          controller: 'confirmModalController',
           windowClass: 'modal-custom',
           resolve: {
             confirmationTitle: function () {
@@ -132,8 +133,8 @@ angular.module('risevision.displays.controllers')
         } else {
           $scope.modalInstance = $modal.open({
             template: $templateCache.get(
-              'confirm-instance/confirm-modal.html'),
-            controller: 'confirmInstance',
+              'partials/components/confirm-modal/confirm-modal.html'),
+            controller: 'confirmModalController',
             windowClass: 'modal-custom',
             resolve: {
               confirmationTitle: function () {

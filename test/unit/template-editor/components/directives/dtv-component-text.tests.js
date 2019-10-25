@@ -13,7 +13,7 @@ describe('directive: templateComponentText', function() {
   beforeEach(module('risevision.template-editor.controllers'));
   beforeEach(module('risevision.template-editor.services'));
   beforeEach(module('risevision.editor.services'));
-  beforeEach(module(mockTranlate()));
+  beforeEach(module(mockTranslate()));
   beforeEach(module(function ($provide) {
     $provide.service('templateEditorFactory', function() {
       return factory;
@@ -28,6 +28,7 @@ describe('directive: templateComponentText', function() {
     $scope.setAttributeData = sinon.stub();
 
     element = $compile("<template-component-text></template-component-text>")($scope);
+    $scope = element.scope();
     $scope.$digest();
   }));
 
@@ -40,7 +41,7 @@ describe('directive: templateComponentText', function() {
     var directive = $scope.registerDirective.getCall(0).args[0];
     expect(directive).to.be.ok;
     expect(directive.type).to.equal('rise-text');
-    expect(directive.iconType).to.equal('svg');
+    expect(directive.iconType).to.equal('streamline');
     expect(directive.icon).to.exist;
     expect(directive.show).to.be.a('function');
   });
@@ -49,7 +50,7 @@ describe('directive: templateComponentText', function() {
     var directive = $scope.registerDirective.getCall(0).args[0];
     var sampleValue = "test text";
 
-    $scope.getAttributeData = function() {
+    $scope.getAvailableAttributeData = function() {
       return sampleValue;
     }
 
@@ -63,7 +64,7 @@ describe('directive: templateComponentText', function() {
     var directive = $scope.registerDirective.getCall(0).args[0];
     var sampleValue = "test text";
 
-    $scope.getAttributeData = function() {
+    $scope.getAvailableAttributeData = function() {
       return sampleValue;
     }
 

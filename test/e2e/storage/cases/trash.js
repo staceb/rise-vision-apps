@@ -1,11 +1,12 @@
 'use strict';
 var expect = require('rv-common-e2e').expect;
-var HomePage = require('./../../launcher/pages/homepage.js');
-var SignInPage = require('./../../launcher/pages/signInPage.js');
-var CommonHeaderPage = require('./../../../../web/bower_components/common-header/test/e2e/pages/commonHeaderPage.js');
+var HomePage = require('./../../common/pages/homepage.js');
+var SignInPage = require('./../../common/pages/signInPage.js');
+var CommonHeaderPage = require('./../../common-header/pages/commonHeaderPage.js');
 var helper = require('rv-common-e2e').helper;
 var StorageHomePage = require('./../pages/storageHomePage.js');
 var FilesListPage = require('./../pages/filesListPage.js');
+var StorageSelectorModalPage = require('./../pages/storageSelectorModalPage.js');
 
 var TrashScenarios = function() {
 
@@ -16,6 +17,7 @@ var TrashScenarios = function() {
     var commonHeaderPage;
     var storageHomePage;
     var filesListPage;
+    var storageSelectorModalPage;
 
     before(function () {
       homepage = new HomePage();
@@ -23,6 +25,7 @@ var TrashScenarios = function() {
       commonHeaderPage = new CommonHeaderPage();
       storageHomePage = new StorageHomePage();
       filesListPage = new FilesListPage();
+      storageSelectorModalPage = new StorageSelectorModalPage();
     });
 
     describe('Given a user who wants to delete a file forever', function () {
@@ -37,6 +40,13 @@ var TrashScenarios = function() {
         //upload sample file       
         var uploadFilePath = process.cwd() + '/bower.json';
         storageHomePage.getUploadInput().sendKeys(uploadFilePath);
+
+        storageSelectorModalPage.getOverwriteConfirmationModal().isPresent().then(function(isDisplayed) {
+          if (isDisplayed) {
+            helper.clickWhenClickable(storageSelectorModalPage.getOverwriteFilesButton(),'Keep Files button');
+            helper.waitDisappear(storageSelectorModalPage.getOverwriteConfirmationModal(), 'Overwrite Confirmation');            
+          }
+        });
 
         //wait upload to finish        
         helper.waitDisappear(storageHomePage.getUploadPanel(), 'Storage Upload Panel');
@@ -61,8 +71,18 @@ var TrashScenarios = function() {
         expect(storageHomePage.getMoveToTrashButton().isEnabled()).to.eventually.be.true;
       });
 
-      it('should delete the file',function(){
+      it('should show break file link warning',function(){
         storageHomePage.getMoveToTrashButton().click();
+
+        helper.wait(storageHomePage.getConfirmBreakLinkModal(), 'Confirm Break Link Modal');
+
+        expect(storageHomePage.getConfirmBreakLinkModal().isDisplayed()).to.eventually.be.true;
+      });
+
+      it('should delete the file',function(){
+        storageHomePage.getConfirmBreakLinkButton().click();
+
+        helper.waitDisappear(storageHomePage.getConfirmBreakLinkModal(), 'Confirm Break Link Modal');
 
         helper.waitDisappear(storageHomePage.getPendingOperationsPanel(), 'Pending Operations Panel');
 
@@ -113,6 +133,11 @@ var TrashScenarios = function() {
         //delete file
         filesListPage.getFileItems().get(0).click();
         storageHomePage.getMoveToTrashButton().click();
+
+        helper.wait(storageHomePage.getConfirmBreakLinkModal(), 'Confirm Break Link Modal');
+        storageHomePage.getConfirmBreakLinkButton().click();
+        helper.waitDisappear(storageHomePage.getConfirmBreakLinkModal(), 'Confirm Break Link Modal');
+
         helper.waitDisappear(storageHomePage.getPendingOperationsPanel(), 'Pending Operations Panel');
 
         //open Trash

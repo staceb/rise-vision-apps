@@ -1,4 +1,5 @@
 'use strict';
+
 angular.module('risevision.apps', [
     'ui.router',
     'ngTouch',
@@ -8,14 +9,14 @@ angular.module('risevision.apps', [
     'slugifier',
     'ngTagsInput',
     'ngStorage',
+    'ngMessages',
     'risevision.common.header',
-    'risevision.common.header.templates',
     'risevision.common.components.last-modified',
     'risevision.common.components.loading',
     'risevision.common.components.search-filter',
     'risevision.common.components.scrolling-list',
     'risevision.common.components.focus-me',
-    'risevision.common.components.confirm-instance',
+    'risevision.common.components.confirm-modal',
     'risevision.common.components.timeline',
     'risevision.common.components.timeline-basic',
     'risevision.common.components.analytics',
@@ -343,41 +344,53 @@ angular.module('risevision.apps', [
         })
 
         .state('apps.editor.add', {
-          url: '/editor/add',
-          controller: ['$state', 'canAccessApps', 'editorFactory',
-            function ($state, canAccessApps, editorFactory) {
+          url: '/editor/add/:productId',
+          controller: ['$state', '$stateParams', '$location', 'canAccessApps', 'editorFactory',
+            function ($state, $stateParams, $location, canAccessApps, editorFactory) {
               canAccessApps().then(function () {
-                editorFactory.addPresentationModal();
-                $state.go('apps.editor.list');
+                if ($stateParams.productId) {
+                  editorFactory.addFromProductId($stateParams.productId)
+                    .then(function () {
+                      $location.replace();
+                    });
+                } else {
+                  editorFactory.addPresentationModal();
+
+                  $state.go('apps.editor.list');
+                }
               });
             }
           ]
         })
 
         .state('apps.editor.workspace', {
-          url: '/editor/workspace/:presentationId/:copyPresentation',
+          url: '/editor/workspace/:presentationId?copyOf',
           abstract: true,
           templateProvider: ['$templateCache', function ($templateCache) {
             return $templateCache.get('partials/editor/workspace.html');
           }],
           controller: 'WorkspaceController',
+          params: {
+            isLoaded: false
+          },
           resolve: {
-            presentationInfo: ['canAccessApps', 'editorFactory', '$stateParams', '$location',
-              function (canAccessApps, editorFactory, $stateParams, $location) {
+            presentationInfo: ['canAccessApps', 'editorFactory', '$stateParams',
+              function (canAccessApps, editorFactory, $stateParams) {
                 var signup = false;
-                var copyOf = $location.search().copyOf;
 
-                if ($stateParams.presentationId === 'new' && !$stateParams.copyPresentation && copyOf) {
+                if ($stateParams.copyOf) {
                   signup = true;
                 }
 
                 return canAccessApps(signup).then(function () {
-                  if ($stateParams.copyPresentation) {
-                    return editorFactory.presentation;
-                  } else if ($stateParams.presentationId && $stateParams.presentationId !== 'new') {
+                  if ($stateParams.presentationId && $stateParams.presentationId !== 'new') {
                     return editorFactory.getPresentation($stateParams.presentationId);
-                  } else if (copyOf) {
-                    return editorFactory.copyTemplate(null, copyOf);
+                  } else if ($stateParams.copyOf) {
+                    if ($stateParams.isLoaded) {
+                      return editorFactory.presentation;
+                    } else {
+                      return editorFactory.copyTemplate($stateParams.copyOf);
+                    }
                   } else {
                     return editorFactory.newPresentation();
                   }
@@ -406,50 +419,40 @@ angular.module('risevision.apps', [
         })
 
         .state('apps.editor.templates', {
-          url: '/templates?cid',
+          url: '/templates',
           abstract: true,
           template: '<div class="templates-app" ui-view></div>'
         })
 
-        .state('apps.editor.templates.add', {
-          url: '/add',
-          templateProvider: ['$templateCache', function ($templateCache) {
-            return $templateCache.get('partials/template-editor/template-editor.html');
-          }],
-          reloadOnSearch: false,
-          controller: 'TemplateEditorController',
-          resolve: {
-            canAccess: ['canAccessApps',
-              function (canAccessApps) {
-                return canAccessApps();
-              }
-            ]
-          }
-        })
-
-        .state('apps.editor.templates.addFromProductId', {
-          url: '/add/:productId',
-          controller: ['$stateParams', 'canAccessApps', 'templateEditorFactory',
-            function ($stateParams, canAccessApps, templateEditorFactory) {
-              return canAccessApps().then(function () {
-                return templateEditorFactory.createFromProductId($stateParams.productId);
-              });
-            }
-          ]
-        })
-
         .state('apps.editor.templates.edit', {
-          url: '/edit/:presentationId',
+          url: '/edit/:presentationId/:productId',
           templateProvider: ['$templateCache', function ($templateCache) {
             return $templateCache.get('partials/template-editor/template-editor.html');
           }],
           reloadOnSearch: false,
           controller: 'TemplateEditorController',
+          params: {
+            productDetails: null
+          },
           resolve: {
-            presentationInfo: ['$stateParams', 'canAccessApps', 'templateEditorFactory',
-              function ($stateParams, canAccessApps, templateEditorFactory) {
-                return canAccessApps().then(function() {
-                  return templateEditorFactory.getPresentation($stateParams.presentationId);
+            presentationInfo: ['$stateParams', 'canAccessApps', 'editorFactory', 'templateEditorFactory',
+              function ($stateParams, canAccessApps, editorFactory, templateEditorFactory) {
+                var signup = false;
+
+                if ($stateParams.presentationId === 'new' && $stateParams.productId) {
+                  signup = true;
+                }
+
+                return canAccessApps(signup).then(function () {
+                  if ($stateParams.presentationId === 'new') {
+                    if ($stateParams.productDetails) {
+                      return templateEditorFactory.addFromProduct($stateParams.productDetails);
+                    } else {
+                      return editorFactory.addFromProductId($stateParams.productId);
+                    }
+                  } else {
+                    return templateEditorFactory.getPresentation($stateParams.presentationId);
+                  }
                 });
               }
             ]
@@ -483,7 +486,7 @@ angular.module('risevision.apps', [
     function ($rootScope, $state, $modalStack, userState, displayFactory, $window) {
 
       if ($window.Stretchy) {
-        $window.Stretchy.selectors.filter = ".input-stretchy, .input-stretchy *";
+        $window.Stretchy.selectors.filter = '.input-stretchy, .input-stretchy *';
       }
 
       $rootScope.$on('risevision.user.signedOut', function () {
@@ -592,14 +595,15 @@ angular.module('risevision.template-editor.services', [
   'risevision.common.header',
   'risevision.common.gapi',
   'risevision.apps.config',
-  'risevision.editor.services'
+  'risevision.editor.services',
+  'risevision.schedules.services'
 ]);
+angular.module('risevision.template-editor.filters', []);
 angular.module('risevision.template-editor.directives', [
-  'risevision.template-editor.services'
+  'risevision.template-editor.services',
+  'risevision.template-editor.filters'
 ]);
-angular.module('risevision.template-editor.filters', [
-  'risevision.template-editor.services'
-]);
+
 angular.module('risevision.template-editor.controllers', [
   'risevision.template-editor.services'
 ]);

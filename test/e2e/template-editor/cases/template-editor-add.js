@@ -1,184 +1,121 @@
 'use strict';
 var expect = require('rv-common-e2e').expect;
-var CommonHeaderPage = require('./../../../../web/bower_components/common-header/test/e2e/pages/commonHeaderPage.js');
-var HomePage = require('./../../launcher/pages/homepage.js');
-var SignInPage = require('./../../launcher/pages/signInPage.js');
-var PlansModalPage = require('./../../common/pages/plansModalPage.js');
 var PresentationListPage = require('./../pages/presentationListPage.js');
 var TemplateEditorPage = require('./../pages/templateEditorPage.js');
+var AutoScheduleModalPage = require('./../../schedules/pages/autoScheduleModalPage.js');
 var helper = require('rv-common-e2e').helper;
 
 var TemplateAddScenarios = function() {
-
-  browser.driver.manage().window().setSize(1920, 1080);
-
-  describe('Template Editor', function () {
+  describe('Template Editor Add', function () {
     var testStartTime = Date.now();
-    var subCompanyName = 'E2E TEST SUBCOMPANY - TEMPLATE EDITOR';
     var presentationName = 'Example Presentation - ' + testStartTime;
-    var commonHeaderPage;
-    var homepage;
-    var signInPage;
-    var plansModalPage;
     var presentationsListPage;
     var templateEditorPage;
-
-    function _loadPresentationsList() {
-      homepage.getEditor();
-      signInPage.signIn();
-    }
-
-    function _createSubCompany() {
-      commonHeaderPage.createSubCompany(subCompanyName);
-    }
-
-    function _selectSubCompany() {
-      commonHeaderPage.selectSubCompany(subCompanyName);
-    }
-
-    function _startTrial() {
-      helper.waitDisappear(presentationsListPage.getPresentationsLoader(), 'Presentation loader');
-      helper.wait(templateEditorPage.seePlansLink(), 'See Plans Link');
-      helper.clickWhenClickable(templateEditorPage.seePlansLink(), 'See Plans Link');
-
-      helper.wait(plansModalPage.getPlansModal(), 'Plans Modal');
-      helper.wait(plansModalPage.getStartTrialBasicButton(), 'Start Trial Basic Button');
-      helper.clickWhenClickable(plansModalPage.getStartTrialBasicButton(), 'Start Trial Basic Button');
-
-      helper.waitDisappear(plansModalPage.getPlansModal(), 'Plans Modal');
-    }
-
-    function _loadCurrentCompanyPresentationList() {
-      helper.clickWhenClickable(templateEditorPage.getPresentationsListLink(), 'Presentations List');
-      helper.waitDisappear(presentationsListPage.getPresentationsLoader(), 'Presentation loader');
-    }
-
-    function _loadPresentation (presentationName) {
-      _loadCurrentCompanyPresentationList();
-      helper.clickWhenClickable(templateEditorPage.getCreatedPresentationLink(presentationName), 'Presentation Link');
-      helper.waitDisappear(presentationsListPage.getPresentationsLoader(), 'Presentation loader');
-      helper.wait(templateEditorPage.getAttributeList(), 'Attribute List');
-      browser.sleep(500); // Wait for transition to finish
-    }
-
-    function _savePresentation () {
-      helper.wait(templateEditorPage.getSaveButton(), 'Save Button');
-      helper.clickWhenClickable(templateEditorPage.getSaveButton(), 'Save Button');
-      expect(templateEditorPage.getSaveButton().getText()).to.eventually.equal('Saving');
-      helper.wait(templateEditorPage.getSaveButton(), 'Save Button');
-    }
+    var autoScheduleModalPage;
 
     before(function () {
-      commonHeaderPage = new CommonHeaderPage();
-      homepage = new HomePage();
-      signInPage = new SignInPage();
       presentationsListPage = new PresentationListPage();
-      plansModalPage = new PlansModalPage();
       templateEditorPage = new TemplateEditorPage();
-
-      _loadPresentationsList();
-      _createSubCompany();
-      _selectSubCompany();
-      _startTrial();
-      // Sometimes the trial does not start in time; this section tries to reduce the number of times this step fails
-      browser.sleep(5000);
-      _loadPresentationsList();
-      _selectSubCompany();
-      // Continue as usual
-      presentationsListPage.openNewExampleTemplate();
+      autoScheduleModalPage = new AutoScheduleModalPage();
     });
 
     describe('basic operations', function () {
+      before(function() {
+        presentationsListPage.loadCurrentCompanyPresentationList();
+        presentationsListPage.createNewPresentationFromTemplate('Example Financial Template V4', 'example-financial-template-v4');
+        templateEditorPage.dismissFinancialDataLicenseMessage();
+      });
+
+      it('should auto-save the Presentation after it has been created', function () {
+        expect(templateEditorPage.getSavedText().isDisplayed()).to.eventually.be.true;
+      });
+
+      it('should set presentation name', function(done) {
+        templateEditorPage.getPresentationName().getAttribute('value').then(function(name) {
+          expect(name).to.contain('Copy of');
+
+          done();
+        });
+      });
+
+      it('should auto create Schedule when publishing Presentation', function () {
+        helper.clickWhenClickable(templateEditorPage.getPublishButton(), 'Publish Button');
+
+        browser.sleep(500);
+
+        helper.wait(autoScheduleModalPage.getAutoScheduleModal(), 'Auto Schedule Modal');
+
+        expect(autoScheduleModalPage.getAutoScheduleModal().isDisplayed()).to.eventually.be.true;
+
+        helper.clickWhenClickable(autoScheduleModalPage.getCloseButton(), 'Auto Schedule Modal - Close Button');
+
+        helper.waitDisappear(autoScheduleModalPage.getAutoScheduleModal(), 'Auto Schedule Modal');
+        helper.waitDisappear(presentationsListPage.getTemplateEditorLoader());
+      });
+
       it('should show more than one component', function () {
         helper.wait(templateEditorPage.getAttributeList(), 'Attribute List');
         expect(templateEditorPage.getComponentItems().count()).to.eventually.be.above(1);
       });
 
       it('should edit the Presentation name', function () {
-        expect(templateEditorPage.getPresentationName().isEnabled()).to.eventually.be.false;
-        templateEditorPage.getEditNameButton().click();
-        expect(templateEditorPage.getPresentationName().isEnabled()).to.eventually.be.true;
-        templateEditorPage.getPresentationName().sendKeys(presentationName + protractor.Key.ENTER);
+        presentationsListPage.changePresentationName(presentationName);
+        expect(templateEditorPage.getPresentationName().getAttribute('value')).to.eventually.equal(presentationName);
       });
 
-      it('should save the Presentation', function () {
-        _savePresentation();
-
-        expect(templateEditorPage.getSaveButton().isEnabled()).to.eventually.be.true;
-      });
-
-      it('should publish the Presentation', function () {
-        // Since the first time a Presentation is saved it's also Published, to test the button an additional Save is needed
-        _savePresentation();
-        _savePresentation();
-
-        helper.clickWhenClickable(templateEditorPage.getPublishButton(), 'Publish Button');
-        helper.wait(templateEditorPage.getSaveButton(), 'Save Button (after Publish)');
-        expect(templateEditorPage.getSaveButton().isEnabled()).to.eventually.be.true;
+      it('should auto-save the Presentation after the name has changed', function () {
+        //wait for presentation to be auto-saved
+        templateEditorPage.waitForAutosave();
       });
 
       it('should load the newly created Presentation', function () {
-        _loadPresentation(presentationName);
+        presentationsListPage.loadPresentation(presentationName);
 
         expect(templateEditorPage.getComponentItems().count()).to.eventually.be.above(1);
         expect(templateEditorPage.getImageComponentEdit().isPresent()).to.eventually.be.true;
       });
 
-      it('should navigate into the Image component and back to the Components list', function () {
-        helper.wait(templateEditorPage.getImageComponentEdit(), 'Image Component');
-        helper.clickWhenClickable(templateEditorPage.getImageComponentEdit(), 'Image Component Edit');
-        helper.wait(templateEditorPage.getBackToComponentsButton(), 'Back to Components Button');
-        helper.clickWhenClickable(templateEditorPage.getBackToComponentsButton(), 'Back to Components Button');
-        helper.wait(templateEditorPage.getAttributeList(), 'Attribute List');
-        browser.sleep(500); // Wait for transition to finish
-        expect(templateEditorPage.getComponentItems().count()).to.eventually.be.above(1);
+      it('should not have auto-published the Presentation when navigating', function () {
+        // prevents reoccurrence of issue 1186
+        expect(templateEditorPage.getPublishButton().isEnabled()).to.eventually.be.true;
       });
 
-      function _loadFinancialSelector () {
-        helper.wait(templateEditorPage.getAttributeList(), 'Attribute List');
-        helper.wait(templateEditorPage.getFinancialComponentEdit(), 'Financial Component Edit');
-        helper.clickWhenClickable(templateEditorPage.getFinancialComponentEdit(), 'Financial Component Edit');
-        expect(templateEditorPage.getAddCurrenciesButton().isEnabled()).to.eventually.be.true;
-      }
-
-      it('should show one Financial Component', function () {
-        _loadPresentation(presentationName);
-        _loadFinancialSelector();
-        expect(templateEditorPage.getInstrumentItems().count()).to.eventually.equal(3);
-      });
-
-      it('should show open the Instrument Selector', function () {
-        helper.wait(templateEditorPage.getAddCurrenciesButton(), 'Add Currencies');
-        helper.clickWhenClickable(templateEditorPage.getAddCurrenciesButton(), 'Add Currencies');
-        expect(templateEditorPage.getAddInstrumentButton().isPresent()).to.eventually.be.true;
-      });
-
-      it('should add JPY/USD instrument', function () {
-        helper.wait(templateEditorPage.getJpyUsdSelector(), 'JPY/USD Selector');
-        helper.clickWhenClickable(templateEditorPage.getJpyUsdSelector(), 'JPY/USD Selector');
-        helper.wait(templateEditorPage.getAddInstrumentButton(), 'Add Instrument');
-        helper.clickWhenClickable(templateEditorPage.getAddInstrumentButton(), 'Add Instrument');
-        expect(templateEditorPage.getAddCurrenciesButton().isPresent()).to.eventually.be.true;
-      });
-
-      it('should save the Presentation, reload it, and validate changes were saved', function () {
-        helper.wait(templateEditorPage.getSaveButton(), 'Save Button');
-        helper.clickWhenClickable(templateEditorPage.getSaveButton(), 'Save Button');
-        expect(templateEditorPage.getSaveButton().getText()).to.eventually.equal('Saving');
-        helper.wait(templateEditorPage.getSaveButton(), 'Save Button');
-
-        _loadPresentation(presentationName);
-        _loadFinancialSelector();
-
-        expect(templateEditorPage.getInstrumentItems().count()).to.eventually.equal(4);
-      });
     });
 
-    after(function() {
-      // Loading the Presentation List is a workaround to a Chrome Driver issue that has it fail to click on elements over the Preview iframe
-      _loadCurrentCompanyPresentationList();
-      commonHeaderPage.deleteCurrentCompany();
-    });
+    describe('remove',function(){
+      before(function(){
+        presentationsListPage.loadCurrentCompanyPresentationList();
+        presentationsListPage.createNewPresentationFromTemplate('Example Financial Template V4', 'example-financial-template-v4');
+        templateEditorPage.dismissFinancialDataLicenseMessage();
+
+        //workaround as protactor can't click on top of iframes
+        //decrease window size to hide template preview        
+        browser.driver.manage().window().setSize(500, 800); 
+      });
+
+      it('should delete the Presentation', function () {
+        browser.sleep(500);
+        helper.clickWhenClickable(templateEditorPage.getDeleteButton(), 'Template Delete Button');
+
+        browser.sleep(500);
+        helper.wait(templateEditorPage.getDeleteForeverButton(), 'Template Delete Forever Button');      
+        helper.clickWhenClickable(templateEditorPage.getDeleteForeverButton(), 'Template Delete Forever Button');
+
+        helper.wait(presentationsListPage.getTitle(), 'Presentation List');
+      });
+
+      it('should not show any errors', function() {
+        browser.sleep(3000);
+
+        expect(templateEditorPage.getErrorModal().isPresent()).to.eventually.be.false;
+      });
+
+      after(function(){
+        //revert workaround
+        browser.driver.manage().window().setSize(1920, 1080); 
+      });
+    });    
+
   });
 };
 

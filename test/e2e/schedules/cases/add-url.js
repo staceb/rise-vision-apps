@@ -1,8 +1,8 @@
 'use strict';
 var expect = require('rv-common-e2e').expect;
-var HomePage = require('./../../launcher/pages/homepage.js');
-var SignInPage = require('./../../launcher/pages/signInPage.js');
-var CommonHeaderPage = require('./../../../../web/bower_components/common-header/test/e2e/pages/commonHeaderPage.js');
+var HomePage = require('./../../common/pages/homepage.js');
+var SignInPage = require('./../../common/pages/signInPage.js');
+var CommonHeaderPage = require('./../../common-header/pages/commonHeaderPage.js');
 var SchedulesListPage = require('./../pages/schedulesListPage.js');
 var ScheduleAddPage = require('./../pages/scheduleAddPage.js');
 var helper = require('rv-common-e2e').helper;
@@ -76,12 +76,40 @@ var AddUrlScenarios = function() {
             expect(playlistItemModalPage.getSaveButton().isEnabled()).to.eventually.be.false;
           });
 
-          describe('Given the user enters a URL', function () {
+          describe('Given the user enters an invalid URL', function () {
+            it('should show an invalid URL error',function(){
+              playlistItemModalPage.getUrlInput().sendKeys('http://');
+              browser.sleep(500); //wait for input debounce
+              expect(playlistItemModalPage.getInvalidUrlMessage().isDisplayed()).to.eventually.be.true;
+            });
+
+            it('Save button should be disabled', function () {
+              expect(playlistItemModalPage.getSaveButton().isEnabled()).to.eventually.be.false;
+            });
+          });
+
+          describe('Given the user enters a blank URL', function () {
+            it('should show a required field error',function(){
+              playlistItemModalPage.getUrlInput().clear();
+              browser.sleep(500);
+              expect(playlistItemModalPage.getRequiredFieldMessage().isDisplayed()).to.eventually.be.true;
+              expect(playlistItemModalPage.getInvalidUrlMessage().isPresent()).to.eventually.be.false;
+            });
+
+            it('Save button should be disabled', function () {
+              expect(playlistItemModalPage.getSaveButton().isEnabled()).to.eventually.be.false;
+            });
+          });
+
+          describe('Given the user enters a valid URL', function () {
             before(function () {
               playlistItemModalPage.getUrlInput().sendKeys('http://risevision.com/content.html');
+              browser.sleep(500);
             });
             it('Save button should be enabled', function () {
               expect(playlistItemModalPage.getSaveButton().isEnabled()).to.eventually.be.true;
+              expect(playlistItemModalPage.getRequiredFieldMessage().isPresent()).to.eventually.be.false;
+              expect(playlistItemModalPage.getInvalidUrlMessage().isPresent()).to.eventually.be.false;
             });
             it('should add the url item to the Playlist', function () {
               playlistItemModalPage.getSaveButton().click();

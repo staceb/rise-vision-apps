@@ -9,17 +9,15 @@ angular.module('risevision.editor.controllers')
     'subscriptionStatus'
   ])
   .controller('WorkspaceController', ['$scope', 'editorFactory',
-    'artboardFactory', 'placeholderFactory', 'userState', '$modal',
+    'artboardFactory', 'placeholderFactory', '$modal',
     '$templateCache', '$location', '$stateParams', '$window', 'RVA_URL',
     'IGNORE_FIELDS', '$timeout', '$state', '$filter',
     function ($scope, editorFactory, artboardFactory, placeholderFactory,
-      userState, $modal, $templateCache, $location, $stateParams, $window,
+      $modal, $templateCache, $location, $stateParams, $window,
       RVA_URL, IGNORE_FIELDS, $timeout, $state, $filter) {
       $scope.factory = editorFactory;
       $scope.artboardFactory = artboardFactory;
       $scope.placeholderFactory = placeholderFactory;
-      $scope.isSubcompanySelected = userState.isSubcompanySelected;
-      $scope.isTestCompanySelected = userState.isTestCompanySelected;
       $scope.hasUnsavedChanges = false;
 
       var _isEqualIgnoringFields = function (o1, o2) {
@@ -118,8 +116,8 @@ angular.module('risevision.editor.controllers')
         if (newValue) {
           $scope.modalInstance = $modal.open({
             template: $templateCache.get(
-              'confirm-instance/confirm-modal.html'),
-            controller: 'confirmInstance',
+              'partials/components/confirm-modal/confirm-modal.html'),
+            controller: 'confirmModalController',
             windowClass: 'modal-custom',
             resolve: {
               confirmationTitle: function () {

@@ -1,87 +1,95 @@
 'use strict';
 
 angular.module('risevision.template-editor.controllers')
-  .controller('TemplateEditorController',
-    ['$scope', '$filter', '$loading', '$modal', '$state', '$timeout', '$window', 'templateEditorFactory', 'userState', 'presentationUtils',
-    function ($scope, $filter, $loading, $modal, $state, $timeout, $window, templateEditorFactory, userState, presentationUtils) {
+  .controller('TemplateEditorController', ['$scope', '$q', '$filter', '$loading', '$state', '$timeout', '$window',
+    'templateEditorFactory', 'brandingFactory', 'blueprintFactory', 'scheduleFactory', 'AutoSaveService',
+    'presentationUtils',
+    function ($scope, $q, $filter, $loading, $state, $timeout, $window, templateEditorFactory, brandingFactory,
+      blueprintFactory, scheduleFactory, AutoSaveService, presentationUtils) {
+      var autoSaveService = new AutoSaveService(templateEditorFactory.save);
+
       $scope.factory = templateEditorFactory;
-      $scope.isSubcompanySelected = userState.isSubcompanySelected;
-      $scope.isTestCompanySelected = userState.isTestCompanySelected;
-      $scope.hasUnsavedChanges = false;
+      $scope.factory.hasUnsavedChanges = false;
 
       $scope.considerChromeBarHeight = _considerChromeBarHeight();
 
-      $scope.getBlueprintData = function(componentId, attributeKey) {
-        var components = $scope.factory.blueprintData.components;
-        var component = _.find(components, {id: componentId});
-
-        if(!component || !component.attributes) {
-          return null;
-        }
-
-        var attributes = component.attributes;
-
-        // if the attributeKey is not provided, it returns the full attributes structure
-        if(!attributeKey) {
-          return attributes;
-        }
-
-        var attribute = attributes[attributeKey];
-        return attribute && attribute.value;
+      $scope.getBlueprintData = function (componentId, attributeKey) {
+        return blueprintFactory.getBlueprintData(componentId, attributeKey);
       };
 
-      $scope.getAttributeData = function(componentId, attributeKey) {
-        var component = _componentFor(componentId);
-
-        // if the attributeKey is not provided, it returns the full component structure
-        return attributeKey ? component[attributeKey] : component;
+      $scope.getAttributeData = function (componentId, attributeKey) {
+        return templateEditorFactory.getAttributeData(componentId, attributeKey);
       };
 
-      $scope.setAttributeData = function(componentId, attributeKey, value) {
-        var component = _componentFor(componentId);
-
-        component[attributeKey] = value;
+      $scope.setAttributeData = function (componentId, attributeKey, value) {
+        templateEditorFactory.setAttributeData(componentId, attributeKey, value);
       };
 
-      function _componentFor(componentId) {
-        var attributeData = $scope.factory.presentation.templateAttributeData;
+      $scope.getAvailableAttributeData = function (componentId, attributeName) {
+        var result = $scope.getAttributeData(componentId, attributeName);
 
-        if(!attributeData.components) {
-          attributeData.components = [];
+        if (angular.isUndefined(result)) {
+          result = $scope.getBlueprintData(componentId, attributeName);
         }
 
-        var component = _.find(attributeData.components, {id: componentId});
+        return result;
+      };
 
-        if(!component) {
-          component = { id: componentId };
+      $scope.getComponentIds = function (filter) {
+        var components = blueprintFactory.blueprintData.components;
 
-          attributeData.components.push(component);
-        }
+        var filteredComponents = _.filter(components, filter);
 
-        return component;
-      }
+        return _.map(filteredComponents, function (component) {
+          return component.id;
+        });
+      };
 
-      var _bypassUnsaved = false, _initializing = false;
+      $scope.isPublishDisabled = function () {
+        var isNotRevised = !$scope.factory.isRevised() && !brandingFactory.isRevised() &&
+          scheduleFactory.hasSchedules();
+
+        return $scope.factory.savingPresentation || $scope.factory.isUnsaved() || isNotRevised;
+      };
+
+      var _bypassUnsaved = false,
+        _initializing = false;
       var _setUnsavedChanges = function (state) {
+        $scope.factory.hasUnsavedChanges = state;
+
+        if ($scope.factory.hasUnsavedChanges) {
+          autoSaveService.save();
+        }
+      };
+
+      var _setUnsavedChangesAsync = function (state) {
         $timeout(function () {
-          $scope.hasUnsavedChanges = state;
+          _setUnsavedChanges(state);
         });
       };
 
       function _considerChromeBarHeight() {
         var userAgent = $window.navigator.userAgent;
 
-        // Firefox requires desktop rule
+        // Firefox and Samsung browser require desktop rule
         return presentationUtils.isMobileBrowser() &&
-          !( /Firefox/i.test(userAgent) );
+          !(/Firefox|SamsungBrowser/i.test(userAgent));
       }
 
       $scope.$watch('factory.presentation', function (newValue, oldValue) {
-        var ignoredFields = [ 'revisionStatusName', 'changeDate', 'changedBy' ];
+        var ignoredFields = [
+          'id', 'companyId', 'revisionStatus', 'revisionStatusName',
+          'changeDate', 'changedBy', 'creationDate', 'publish', 'layout'
+        ];
 
-        if ($scope.hasUnsavedChanges) {
+        if (!newValue.id) {
+          $scope.factory.save();
           return;
         }
+        if ($scope.factory.hasUnsavedChanges) {
+          return;
+        }
+
         if (_initializing) {
           $timeout(function () {
             _initializing = false;
@@ -93,32 +101,35 @@ angular.module('risevision.template-editor.controllers')
         }
       }, true);
 
-      $scope.$on('presentationCreated', _setUnsavedChanges.bind(null, false));
-      $scope.$on('presentationUpdated', _setUnsavedChanges.bind(null, false));
+      $scope.$on('presentationCreated', _setUnsavedChangesAsync.bind(null, false));
+      $scope.$on('presentationUpdated', _setUnsavedChangesAsync.bind(null, false));
       $scope.$on('presentationDeleted', _setUnsavedChanges.bind(null, false));
-      $scope.$on('presentationPublished', _setUnsavedChanges.bind(null, false));
+      $scope.$on('presentationPublished', _setUnsavedChangesAsync.bind(null, false));
+
+      $scope.$on('risevision.template-editor.brandingUnsavedChanges', autoSaveService.save);
 
       $scope.$on('$stateChangeStart', function (event, toState, toParams) {
         if (_bypassUnsaved) {
           _bypassUnsaved = false;
           return;
         }
-        if ($scope.hasUnsavedChanges && toState.name.indexOf('apps.editor.templates') === -1) {
+        if (toState.name.indexOf('apps.editor.templates') === -1) {
           event.preventDefault();
-          var modalInstance = $modal.open({
-            templateUrl: 'partials/template-editor/unsaved-changes-modal.html',
-            size: 'md',
-            controller: 'TemplateEditorUnsavedChangesModalController'
-          });
-          modalInstance.result.then(function () {
-            _bypassUnsaved = true;
-            $state.go(toState, toParams);
-          });
+
+          autoSaveService.clearSaveTimeout();
+
+          var savePromise = $scope.factory.isUnsaved() ? $scope.factory.save() : $q.resolve();
+
+          savePromise
+            .finally(function () {
+              _bypassUnsaved = true;
+              $state.go(toState, toParams);
+            });
         }
       });
 
       $window.onbeforeunload = function () {
-        if ($scope.hasUnsavedChanges) {
+        if ($scope.factory.isUnsaved()) {
           return $filter('translate')('common.saveBeforeLeave');
         }
       };
@@ -127,7 +138,7 @@ angular.module('risevision.template-editor.controllers')
         $window.onbeforeunload = undefined;
       });
 
-      $scope.$watch('factory.loadingPresentation', function(loading) {
+      $scope.$watch('factory.loadingPresentation', function (loading) {
         if (loading) {
           $loading.start('template-editor-loader');
         } else {

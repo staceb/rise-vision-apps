@@ -4,11 +4,9 @@ describe('directive: weekly-templates', function() {
       $rootScope,
       $scope,
       element,
-      selectedCompany,
+      isEducationCustomer,
       sessionStorage,
-      presentationUtils,
-      editorFactory,
-      templateEditorFactory;
+      editorFactory;
   beforeEach(module('risevision.apps.launcher.directives'));
   beforeEach(module(function ($provide) {
     $provide.service('productsFactory', function() {
@@ -24,19 +22,13 @@ describe('directive: weekly-templates', function() {
         };
       };
     });
-    $provide.service('presentationUtils', function() {
-      return presentationUtils
-    }); 
     $provide.service('editorFactory', function() {
       return editorFactory;
     });  
-    $provide.service('templateEditorFactory', function() {
-      return templateEditorFactory;
-    });   
     $provide.service('userState', function() {
       return {
-        getCopyOfSelectedCompany: function() {
-          return selectedCompany;
+        isEducationCustomer: function() {
+          return isEducationCustomer;
         }
       };
     });
@@ -46,14 +38,12 @@ describe('directive: weekly-templates', function() {
     
   }));
   beforeEach(inject(function(_$compile_, _$rootScope_, $templateCache){
-    selectedCompany = {companyIndustry: "PRIMARY_SECONDARY_EDUCATION"};
+    isEducationCustomer = true;
     sessionStorage = {
         $default: sinon.stub(),
         weeklyTemplatesFullView: true
     };
-    presentationUtils = {isHtmlTemplate: sinon.stub()};
-    editorFactory = {copyTemplate: sinon.stub()};
-    templateEditorFactory = {createFromTemplate: sinon.stub()};
+    editorFactory = {addFromProduct: sinon.stub()};
 
     $compile = _$compile_;
     $rootScope = _$rootScope_;
@@ -78,7 +68,7 @@ describe('directive: weekly-templates', function() {
     it('should initialize scope', function() {
       expect($scope.fullView).to.be.true;
       expect($scope.search).to.deep.equal({
-          query: 'templateOfTheWeek:1',
+          filter: 'templateOfTheWeek:1',
           category: 'Templates',
           count: 4
         }
@@ -97,16 +87,13 @@ describe('directive: weekly-templates', function() {
 
     it('should load Templates if Education',function() {
       expect($scope.factory).to.be.a.function;
-      selectedCompany.companyIndustry =  "HIGHER_EDUCATION";
+      isEducationCustomer = true;
       compileDirective();
       expect($scope.factory).to.be.a.function;
     });
 
     it('should not load Templates if not Education',function() {
-      selectedCompany.companyIndustry =  "OTHER";
-      compileDirective();
-      expect($scope.factory).to.not.be.a.function;
-      selectedCompany.companyIndustry =  "AUTOMOTIVE";
+      isEducationCustomer = false;
       compileDirective();
       expect($scope.factory).to.not.be.a.function;
     });
@@ -140,21 +127,11 @@ describe('directive: weekly-templates', function() {
       compileDirective();
     });  
 
-    it('should open regular Editor if template is a regular Presentaion',function(){
+    it('should copy template',function(){
       var product = {}
-      presentationUtils.isHtmlTemplate.returns(false);
       $scope.select(product);
-      editorFactory.copyTemplate.should.have.been.calledWith(product);
-      templateEditorFactory.createFromTemplate.should.not.have.been.called;
-    })
-
-    it('should open template Editor if template is a HTML Presentaion',function(){
-      var product = {}
-      presentationUtils.isHtmlTemplate.returns(true);
-      $scope.select(product);
-      editorFactory.copyTemplate.should.not.have.been.called;
-      templateEditorFactory.createFromTemplate.should.have.been.calledWith(product);
-    })
+      editorFactory.addFromProduct.should.have.been.calledWith(product);
+    });
   });
 
 });

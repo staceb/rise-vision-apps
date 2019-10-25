@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('templateAttributeEditor', ['$timeout', 'templateEditorFactory',
-    function ($timeout, templateEditorFactory) {
+  .directive('templateAttributeEditor', ['$timeout', 'templateEditorFactory', 'templateEditorUtils',
+    function ($timeout, templateEditorFactory, templateEditorUtils) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/attribute-editor.html',
@@ -11,20 +11,27 @@ angular.module('risevision.template-editor.directives')
           $scope.showAttributeList = true;
           $scope.directives = {};
           $scope.panels = [];
-
-          $scope.$watch('factory.presentation', function () {
-            $scope.showAttributeList = true;
-          });
+          $scope.factory.selected = null;
 
           $scope.registerDirective = function (directive) {
             directive.element.hide();
             $scope.directives[directive.type] = directive;
+
+            if (directive.onPresentationOpen) {
+              directive.onPresentationOpen();
+            }
           };
 
           $scope.editComponent = function (component) {
             var directive = $scope.directives[component.type];
 
             $scope.factory.selected = component;
+
+            directive.element.show();
+            if (directive.panel) {
+              $scope.showNextPanel(directive.panel);
+            }
+
             directive.show();
 
             _showAttributeList(false, 300);
@@ -59,8 +66,18 @@ angular.module('risevision.template-editor.directives')
               $scope.directives[component.type].iconType : '';
           };
 
-          $scope.isHeaderBottomRuleVisible = function(component) {
-            if ( !component ) {
+          $scope.getComponentTitle = function (component) {
+            var directive = $scope.directives[component.type];
+
+            if (directive.getTitle) {
+              return directive.getTitle(component);
+            }
+
+            return 'template.' + component.type;
+          };
+
+          $scope.isHeaderBottomRuleVisible = function (component) {
+            if (!component) {
               return true;
             }
 
@@ -70,11 +87,15 @@ angular.module('risevision.template-editor.directives')
               directive.isHeaderBottomRuleVisible() : true;
           };
 
+          $scope.getCurrentPanel = function () {
+            return $scope.panels.length > 0 ? $scope.panels[$scope.panels.length - 1] : null;
+          };
+
           $scope.showNextPanel = function (newPanel) {
-            var previousPanel = $scope.panels.length > 0 ? $scope.panels[$scope.panels.length - 1] : null;
+            var currentPanel = $scope.getCurrentPanel();
 
             $scope.panels.push(newPanel);
-            _swapToLeft(previousPanel, newPanel);
+            _swapToLeft(currentPanel, newPanel);
           };
 
           $scope.showPreviousPanel = function () {
@@ -83,12 +104,26 @@ angular.module('risevision.template-editor.directives')
 
             _swapToRight(currentPanel, previousPanel);
 
+            if (!previousPanel) {
+              $scope.resetPanelHeader();
+            }
+
             return !!previousPanel;
           };
 
-          function _findElement(selector) {
-            return document.querySelector(selector) && angular.element(document.querySelector(selector));
-          }
+          $scope.resetPanelHeader = function () {
+            $scope.setPanelIcon(null, null);
+            $scope.setPanelTitle(null);
+          };
+
+          $scope.setPanelIcon = function (panelIcon, panelIconType) {
+            $scope.panelIcon = panelIcon;
+            $scope.panelIconType = panelIconType;
+          };
+
+          $scope.setPanelTitle = function (panelTitle) {
+            $scope.panelTitle = panelTitle;
+          };
 
           function _showAttributeList(value, delay) {
             $timeout(function () {
@@ -96,55 +131,45 @@ angular.module('risevision.template-editor.directives')
             }, !isNaN(delay) ? delay : 500);
           }
 
-          function _removeAnimationClasses(selector) {
-            var element = _findElement(selector);
-
-            if (element) {
-              element.removeClass('attribute-editor-show-from-right');
-              element.removeClass('attribute-editor-hide-to-right');
-              element.removeClass('attribute-editor-show-from-left');
-              element.removeClass('attribute-editor-hide-to-left');
-            }
+          function _removeAnimationClasses(element) {
+            element.removeClass('attribute-editor-show-from-right');
+            element.removeClass('attribute-editor-show-from-left');
           }
 
-          function _showElement(selector, delay) {
-            var element = _findElement(selector);
+          function _showElement(selector, direction, delay) {
+            var element = templateEditorUtils.findElement(selector);
 
-            if (element) {
-              setTimeout(function () {
-                element.show();
-              }, delay || 0);
+            if (!element) {
+              return;
             }
+
+            _removeAnimationClasses(element);
+            element.addClass('attribute-editor-show-from-' + direction);
+
+            setTimeout(function () {
+              element.show();
+            }, delay || 0);
           }
 
           function _hideElement(selector, delay) {
-            var element = _findElement(selector);
+            var element = templateEditorUtils.findElement(selector);
 
-            if (element) {
-              setTimeout(function () {
-                element.hide();
-              }, delay || 0);
+            if (!element) {
+              return;
             }
-          }
 
-          function _setCurrentClass(selector, currentClass) {
-            var element = _findElement(selector);
-
-            if (element) {
-              _removeAnimationClasses(selector);
-              element.addClass(currentClass);
-            }
+            setTimeout(function () {
+              element.hide();
+            }, delay || 0);
           }
 
           function _swapToLeft(swappedOutSelector, swappedInSelector) {
-            _setCurrentClass(swappedInSelector, 'attribute-editor-show-from-right');
-            _showElement(swappedInSelector);
+            _showElement(swappedInSelector, 'right');
             _hideElement(swappedOutSelector);
           }
 
           function _swapToRight(swappedOutSelector, swappedInSelector) {
-            _setCurrentClass(swappedInSelector, 'attribute-editor-show-from-left');
-            _showElement(swappedInSelector);
+            _showElement(swappedInSelector, 'left');
             _hideElement(swappedOutSelector);
           }
         }

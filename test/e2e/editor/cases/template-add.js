@@ -1,21 +1,20 @@
 'use strict';
 var expect = require('rv-common-e2e').expect;
-var HomePage = require('./../../launcher/pages/homepage.js');
-var SignInPage = require('./../../launcher/pages/signInPage.js');
-var CommonHeaderPage = require('./../../../../web/bower_components/common-header/test/e2e/pages/commonHeaderPage.js');
+var HomePage = require('./../../common/pages/homepage.js');
+var SignInPage = require('./../../common/pages/signInPage.js');
+var CommonHeaderPage = require('./../../common-header/pages/commonHeaderPage.js');
 var PresentationListPage = require('./../pages/presentationListPage.js');
 var WorkspacePage = require('./../pages/workspacePage.js');
 var helper = require('rv-common-e2e').helper;
 var PresentationPropertiesModalPage = require('./../pages/presentationPropertiesModalPage.js');
 var StoreProductsModalPage = require('./../pages/storeProductsModalPage.js');
 var ProductDetailsModalPage = require('./../pages/productDetailsModalPage.js');
-var PlansModalPage = require('./../../common/pages/plansModalPage.js');
+var PricingComponentModalPage = require('./../../registration/pages/pricingComponentModalPage.js');
 
 var TemplateAddScenarios = function() {
 
   browser.driver.manage().window().setSize(1920, 1080);
   describe('Template Add', function () {
-    var subCompanyName = 'E2E TEST SUBCOMPANY - TEMPLATE ADD';
     var homepage;
     var signInPage;
     var commonHeaderPage;
@@ -24,7 +23,7 @@ var TemplateAddScenarios = function() {
     var presentationPropertiesModalPage;
     var storeProductsModalPage;
     var productDetailsModalPage;
-    var plansModalPage;
+    var pricingComponentModalPage;
 
     function loadEditor() {
       homepage.getEditor();
@@ -40,12 +39,8 @@ var TemplateAddScenarios = function() {
       helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader(), 'Store products loader');
     }
 
-    function createSubCompany() {
-      commonHeaderPage.createSubCompany(subCompanyName);
-    }
-
     function selectSubCompany() {
-      commonHeaderPage.selectSubCompany(subCompanyName);
+      commonHeaderPage.selectUnsubscribedSubCompany();
     }
 
     before(function () {
@@ -57,10 +52,9 @@ var TemplateAddScenarios = function() {
       presentationPropertiesModalPage = new PresentationPropertiesModalPage();
       storeProductsModalPage = new StoreProductsModalPage();
       productDetailsModalPage = new ProductDetailsModalPage();
-      plansModalPage = new PlansModalPage();
+      pricingComponentModalPage = new PricingComponentModalPage();
 
       loadEditor();
-      createSubCompany();
       selectSubCompany();
       openContentModal();
     });
@@ -76,13 +70,6 @@ var TemplateAddScenarios = function() {
     it('should show a search box', function () {
       expect(storeProductsModalPage.getSearchFilter().isDisplayed()).to.eventually.be.true;
       expect(storeProductsModalPage.getSearchInput().getAttribute('placeholder')).to.eventually.equal('Search for Templates');
-    });
-
-    it('should show search categories', function() {
-      expect(storeProductsModalPage.getSearchCategories().count()).to.eventually.equal(3);
-      expect(storeProductsModalPage.getSearchCategories().get(0).getText()).to.eventually.equal('ALL');
-      expect(storeProductsModalPage.getSearchCategories().get(1).getText()).to.eventually.equal('FREE');
-      expect(storeProductsModalPage.getSearchCategories().get(2).getText()).to.eventually.equal('FOR LICENSED DISPLAYS');
     });
 
     it('should show a list of templates', function () {
@@ -105,29 +92,8 @@ var TemplateAddScenarios = function() {
     it('should show a link to Missing Template form',function(){
       expect(storeProductsModalPage.getSuggestTemplate().isDisplayed()).to.eventually.be.true;
     });
-    
-    it('should filter Free templates', function() {
-      storeProductsModalPage.getSearchCategories().get(1).click();
 
-      expect(storeProductsModalPage.getFreeProducts().count()).to.eventually.be.above(0);
-      expect(storeProductsModalPage.getPremiumProducts().count()).to.eventually.equal(0);
-    });
-
-    it('should filter Premium templates', function() {
-      storeProductsModalPage.getSearchCategories().get(2).click();
-
-      expect(storeProductsModalPage.getFreeProducts().count()).to.eventually.equal(0);
-      expect(storeProductsModalPage.getPremiumProducts().count()).to.eventually.be.above(0);
-    });
-    
-    it('should show all templates again', function () {
-      storeProductsModalPage.getSearchCategories().get(0).click();
-
-      expect(storeProductsModalPage.getFreeProducts().count()).to.eventually.be.above(0);
-      expect(storeProductsModalPage.getPremiumProducts().count()).to.eventually.be.above(0);
-    });
-
-    it('should show preview modal when selecting a free template',function(){
+    xit('should show preview modal when selecting a free template',function(){
       storeProductsModalPage.getFreeProducts().get(0).click();
 
       helper.wait(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
@@ -141,21 +107,8 @@ var TemplateAddScenarios = function() {
       helper.waitDisappear(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
     });
 
-    it('should show preview modal selecting a premium template',function(){
-      storeProductsModalPage.getPremiumProducts().get(0).click();
-
-      helper.wait(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
-
-      helper.waitDisappear(productDetailsModalPage.getPricingLoader(), 'Pricing loader');
-      expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
-      expect(productDetailsModalPage.getPreviewTemplate().isDisplayed()).to.eventually.be.true;
-      expect(productDetailsModalPage.getPreviewTemplate().getAttribute('href')).to.eventually.contain('http://preview.risevision.com');
-      productDetailsModalPage.getCloseButton().click();
-
-      helper.waitDisappear(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
-    });
-
-    it('should start a trial',function(){
+    it('should show pricing component modal',function(){
+      browser.call(()=>console.log("should show pricing component modal"));
       storeProductsModalPage.getPremiumProducts().get(0).click();
 
       helper.wait(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
@@ -164,64 +117,20 @@ var TemplateAddScenarios = function() {
       expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
       expect(productDetailsModalPage.getStartTrialButton().isDisplayed()).to.eventually.be.true;
       productDetailsModalPage.getStartTrialButton().click();
-
-      helper.wait(plansModalPage.getPlansModal(), 'Plans Modal');
-      helper.wait(plansModalPage.getStartTrialBasicButton(), 'Basic Plan Start Trial');
-
-      plansModalPage.getStartTrialBasicButton().click();
-
-      helper.waitDisappear(plansModalPage.getPlansModal(), 'Plans Modal');
-    });
-    
-    it('should show Select Template button', function() {
-      // Sometimes the trial does not start in time; this section tries to reduce the number of times this step fails
-      browser.sleep(5000);
-      // Reload page and select company whose trial has just started
-      loadEditor();
-      selectSubCompany();
-      openContentModal();
-
-      // Validate buttons are updated as expected
-      storeProductsModalPage.getPremiumProducts().get(0).click();
-
-      helper.wait(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
-
-      helper.waitDisappear(productDetailsModalPage.getPricingLoader(), 'Pricing loader');
-      expect(productDetailsModalPage.getProductDetailsModal().isDisplayed()).to.eventually.be.true;
-      helper.wait(productDetailsModalPage.getUseProductButton(),'Use Product Button');
-      expect(productDetailsModalPage.getUseProductButton().isDisplayed()).to.eventually.be.true;
-      productDetailsModalPage.getCloseButton().click();
-      
-      helper.waitDisappear(productDetailsModalPage.getProductDetailsModal(), 'Product Details Modal');
+      browser.call(()=>console.log("waiting for pricing component frame"));
+      helper.wait(pricingComponentModalPage.getSubscribeButton(), 'Pricing Component Modal');
+      browser.call(()=>console.log("subscribing"));
     });
 
-    // The Store Templates are not yet released to sub-companies
-    // so there are no templates to select; disabled tests
-    // TODO: re-enable tests when templates are released
-    xit('should open the Template presentation', function () {
-      storeProductsModalPage.getAddProductButtons().get(0).click();
+    it('should initialize purchase flow', function() {
+      browser.call(()=>console.log("waiting for getSubscribeButton"));
+      helper.wait(pricingComponentModalPage.getSubscribeButton(), 'Subscribe Button');
 
-      helper.wait(presentationPropertiesModalPage.getPresentationPropertiesModal(), 'Presentation Properties Modal');
+      expect(pricingComponentModalPage.getSubscribeButton().isDisplayed()).to.eventually.be.true;
 
-      expect(presentationPropertiesModalPage.getNameInput().getAttribute('value')).to.eventually.contain('Copy of ');
+      // Note: No purchase here; we test purchase subscription and adding a template in other tests
     });
 
-    xit('should treat template as New Presentation', function () {
-      expect(workspacePage.getPreviewButton().getAttribute('disabled')).to.eventually.equal('true');
-
-      expect(workspacePage.getPublishButton().isDisplayed()).to.eventually.be.false;
-      expect(workspacePage.getRestoreButton().isDisplayed()).to.eventually.be.false;
-      expect(workspacePage.getDeleteButton().isDisplayed()).to.eventually.be.false;
-
-      expect(workspacePage.getSaveButton().isPresent()).to.eventually.be.true;
-      expect(workspacePage.getCancelButton().isPresent()).to.eventually.be.true;
-    });
-
-    after(function() {
-      loadEditor();
-      selectSubCompany();
-      commonHeaderPage.deleteCurrentCompany();
-    });
   });
 };
 module.exports = TemplateAddScenarios;

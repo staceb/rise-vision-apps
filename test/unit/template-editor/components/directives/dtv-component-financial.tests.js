@@ -53,7 +53,7 @@ describe('directive: TemplateComponentFinancial', function() {
   beforeEach(module('risevision.template-editor.controllers'));
   beforeEach(module('risevision.template-editor.services'));
   beforeEach(module('risevision.editor.services'));
-  beforeEach(module(mockTranlate()));
+  beforeEach(module(mockTranslate()));
   beforeEach(module(function ($provide) {
     $provide.service('templateEditorFactory', function() {
       return factory;
@@ -80,6 +80,7 @@ describe('directive: TemplateComponentFinancial', function() {
 
     timeout = $timeout;
     element = $compile("<template-component-financial></template-component-financial>")($scope);
+    $scope = element.scope();
     $scope.$digest();
   }));
 
@@ -92,7 +93,8 @@ describe('directive: TemplateComponentFinancial', function() {
     var directive = $scope.registerDirective.getCall(0).args[0];
     expect(directive).to.be.ok;
     expect(directive.type).to.equal('rise-data-financial');
-    expect(directive.icon).to.equal('fa-line-chart');
+    expect(directive.icon).to.equal('financial');
+    expect(directive.iconType).to.equal('streamline');
     expect(directive.show).to.be.a('function');
     expect(directive.onBackHandler).to.be.a('function');
   });
@@ -446,5 +448,24 @@ describe('directive: TemplateComponentFinancial', function() {
 
     expect(label).to.equal('template.financial.add-category.world-indexes');
   });
+
+
+  it('should get the empty list suggestion text', function() {
+    $scope.category = 'currencies';
+
+    var label = $scope.getEmptyListSuggestionText();
+
+    expect(label).to.equal('template.financial.empty-list.suggestion.currencies');
+  });
+
+  it('should get the empty list suggestion text on categories with space', function() {
+    $scope.category = 'world indexes';
+
+    var label = $scope.getEmptyListSuggestionText();
+
+    expect(label).to.equal('template.financial.empty-list.suggestion.world-indexes');
+  });
+
+
 
 });

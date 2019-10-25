@@ -171,8 +171,11 @@ describe('service: storage:', function() {
       };
     });
 
+    $provide.service('processErrorCode', function() {
+      return sinon.spy(function() { return 'error'; });
+    });
   }));
-  var storage, returnResult, folderPath, filePath, folderName, storageApiRequestObj;
+  var storage, returnResult, folderPath, filePath, folderName, storageApiRequestObj, processErrorCode;
   beforeEach(function(){
     returnResult = true;
     folderPath = '';
@@ -180,6 +183,7 @@ describe('service: storage:', function() {
     
     inject(function($injector){
       storage = $injector.get('storage');
+      processErrorCode = $injector.get('processErrorCode');
     });
   });
 
@@ -252,6 +256,7 @@ describe('service: storage:', function() {
           done(result);
         })
         .then(null, function(error) {
+          expect(processErrorCode).to.have.been.calledWith('Files', 'list', 'API Failed');
           expect(error).to.deep.equal('API Failed');
           done();
         })
@@ -521,6 +526,74 @@ describe('service: storage:', function() {
         .then(null, function(error) {
           expect(error).to.deep.equal('API Failed');
           expect(storageApiRequestObj).to.not.be.null;
+          done();
+        });
+    });
+  });
+
+  describe('refreshFileMetadata',function() {
+    it('should only call get once', function(done) {
+      sinon.stub(storage.files, 'get').returns(Q.resolve({
+        files: [{name: 'file1.jpg'}]
+      }));
+
+      storage.refreshFileMetadata('file1')
+        .then(function(result) {
+          expect(result).to.be.ok;
+          expect(storage.files.get).have.been.calledOnce;
+
+          done();
+        });
+    });
+
+    it('should call get three times', function(done) {
+      var getStub = sinon.stub(storage.files, 'get');
+
+      getStub.onCall(0).returns(Q.resolve({
+        files: [{ metadata: { 'needs-thumbnail-update': 'true' } }]
+      }));
+      getStub.onCall(1).returns(Q.resolve({
+        files: [{ metadata: { 'needs-thumbnail-update': 'true' } }]
+      }));
+      getStub.onCall(2).returns(Q.resolve({
+        files: [{name: 'file1.jpg'}]
+      }));
+
+      storage.refreshFileMetadata('file1')
+        .then(function(result) {
+          expect(result).to.be.ok;
+          expect(storage.files.get).have.been.calledThrice;
+
+          done();
+        });
+    });
+
+    it('should fail after the third attempt', function(done) {
+      var getStub = sinon.stub(storage.files, 'get');
+
+      getStub.onCall(0).returns(Q.resolve({
+        files: [{ metadata: { 'needs-thumbnail-update': 'true' } }]
+      }));
+      getStub.onCall(1).returns(Q.resolve({
+        files: [{ metadata: { 'needs-thumbnail-update': 'true' } }]
+      }));
+      getStub.onCall(2).returns(Q.resolve({
+        files: [{ metadata: { 'needs-thumbnail-update': 'true' } }]
+      }));
+
+      storage.refreshFileMetadata('file1')
+        .catch(function(err) {
+          done();
+        });
+    });
+
+    it('should handle failure',function(done) {
+      sinon.stub(storage.files, 'get').returns(Q.reject('error'));
+
+      storage.refreshFileMetadata('file1')
+        .catch(function(err) {
+          expect(err).to.equal('error');
+
           done();
         });
     });

@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('templateAttributeList', ['templateEditorFactory',
-    function (templateEditorFactory) {
+  .directive('templateAttributeList', ['templateEditorFactory', 'brandingFactory', 'blueprintFactory',
+    function (templateEditorFactory, brandingFactory, blueprintFactory) {
       return {
         restrict: 'E',
         scope: true,
@@ -10,7 +10,12 @@ angular.module('risevision.template-editor.directives')
         link: function ($scope) {
           $scope.factory = templateEditorFactory;
 
-          $scope.components = templateEditorFactory.blueprintData.components;
+          $scope.brandingComponent = brandingFactory.getBrandingComponent();
+
+          $scope.components = blueprintFactory.blueprintData.components
+            .filter(function (c) {
+              return !c.nonEditable;
+            });
         }
       };
     }

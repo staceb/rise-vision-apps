@@ -2,8 +2,9 @@
 describe('controller: Presentation List', function() {
   beforeEach(module('risevision.editor.controllers'));
   beforeEach(module('risevision.editor.services'));
+  beforeEach(module('risevision.template-editor.directives'));
   beforeEach(module('risevision.template-editor.services'));
-  beforeEach(module(mockTranlate()));
+  beforeEach(module(mockTranslate()));
   beforeEach(module(function ($provide) {
     $provide.service('ScrollingListService', function() {
       return function() {
@@ -45,6 +46,9 @@ describe('controller: Presentation List', function() {
         openPresentation: sinon.stub()
       };
     });
+    $provide.value('PRESENTATION_SEARCH', {
+      filter: 'search filter'
+    });
   }));
   var $scope, $loading, $loadingStartSpy, $loadingStopSpy;
   beforeEach(function(){
@@ -80,6 +84,7 @@ describe('controller: Presentation List', function() {
     expect($scope.search).to.be.ok;
     expect($scope.search).to.have.property('sortBy');
     expect($scope.search).to.have.property('reverse');
+    expect($scope.search).to.have.property('filter');
     expect($scope.search.count).to.equal(5);
   });
 

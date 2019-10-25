@@ -6,7 +6,7 @@ describe('controller: Playlist Item Modal', function() {
       return {
         open : function(){
           var deferred = Q.defer();
-          deferred.resolve(['presentationId', 'name']);
+          deferred.resolve(['presentationId', 'name', presentationType]);
 
           return {
             result: deferred.promise
@@ -40,10 +40,37 @@ describe('controller: Playlist Item Modal', function() {
           return 'companyId';
         }
       };
-    })
+    });
+    $provide.service('presentation',function(){
+      return {
+        get: function(){
+          return Q.resolve({item: {productCode: '123'}});
+        }
+      };
+    });
+    $provide.service('blueprintFactory',function(){
+      return {
+        isPlayUntilDone: function() {
+          return this.playUntilDone;
+        },
+        load: function(){
+          this.playUntilDone = playUntilDone;
+          return Q.resolve();
+        }
+      };
+    });
+    $provide.service('$loading',function(){
+      return {
+        start: function(){},
+        stop: function(){}
+      };
+    });
     $provide.value('playlistItem', playlistItem);
+    $provide.constant('HTML_PRESENTATION_TYPE', 'HTML Template');
   }));
-  var $scope, $modalInstance, $modalInstanceDismissSpy, itemUpdated, playlistItem;
+
+  var $scope, $modalInstance, $modalInstanceDismissSpy, itemUpdated, playlistItem, presentationType, playUntilDone;
+
   beforeEach(function(){
     itemUpdated = false;
     playlistItem = {
@@ -51,6 +78,8 @@ describe('controller: Playlist Item Modal', function() {
       type: 'url'
     };
     
+    presentationType= '';
+
     inject(function($injector,$rootScope, $controller){
       $scope = $rootScope.$new();
       $modalInstance = $injector.get('$modalInstance');
@@ -100,14 +129,76 @@ describe('controller: Playlist Item Modal', function() {
 
     setTimeout(function() {
       expect($scope.playlistItem.objectReference).to.equal('presentationId');
+      expect($scope.playUntilDoneSupported).to.equal(true);
       
       done();
     }, 10);
   });
-  
-  it('should populate url on picked event',function(){
-    $scope.$broadcast('picked', ['some_url']);
-    $scope.$digest();
-    expect($scope.playlistItem.objectReference).to.equal('some_url');
+
+  it('should set playUntilDoneSupported to FALSE for HTML template', function(done) {
+
+    presentationType = 'HTML Template';
+    playUntilDone = false;
+
+    $scope.selectPresentation();
+
+    setTimeout(function() {
+      expect($scope.playlistItem.objectReference).to.equal('presentationId');
+      expect($scope.playUntilDoneSupported).to.equal(false);
+      
+      done();
+    }, 10);
   });
+
+  it('should set playUntilDoneSupported to TRUE for HTML template', function(done) {
+
+    presentationType = 'HTML Template';
+    playUntilDone = true;
+
+    $scope.selectPresentation();
+
+    setTimeout(function() {
+      expect($scope.playlistItem.objectReference).to.equal('presentationId');
+      expect($scope.playUntilDoneSupported).to.equal(true);
+      
+      done();
+    }, 10);
+  });
+
+  it('should set playlistItem.playUntilDone to TRUE when adding a new HTML template that is PUD', function(done) {
+
+    presentationType = 'HTML Template';
+    playUntilDone = true;
+    $scope.playlistItem.playUntilDone = undefined;
+    $scope.isNew = true;
+
+    $scope.selectPresentation();
+
+    setTimeout(function() {
+      expect($scope.playlistItem.objectReference).to.equal('presentationId');
+      expect($scope.playUntilDoneSupported).to.equal(true);
+      expect($scope.playlistItem.playUntilDone).to.equal(true);
+      
+      done();
+    }, 10);
+  });
+
+  it('should not set playlistItem.playUntilDone to TRUE when editing existing HTML template that is PUD', function(done) {
+
+    presentationType = 'HTML Template';
+    playUntilDone = true;
+    $scope.playlistItem.playUntilDone = false;
+    $scope.isNew = false;
+
+    $scope.selectPresentation();
+
+    setTimeout(function() {
+      expect($scope.playlistItem.objectReference).to.equal('presentationId');
+      expect($scope.playUntilDoneSupported).to.equal(true);
+      expect($scope.playlistItem.playUntilDone).to.equal(false);
+      
+      done();
+    }, 10);
+  });
+
 });

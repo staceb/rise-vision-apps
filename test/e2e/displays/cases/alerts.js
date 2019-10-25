@@ -1,8 +1,8 @@
 'use strict';
 var expect = require('rv-common-e2e').expect;
-var HomePage = require('./../../launcher/pages/homepage.js');
-var SignInPage = require('./../../launcher/pages/signInPage.js');
-var CommonHeaderPage = require('./../../../../web/bower_components/common-header/test/e2e/pages/commonHeaderPage.js');
+var HomePage = require('./../../common/pages/homepage.js');
+var SignInPage = require('./../../common/pages/signInPage.js');
+var CommonHeaderPage = require('./../../common-header/pages/commonHeaderPage.js');
 var AlertsPage = require('./../pages/alertsPage.js');
 var DisplaysListPage = require('./../pages/displaysListPage.js');
 var PresentationModalPage = require('./../../schedules/pages/presentationModalPage.js');
@@ -132,9 +132,12 @@ var AlertsScenarios = function() {
           expect(presentationModalPage.getAddPresentationModal().isDisplayed()).to.eventually.be.true;
           expect(presentationModalPage.getModalTitle().getText()).to.eventually.equal('Select Presentation');
           presentationModalPage.getCloseButton().click();
+          helper.waitDisappear(presentationModalPage.getAddPresentationModal(), 'Add Presentation Modal');
       });
 
       it('should open the Edit Distribution Modal', function () {
+        browser.sleep(100);
+
         alertsPage.getDistributeToAllText().click();
         alertsPage.getDistributionField().click();
         helper.wait(distributionModalPage.getEditDistributionModal(), 'Edit Distribution Modal');

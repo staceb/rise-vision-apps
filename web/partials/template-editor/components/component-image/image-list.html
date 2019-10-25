@@ -1,56 +1,53 @@
-<div class="image-component-list te-scrollable-container">
-  <div class="pl-0 image-row">
-    <div class="image-thumbnail">
-      <div>
-        <img src="http://via.placeholder.com/80x60" width="80" height="60"></img>
-      </div>
-    </div>
-    <div class="image-entry">
-      <div class="image-entry-top">
-        <div class="image-name">image.jpg</div>
-        <a href="#" translate>editor-app.details.remove</a>
-      </div>
-      <div>
-      </div>
-    </div>
-  </div>
-  <div class="pl-0 image-row">
-    <div class="image-thumbnail">
-      <img src="http://via.placeholder.com/80x60" width="80" height="60"></img>
-    </div>
-    <div class="image-entry">
-      <div class="image-entry-top">
-        <div class="image-name">very-long-image-name-of-image.jpg</div>
-        <a href="#" translate>editor-app.details.remove</a>
-      </div>
-      <div class="image-not-available">
-        Your image has been deleted, renamed, or moved.
-      </div>
-    </div>
-  </div>
-
-  <div class="image-component-list-empty" ng-hide="availableImages.length > 0">
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>You have no images here</h2>
-        <p>Upload images from your device or select images from storage to keep your display interesting!</p>
-        <div>
-          <img class="img-responsive" src="../images/image-empty-list.svg">
-        </div>
+<div class="image-component-list-duration"
+     ng-show="selectedImages.length > 1 && !isUploading">
+  <label>Show each image for:</label>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="input-group">
+        <input type="number" class="form-control" ng-model="values.duration" ng-change="saveDuration()">
+        <span class="input-group-addon">Seconds</span>
       </div>
     </div>
   </div>
 </div>
+<div class="image-component-list file-component-list te-scrollable-container"
+     ng-class="{'active-duration' : selectedImages.length > 1 && !isUploading}"
+     rv-spinner rv-spinner-key="template-editor-loader"
+     rv-spinner-start-active="1">
+  <template-editor-file-entry
+    ng-repeat="image in selectedImages track by $index"
+    ng-show="selectedImages.length > 0 && !isUploading"
+    entry="image"
+    file-type="image"
+    remove-action="removeImageFromList">
+  </template-editor-file-entry>
 
-<div class="image-component-list-action-button-bar">
-  <div class="upload-images">
-    <button class="btn btn-primary btn-block" ng-click="uploadImages()">
-      <strong>Upload Images</strong>
-    </button>
+  <template-editor-empty-file-list file-type="image" is-editing-logo="isEditingLogo"
+     ng-hide="isUploading || selectedImages.length !== 0 || factory.loadingPresentation">
+  </template-editor-empty-file-list>
+
+  <basic-uploader uploader-id="image-list-uploader"
+                  upload-manager="uploadManager"
+                  valid-extensions="validExtensions"
+                  valid-type="image"
+                  ng-show="isUploading">
+  </basic-uploader>
+</div>
+
+<div class="file-component-list-action-button-bar">
+  <div class="upload-files">
+    <label id="image-list-uploader-label"
+      class="btn btn-default btn-block"
+      for="image-list-uploader"
+      ng-disabled="isUploading"
+    >
+      <strong ng-if="!isEditingLogo()">Upload Images</strong>
+      <strong ng-if="isEditingLogo()">Upload A Logo</strong>
+    </label>
   </div>
   <div class="select-from-storage">
-    <button class="btn btn-primary btn-block" ng-click="selectFromStorage()">
-      <strong>Select from Storage</strong>
+    <button id="image-list-storage-button" class="btn btn-default btn-block" ng-click="selectFromStorage()" ng-disabled="isUploading">
+      <strong>Select From Storage</strong>
     </button>
   </div>
 </div>
