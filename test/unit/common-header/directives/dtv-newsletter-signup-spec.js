@@ -8,7 +8,7 @@ describe("directive: newsletter signup", function() {
 
   beforeEach(inject(function($compile, $rootScope) {
     $scope = $rootScope.$new();
-    var validHTML = 
+    var validHTML =
       "<form name=\"form\">" +
       "  <newsletter-signup ng-model=\"user.mailSyncEnabled\" company-industry=\"company.companyIndustry\" />" +
       "</form>";
@@ -56,5 +56,47 @@ describe("directive: newsletter signup", function() {
     });
 
   });
-  
+
+});
+
+describe("directive: newsletter already opted in", function() {
+  beforeEach(module("risevision.common.header.directives"));
+
+  var $scope, elemScope;
+
+  beforeEach(inject(function($compile, $rootScope) {
+    $scope = $rootScope.$new();
+    var validHTML =
+      "<form name=\"form\">" +
+      "  <newsletter-signup ng-model=\"user.mailSyncEnabled\" company-industry=\"company.companyIndustry\" />" +
+      "</form>";
+    $scope.user = { mailSyncEnabled: true };
+    $scope.company = {};
+    var elem = $compile(validHTML)($scope);
+    elemScope = elem.children().isolateScope();
+
+    $scope.$digest();
+  }));
+
+  describe("showNewsletterSignup:", function() {
+    it("should return false if it's already opted in", function () {
+      $scope.company.companyIndustry = "PRIMARY_SECONDARY_EDUCATION";
+      $scope.$digest();
+      expect(elemScope.showNewsletterSignup()).to.be.false;
+
+      $scope.company.companyIndustry = "HIGHER_EDUCATION";
+      $scope.$digest();
+      expect(elemScope.showNewsletterSignup()).to.be.false;
+
+      $scope.company.companyIndustry = "";
+      $scope.$digest();
+      expect(elemScope.showNewsletterSignup()).to.be.false;
+
+      $scope.company.companyIndustry = "OTHER";
+      $scope.$digest();
+      expect(elemScope.showNewsletterSignup()).to.be.false;
+    });
+
+  });
+
 });
