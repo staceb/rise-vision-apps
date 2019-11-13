@@ -20,6 +20,7 @@ angular.module('risevision.apps', [
     'risevision.common.components.timeline',
     'risevision.common.components.timeline-basic',
     'risevision.common.components.analytics',
+    'risevision.common.components.hubspot',
     'risevision.common.components.distribution-selector',
     'risevision.common.components.background-image-setting',
     'risevision.common.components.message-box',

@@ -53,6 +53,7 @@
         PASSWORD = commonHeaderPage.getPassword();
         NEW_COMPANY_NAME = commonHeaderPage.addStageSuffix("Public School");
 
+        console.log('Checking login for ' + EMAIL_ADDRESS);
         detectAndFixUserAlreadyRegistered();
 
         signUpPage.get();

@@ -4,6 +4,13 @@ describe("service: customAuthFactory:", function() {
 
   beforeEach(module(function ($provide) {
     $provide.service("$q", function() {return Q;});
+
+    $provide.factory("hubspot", [function () {
+      return {
+        loadAs: function() {}
+      };
+    }]);
+
     $provide.service("userauth", function() {
       return {
         add: function(username, password){
