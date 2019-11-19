@@ -44,15 +44,23 @@ angular.module('risevision.template-editor.directives')
               });
 
               $scope.load = function () {
+                var targetDate = $scope.getAvailableAttributeData($scope.componentId, 'date');
+
                 $scope.counterType = $scope.getAvailableAttributeData($scope.componentId, 'type');
-                $scope.targetDate = $scope.getAvailableAttributeData($scope.componentId, 'date');
                 $scope.targetTime = $scope.getAvailableAttributeData($scope.componentId, 'time');
                 $scope.nonCompletion = $scope.getAvailableAttributeData($scope.componentId,
                   'non-completion') === '';
                 $scope.completionMessage = $scope.getAvailableAttributeData($scope.componentId, 'completion');
 
-                if ($scope.targetDate) {
+                if (targetDate) {
+                  var localDate = new Date(targetDate);
+                  localDate.setMinutes(localDate.getMinutes() + localDate.getTimezoneOffset());
+
                   $scope.targetUnit = 'targetDate';
+                  // Set init-date attribute to fix issue with Date initialization
+                  // https://github.com/angular-ui/bootstrap/issues/5081
+                  $scope.targetDatePicker.initDate = localDate;
+                  $scope.targetDate = localDate;
                 } else if ($scope.targetTime) {
                   $scope.targetTime = utils.absoluteTimeToMeridian($scope.targetTime);
                   $scope.targetUnit = 'targetTime';
@@ -63,7 +71,10 @@ angular.module('risevision.template-editor.directives')
 
               $scope.save = function () {
                 if ($scope.targetUnit === 'targetDate') {
-                  $scope.setAttributeData($scope.componentId, 'date', utils.formatISODate($scope.targetDate));
+                  var localDate = new Date($scope.targetDate);
+                  localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+
+                  $scope.setAttributeData($scope.componentId, 'date', utils.formatISODate(localDate));
                   $scope.setAttributeData($scope.componentId, 'time', null);
                 } else if ($scope.targetUnit === 'targetTime') {
                   $scope.setAttributeData($scope.componentId, 'date', null);
