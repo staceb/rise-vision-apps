@@ -32,6 +32,7 @@ angular.module('risevision.common.header', [
     'risevision.common.components.scrolling-list',
     'risevision.common.components.stop-event',
     'risevision.common.components.analytics',
+    'risevision.common.components.hubspot',
     'risevision.common.components.message-box',
     'risevision.common.components.confirm-modal',
     'risevision.common.components.svg',
