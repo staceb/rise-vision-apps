@@ -140,23 +140,9 @@
     "title": "Shared Templates"
   },
   "storeProduct": {
-    "add": "Add",
     "content": {
       "search": "Search for Widget",
       "title": "Add Widget",
-      "otherWidgets": "For All Displays",
-      "noResults": "Your search didn't return any results"
-    },
-    "professional": {
-      "title": "For Licensed Displays Only",
-      "learnMore": "Learn More",
-      "unlock": "Unlock",
-      "widgetType": "For Licensed Displays",
-      "promotion": "Add power and functionality to your Presentations with Widgets for Licensed Displays",
-      "promotionTrial": "Unlock the power of Widgets for Licensed Displays with a Paid Plan.",
-      "promotionTrialButton": "View Plans",
-      "promotionPlan": "Unlock the power of Widgets for Licensed Displays. Assign your included Display Licenses.",
-      "promotionDisplaysButton": "View Displays",
       "noResults": "Your search didn't return any results"
     },
     "details": "Details",
@@ -180,14 +166,6 @@
       "suggest": "Suggest a Template!",
       "title": "Add a New Presentation"
     }
-  },
-  "subscription": {
-    "buy": "Buy",
-    "subscribe": "Subscribe",
-    "status": {
-      "professional": "For Licensed Displays"
-    },
-    "viewAccount": "View Account"
   },
   "templatesLibrary": {
     "details": {

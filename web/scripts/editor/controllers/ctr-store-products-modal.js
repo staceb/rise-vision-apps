@@ -1,23 +1,19 @@
 'use strict';
 angular.module('risevision.editor.controllers')
   .controller('storeProductsModal', ['$scope', '$loading', '$filter', '$modal', '$modalInstance',
-    'ScrollingListService', 'productsFactory', 'playlistItemFactory', 'widgetUtils',
-    'plansFactory', 'playerLicenseFactory', 'category', 'TEMPLATES_TYPE', 'userState',
+    'userState', 'ScrollingListService', 'productsFactory', 'playlistItemFactory',
+    'category', 'TEMPLATES_TYPE',
     function ($scope, $loading, $filter, $modal, $modalInstance,
-      ScrollingListService, productsFactory, playlistItemFactory, widgetUtils,
-      plansFactory, playerLicenseFactory, category, TEMPLATES_TYPE, userState) {
+      userState, ScrollingListService, productsFactory, playlistItemFactory,
+      category, TEMPLATES_TYPE) {
       var defaultCount = 1000;
 
-      $scope.playerLicenseFactory = playerLicenseFactory;
-      $scope.showPlansModal = plansFactory.showPlansModal;
       $scope.isEducationCustomer = userState.isEducationCustomer();
 
       $scope.search = {
         category: category,
         count: defaultCount
       };
-
-      $scope.professionalWidgets = widgetUtils.getProfessionalWidgets();
 
       $scope.factory = new ScrollingListService(productsFactory.loadProducts,
         $scope.search);

@@ -56,11 +56,6 @@ describe('controller: Store Products Modal', function() {
         addWidgetByUrl : function(){}
       }
     });
-    $provide.service('widgetUtils',function(){
-      return {
-        getProfessionalWidgets : function(){ return 'professionalWidgets'; }
-      }
-    });
     $provide.service('userState',function(){
       return {
         isEducationCustomer : function(){ return isEducationCustomer; },
@@ -68,7 +63,6 @@ describe('controller: Store Products Modal', function() {
       }
     });
     
-    $provide.service('playerLicenseFactory', function() {});
   }));
   
   var $scope, $loading, $loadingStartSpy, $loadingStopSpy;
@@ -128,8 +122,6 @@ describe('controller: Store Products Modal', function() {
     expect($scope.search).to.be.ok;
     expect($scope.search).to.have.property('category');
     expect($scope.search.count).to.equal(1000);
-
-    expect($scope.professionalWidgets).to.equal('professionalWidgets');
   });
 
   describe('isEducationCustomer:',function(){   
