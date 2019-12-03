@@ -76,12 +76,24 @@ angular.module('risevision.apps', [
         })
 
         .state('apps.launcher', {
+          url: '/?cid',
           abstract: true,
-          template: '<div class="app-launcher" ui-view></div>'
+          template: '<div class="app-launcher" ui-view></div>',
+          controller: ['$location', '$state', 'canAccessApps', 'userState',
+            function ($location, $state, canAccessApps, userState) {
+              canAccessApps().then(function () {
+                if (userState.isEducationCustomer()) {
+                  $state.go('apps.launcher.onboarding');
+                } else {
+                  $state.go('apps.launcher.home');
+                }
+              });
+            }
+          ]
         })
 
         .state('apps.launcher.home', {
-          url: '/',
+          url: '',
           templateProvider: ['$templateCache', function ($templateCache) {
             return $templateCache.get(
               'partials/launcher/app-launcher.html');
@@ -96,26 +108,50 @@ angular.module('risevision.apps', [
           }
         })
 
-        .state('apps.launcher.signup', {
+        .state('apps.launcher.onboarding', {
+          url: 'onboarding',
+          templateProvider: ['$templateCache', function ($templateCache) {
+            return $templateCache.get(
+              'partials/launcher/app-launcher.html');
+          }],
+          controller: 'HomeCtrl',
+          resolve: {
+            canAccessApps: ['canAccessApps',
+              function (canAccessApps) {
+                return canAccessApps();
+              }
+            ]
+          }
+        })
+
+        .state('common.auth.signup', {
           url: '/signup',
           controller: ['$location', '$state', 'canAccessApps', 'plansFactory',
             function ($location, $state, canAccessApps, plansFactory) {
+              // jshint camelcase:false
+              var showProduct = $location.search().show_product;
+              // jshint camelcase:true
+
               canAccessApps(true).then(function () {
-                // jshint camelcase:false
-                if ($location.search().show_product) {
+                if (showProduct) {
                   plansFactory.showPlansModal();
                 }
 
                 $state.go('apps.launcher.home');
-                // jshint camelcase:true
               });
             }
           ]
         })
 
-        .state('apps.launcher.signin', {
+        .state('common.auth.signin', {
           url: '/signin',
-          controller: 'SignInCtrl'
+          controller: ['$state', 'canAccessApps',
+            function ($state, canAccessApps) {
+              canAccessApps().then(function () {
+                $state.go('apps.launcher.home');
+              });
+            }
+          ]
         })
 
         .state('common.auth.unregistered', {
@@ -511,6 +547,7 @@ angular.module('risevision.apps', [
           $state.current.name === 'apps.displays.alerts' ||
           $state.current.name === 'apps.storage.home' ||
           $state.current.name === 'apps.launcher.home' ||
+          $state.current.name === 'apps.launcher.onboarding' ||
           $state.current.name === 'apps.billing.home') {
 
           $state.go($state.current, null, {
