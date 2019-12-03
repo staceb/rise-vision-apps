@@ -79,10 +79,10 @@ angular.module('risevision.apps', [
           url: '/?cid',
           abstract: true,
           template: '<div class="app-launcher" ui-view></div>',
-          controller: ['$location', '$state', 'canAccessApps', 'userState',
-            function ($location, $state, canAccessApps, userState) {
+          controller: ['$state', 'canAccessApps', 'onboardingFactory',
+            function ($state, canAccessApps, onboardingFactory) {
               canAccessApps().then(function () {
-                if (userState.isEducationCustomer()) {
+                if (onboardingFactory.isOnboarding()) {
                   $state.go('apps.launcher.onboarding');
                 } else {
                   $state.go('apps.launcher.home');
@@ -517,6 +517,11 @@ angular.module('risevision.apps', [
           }
         });
 
+    }
+  ])
+  .config(['$localStorageProvider',
+    function($localStorageProvider) {
+      $localStorageProvider.setKeyPrefix('RiseVision-');
     }
   ])
   .run(['$rootScope', '$state', '$modalStack', 'userState', 'displayFactory', '$window',
