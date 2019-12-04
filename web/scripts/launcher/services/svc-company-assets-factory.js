@@ -40,21 +40,21 @@ angular.module('risevision.apps.launcher.services')
         var deferred = $q.defer();
 
         displayListRequest.execute(forceReload).then(function (resp) {
-          var hasAddedDisplay = resp && resp.items && resp.items.length > 0;
-          var response = {
-            hasDisplays: false,
-            hasActivatedDisplays: true
-          };
+            var hasAddedDisplay = resp && resp.items && resp.items.length > 0;
+            var response = {
+              hasDisplays: false,
+              hasActivatedDisplays: true
+            };
 
-          if (hasAddedDisplay) {
-            response.hasDisplays = true;
-          }
+            if (hasAddedDisplay) {
+              response.hasDisplays = true;
+            }
 
-          deferred.resolve(response);
-        })
-        .catch(function (e) {
-          deferred.reject(e);
-        });
+            deferred.resolve(response);
+          })
+          .catch(function (e) {
+            deferred.reject(e);
+          });
 
         return deferred.promise;
       };
