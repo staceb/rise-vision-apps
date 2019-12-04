@@ -76,49 +76,48 @@ angular.module('risevision.apps', [
         })
 
         .state('apps.launcher', {
-          url: '/?cid',
+          url: '?cid',
           abstract: true,
-          template: '<div class="app-launcher" ui-view></div>',
-          controller: ['$state', 'canAccessApps', 'onboardingFactory',
-            function ($state, canAccessApps, onboardingFactory) {
-              canAccessApps().then(function () {
-                if (onboardingFactory.isOnboarding()) {
-                  $state.go('apps.launcher.onboarding');
-                } else {
-                  $state.go('apps.launcher.home');
-                }
-              });
-            }
-          ]
+          template: '<div class="container app-launcher" ui-view></div>'
         })
 
         .state('apps.launcher.home', {
-          url: '',
+          url: '/',
           templateProvider: ['$templateCache', function ($templateCache) {
             return $templateCache.get(
               'partials/launcher/app-launcher.html');
           }],
           controller: 'HomeCtrl',
           resolve: {
-            canAccessApps: ['canAccessApps',
-              function (canAccessApps) {
-                return canAccessApps();
+            canAccessApps: ['$state', '$location', 'canAccessApps', 'onboardingFactory',
+              function ($state, $location, canAccessApps, onboardingFactory) {
+                return canAccessApps().then(function () {
+                  if (onboardingFactory.isOnboarding()) {
+                    $location.replace();
+                    $state.go('apps.launcher.onboarding');
+                  }
+                });
               }
             ]
           }
         })
 
         .state('apps.launcher.onboarding', {
-          url: 'onboarding',
+          url: '/onboarding',
           templateProvider: ['$templateCache', function ($templateCache) {
             return $templateCache.get(
-              'partials/launcher/app-launcher.html');
+              'partials/launcher/onboarding.html');
           }],
-          controller: 'HomeCtrl',
+          controller: 'OnboardingCtrl',
           resolve: {
-            canAccessApps: ['canAccessApps',
-              function (canAccessApps) {
-                return canAccessApps();
+            canAccessApps: ['$state', '$location', 'canAccessApps', 'onboardingFactory',
+              function ($state, $location, canAccessApps, onboardingFactory) {
+                return canAccessApps().then(function () {
+                  if (!onboardingFactory.isOnboarding()) {
+                    $location.replace();
+                    $state.go('apps.launcher.home');
+                  }
+                });
               }
             ]
           }

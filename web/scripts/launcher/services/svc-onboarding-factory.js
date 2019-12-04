@@ -7,6 +7,11 @@ angular.module('risevision.apps.launcher.services')
         onboardingStep: undefined
       };
 
+      $localStorage.onboarding = angular.extend({
+        currentStep: 1,
+        completed: false
+      }, $localStorage.onboarding);
+
       var _checkCreationDate = function() {
         var company = userState.getCopyOfSelectedCompany();
         var creationDate = ((company && company.creationDate) ? (new Date(company.creationDate)) : (
@@ -21,7 +26,7 @@ angular.module('risevision.apps.launcher.services')
       };
 
       factory.isOnboarding = function() {
-        var completed = $localStorage.onboarding && $localStorage.onboarding.completed;
+        var completed = $localStorage.onboarding.completed;
 
         return userState.isEducationCustomer() && _checkCreationDate() && !completed;
       };

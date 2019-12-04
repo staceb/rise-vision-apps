@@ -15,7 +15,7 @@ describe('service: onboarding factory:', function() {
     $provide.service('userState',function(){
       return {
         getCopyOfSelectedCompany: sinon.stub().returns({
-          creationDate: 'Dec 25, 2019'
+          creationDate: 'Jan 1, 2020'
         }),
         getCopyOfProfile: sinon.stub(),
         isEducationCustomer: sinon.stub().returns(true),
@@ -25,7 +25,9 @@ describe('service: onboarding factory:', function() {
 
     $provide.service('$localStorage', function() {
       return {
-        
+        onboarding: {
+          currentStep: 2
+        }
       };
     });
 
@@ -47,6 +49,13 @@ describe('service: onboarding factory:', function() {
     expect(onboardingFactory).to.be.ok;
     expect(onboardingFactory.isOnboarding).to.be.a('function');
     expect(onboardingFactory.onboardingStep).to.be.undefined;
+  });
+
+  it('should initialize $localStorage.onboarding value', function() {
+    expect($localStorage.onboarding).to.deep.equal({
+      currentStep: 2,
+      completed: false
+    });
   });
 
   describe('isOnboarding:', function() {

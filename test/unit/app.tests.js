@@ -427,63 +427,128 @@ describe('app:', function() {
       var state = $state.get('apps.launcher');
       expect(state).to.be.ok;
       expect(state.abstract).to.be.true;
-      expect(state.template).to.equal('<div class="app-launcher" ui-view></div>');
-      expect(state.url).to.equal('/?cid');
-      expect(state.controller).to.be.ok;
+      expect(state.template).to.equal('<div class="container app-launcher" ui-view></div>');
+      expect(state.url).to.equal('?cid');
     });
 
-    it('should register launcher.home state',function(){
-      var state = $state.get('apps.launcher.home');
-      expect(state).to.be.ok;
-      expect(state.url).to.equal('');
-      expect(state.controller).to.be.ok;
+    describe('launcher.home:', function() {
+      it('should register launcher.home state',function(){
+        var state = $state.get('apps.launcher.home');
+        expect(state).to.be.ok;
+        expect(state.url).to.equal('/');
+        expect(state.controller).to.equal('HomeCtrl');
+      });
+
+      it('should redirect to onboarding', function(done) {
+        var canAccessApps = function() {
+          return Q.resolve();
+        };
+        var onboardingFactory = {
+          isOnboarding: function() {
+            return true;
+          }
+        };
+
+        var $location = {
+          replace: sinon.spy()
+        };
+
+        sinon.spy($state, 'go');
+        $state.get('apps.launcher.home').resolve.canAccessApps[4]($state, $location, canAccessApps, onboardingFactory);
+
+        setTimeout(function() {
+          $location.replace.should.have.been.called;
+          $state.go.should.have.been.calledWith('apps.launcher.onboarding');
+
+          done();
+        }, 10);
+      });
+
+      it('should not redirect to onboarding if not required', function(done) {
+        var canAccessApps = function() {
+          return Q.resolve();
+        };
+        var onboardingFactory = {
+          isOnboarding: function() {
+            return false;
+          }
+        };
+
+        var $location = {
+          replace: sinon.spy()
+        };
+
+        sinon.spy($state, 'go');
+        $state.get('apps.launcher.home').resolve.canAccessApps[4]($state, $location, canAccessApps, onboardingFactory);
+
+        setTimeout(function() {
+          $location.replace.should.not.have.been.called;
+          $state.go.should.not.have.been.called;
+
+          done();
+        }, 10);
+      });
+
     });
 
-    it('should register launcher.onboarding state',function(){
-      var state = $state.get('apps.launcher.onboarding');
-      expect(state).to.be.ok;
-      expect(state.url).to.equal('onboarding');
-      expect(state.controller).to.be.ok;
+    describe('launcher.onboarding:', function() {
+      it('should register launcher.onboarding state',function(){
+        var state = $state.get('apps.launcher.onboarding');
+        expect(state).to.be.ok;
+        expect(state.url).to.equal('/onboarding');
+        expect(state.controller).to.equal('OnboardingCtrl');
+      });
+
+      it('should redirect to home if not showing onboarding', function(done) {
+        var canAccessApps = function() {
+          return Q.resolve();
+        };
+        var onboardingFactory = {
+          isOnboarding: function() {
+            return false;
+          }
+        };
+
+        var $location = {
+          replace: sinon.spy()
+        };
+
+        sinon.spy($state, 'go');
+        $state.get('apps.launcher.onboarding').resolve.canAccessApps[4]($state, $location, canAccessApps, onboardingFactory);
+
+        setTimeout(function() {
+          $location.replace.should.have.been.called;
+          $state.go.should.have.been.calledWith('apps.launcher.home');
+
+          done();
+        }, 10);
+      });
+
+      it('should not redirect to home', function(done) {
+        var canAccessApps = function() {
+          return Q.resolve();
+        };
+        var onboardingFactory = {
+          isOnboarding: function() {
+            return true;
+          }
+        };
+
+        var $location = {
+          replace: sinon.spy()
+        };
+
+        sinon.spy($state, 'go');
+        $state.get('apps.launcher.onboarding').resolve.canAccessApps[4]($state, $location, canAccessApps, onboardingFactory);
+
+        setTimeout(function() {
+          $location.replace.should.not.have.been.called;
+          $state.go.should.not.have.been.called;
+
+          done();
+        }, 10);
+      });
     });
 
-    it('should redirect to home if not showing onboarding', function(done) {
-      var canAccessApps = function() {
-        return Q.resolve();
-      };
-      var onboardingFactory = {
-        isOnboarding: function() {
-          return false;
-        }
-      };
-
-      sinon.spy($state, 'go');
-      $state.get('apps.launcher').controller[3]($state, canAccessApps, onboardingFactory);
-
-      setTimeout(function() {
-        $state.go.should.have.been.calledWith('apps.launcher.home');
-
-        done();
-      }, 10);
-    });
-
-    it('should redirect to onboarding', function(done) {
-      var canAccessApps = function() {
-        return Q.resolve();
-      };
-      var onboardingFactory = {
-        isOnboarding: function() {
-          return true;
-        }
-      };
-
-      sinon.spy($state, 'go');
-      $state.get('apps.launcher').controller[3]($state, canAccessApps, onboardingFactory);
-
-      setTimeout(function() {
-        $state.go.should.have.been.calledWith('apps.launcher.onboarding');
-
-        done();
-      }, 10);
-    });
   });
 });
