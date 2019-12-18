@@ -1,62 +1,41 @@
 <div id="userPlayerPage">
-  <div class="row">
-    <div class="col-xs-12">
-      <p>
-        The do-it-yourselfer! Before configuring your Media Player we suggest 
-        reviewing the 
-        <a href="https://help.risevision.com/hc/en-us/articles/115001817143-Rise-Player-supported-operating-systems#%E2%80%9Csetting-up-your-own-media-player%E2%80%9D" target="_blank">
-          minimum system requirements to run Rise Player
-        </a>. 
-        Once you have your Media Player you need to download and install Rise Player on 
-        it by choosing your Operating System below.
-      </p>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-xs-12 u_margin-md-top">
+  <div class="panel mb-0">
 
-      <ul id="select-rise-player-os-desktop" class="nav nav-tabs nav-justified hidden-xs">
-        <li data-toggle="tab" ng-class="{ active: currentTab == 'windows' }">
-          <a href="#" ng-click="setCurrentTab('windows');" translate="displays-app.add.instructions.os.windows10"></a>
-        </li>
-        <li data-toggle="tab" ng-class="{ active: currentTab == 'chromeos' }">
-          <a href="#" ng-click="setCurrentTab('chromeos');" translate="displays-app.add.instructions.os.chromeos"></a>
-        </li>
-        <li data-toggle="tab" ng-class="{ active: currentTab == 'linux' }">
-          <a href="#" ng-click="setCurrentTab('linux');" translate="displays-app.add.instructions.os.linux"></a>
-        </li>
-        <li data-toggle="tab" ng-class="{ active: currentTab == 'pi' }">
-          <a href="#" ng-click="setCurrentTab('pi');" translate="displays-app.add.instructions.os.pi"></a>
-        </li>
-      </ul>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-12">
+          <p>
+            To connect your Media Player to Rise Vision you need to download and install “Rise Player” on your Media Player.
+          </p>
+        </div>
+      </div>
 
-      <select id="select-rise-player-os-mobile" ng-model="currentTab" class="form-control visible-xs">
-        <option translate="displays-app.add.instructions.os.windows10" value="windows"></option>
-        <option translate="displays-app.add.instructions.os.chromeos" value="chromeos"></option>
-        <option translate="displays-app.add.instructions.os.linux" value="linux"></option>
-        <option translate="displays-app.add.instructions.os.pi" value="pi"></option>
-      </select>
+      <div class="row">
+        <div class="col-xs-12 u_margin-sm-top">
+          <p>
+            <strong>Choose your operating system:</strong>
+          </p>
+        </div>
+      </div>
 
-      <div ng-show="currentTab === 'windows'" class="row">
+      <div class="row">
         <div class="col-xs-12">
           <div class="u_margin-sm-top text-center sideways-panels">
 
             <div class="panel panel-default u_bordered-hover u_remove-bottom u_clickable">
-              <a href="http://install-versions.risevision.com/installer-win-32.exe" class="u_link-no-underline">
+              <a href="#" ng-click="setCurrentPage('osDetailsWindows');">
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-xs-12">
-                      <img src="../images/display-add/windows-logo.svg" width="60">
+                      <img src="../images/display-add/windows-logo.svg" height="60">
                     </div>
                   </div>
                   <div class="row u_margin-md-top">
                     <div class="col-xs-12">
-                      <span class="font-weight-medium">
-                        Download for Windows 7 and Up
-                        <br />
-                        (32-bit)
-                      </span>
+                      <strong>
+                        Windows
+                      </strong>
                     </div>
                   </div>
                 </div>
@@ -64,49 +43,18 @@
             </div>
 
             <div class="panel panel-default u_bordered-hover u_remove-bottom u_clickable">
-              <a href="http://install-versions.risevision.com/installer-win-64.exe" class="u_link-no-underline" id="downloadWindows64">
+              <a href="#" ng-click="setCurrentPage('osDetailsLinux')">
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-xs-12">
-                      <img src="../images/display-add/windows-logo.svg" width="60">
+                      <img src="../images/display-add/ubuntu-logo.svg" height="60">
                     </div>
                   </div>
                   <div class="row u_margin-md-top">
                     <div class="col-xs-12">
-                      <span class="font-weight-medium">
-                        Download for Windows 7 and Up
-                        <br />
-                        (64-bit)
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <div ng-show="currentTab === 'linux'" class="row">
-        <div class="col-xs-12">
-          <div class="u_margin-sm-top text-center sideways-panels">
-
-            <div class="panel panel-default u_bordered-hover u_remove-bottom u_clickable">
-              <a href="http://install-versions.risevision.com/installer-lnx-32.sh" class="u_link-no-underline">
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <img src="../images/display-add/ubuntu-logo.svg" width="60">
-                    </div>
-                  </div>
-                  <div class="row u_margin-md-top">
-                    <div class="col-xs-12">
-                      <span class="font-weight-medium">
-                        Download for Ubuntu 16.04 LTS
-                        <br />
-                        (32-bit)
-                      </span>
+                      <strong>
+                        Linux
+                      </strong>
                     </div>
                   </div>
                 </div>
@@ -114,104 +62,57 @@
             </div>
 
             <div class="panel panel-default u_bordered-hover u_remove-bottom u_clickable">
-              <a href="http://install-versions.risevision.com/installer-lnx-64.sh" class="u_link-no-underline">
+              <a href="#" ng-click="setCurrentPage('osDetailsChromeOs')">
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-xs-12">
-                      <img src="../images/display-add/ubuntu-logo.svg" width="60">
+                      <img src="../images/display-add/chrome-os-logo.svg" height="60">
                     </div>
                   </div>
                   <div class="row u_margin-md-top">
                     <div class="col-xs-12">
-                      <span class="font-weight-medium">
-                        Download for Ubuntu 16.04 LTS
-                        <br />
-                        (64-bit)
-                      </span>
+                      <strong>
+                        Chrome OS
+                      </strong>
                     </div>
                   </div>
                 </div>
               </a>
             </div>
 
-          </div>
-        </div>
-      </div>
-
-      <div ng-show="currentTab === 'pi'" class="row">
-        <div class="col-xs-12">
-          <div class="u_margin-sm-top text-center">
             <div class="panel panel-default u_bordered-hover u_remove-bottom u_clickable">
-              <a href="http://install-versions.risevision.com/installer-lnx-armv7l.sh" class="u_link-no-underline">
+              <a href="#" ng-click="setCurrentPage('osDetailsRaspberryPi')">
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-xs-12">
-                      <img src="../images/display-add/raspberry-pi-logo.svg" width="48">
+                      <img src="../images/display-add/raspberry-pi-logo.svg" height="60">
                     </div>
                   </div>
                   <div class="row u_margin-md-top">
                     <div class="col-xs-12">
-                      <span class="font-weight-medium">
-                        Download for Raspberry Pi
-                      </span>
+                      <strong>
+                        Raspberry Pi
+                      </strong>
                     </div>
                   </div>
                 </div>
               </a>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div ng-show="currentTab === 'chromeos'" class="row">
-        <div class="col-xs-12">
-          <div class="u_margin-sm-top text-center">
-            <div class="panel panel-default u_bordered-hover u_remove-bottom u_clickable">
-              <a href="https://help.risevision.com/hc/en-us/articles/360001252066" class="u_link-no-underline" target="_blank">
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <img src="../images/display-add/chrome-os-logo.svg" width="60">
-                    </div>
-                  </div>
-                  <div class="row u_margin-md-top">
-                    <div class="col-xs-12">
-                      <span class="font-weight-medium">
-                        Download for Chrome OS
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
           </div>
         </div>
       </div>
 
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-xs-12 u_margin-lg-top">
-      <p>
-        Consider the 
-        <a id="preconfiguredPlayerLink" href="#" ng-click="setCurrentPage('preconfiguredMediaPlayer')">pre-configured Rise Vision Media Player</a>
-        to save yourself some time!
-      </p>
+    <div class="panel-footer">
+      <div class="row">
+        <div class="col-xs-12">
+          <button id="previousButton" type="submit" class="btn btn-default w-100" aria-label="Previous" tabindex="1" ng-click="setCurrentPage('displayAdded')">← Previous Step</button>
+        </div>
+      </div>
     </div>
+
   </div>
-
-  <div class="row">
-    <div class="col-xs-12 u_margin-sm-top">
-      <p>
-        Once you’ve configured your Media Player plug in your Display and enter the 
-        Display ID below to activate it and show the content you’ve created!
-      </p>
-    </div>
-  </div>
-
-  <ng-include src="'partials/displays/display-id.html'"></ng-include>
-
-  <emailed-instructions></emailed-instructions> 
 
 </div>

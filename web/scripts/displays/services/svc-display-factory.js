@@ -46,7 +46,7 @@ angular.module('risevision.displays.services')
 
         $modal.open({
           templateUrl: 'partials/displays/display-add-modal.html',
-          size: 'md',
+          size: 'lg',
           controller: 'displayAddModal',
           resolve: {
             downloadOnly: function () {

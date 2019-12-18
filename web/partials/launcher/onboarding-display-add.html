@@ -24,12 +24,12 @@
 <div class="row">
   <div class="col-sm-12">
 
-    <name-your-display ng-if="!currentPage" is-onboarding="true"></name-your-display>
-    <ng-include ng-if="currentPage === 'displayAdded'" src="'partials/launcher/display-added.html'"></ng-include>
+    <name-your-display ng-if="!currentPage"></name-your-display>
+    <ng-include ng-if="currentPage === 'displayAdded'" src="'partials/displays/display-added.html'"></ng-include>
 
-    <ng-include ng-if="currentPage === 'preconfiguredMediaPlayer'" src="'partials/launcher/preconfigured-media-player.html'"></ng-include>
-    <ng-include ng-if="currentPage === 'userMediaPlayer'" src="'partials/launcher/user-media-player.html'"></ng-include>
-    <ng-include ng-if="currentPage && currentPage.indexOf('osDetails') !== -1" src="'partials/launcher/os-details.html'"></ng-include>
+    <ng-include ng-if="currentPage === 'preconfiguredMediaPlayer'" src="'partials/displays/preconfigured-media-player.html'"></ng-include>
+    <ng-include ng-if="currentPage === 'userMediaPlayer'" src="'partials/displays/user-media-player.html'"></ng-include>
+    <ng-include ng-if="currentPage && currentPage.indexOf('osDetails') !== -1" src="'partials/displays/os-details.html'"></ng-include>
 
   </div>
 </div>

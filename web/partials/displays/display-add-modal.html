@@ -1,4 +1,4 @@
-<div id="displayAddModal">
+<div id="displayAddModal" class="madero-style">
   <div class="modal-header">
     <button id="dismissButton" type="button" class="close" ng-click="dismiss()">
       <i class="fa fa-times"></i>
@@ -11,8 +11,7 @@
     <ng-include ng-if="currentPage === 'displayAdded'" src="'partials/displays/display-added.html'"></ng-include>
 
     <ng-include ng-if="currentPage === 'preconfiguredMediaPlayer'" src="'partials/displays/preconfigured-media-player.html'"></ng-include>
-    <user-media-player ng-if="currentPage === 'userMediaPlayer'"></user-media-player>
-
-    <send-another-email ng-if="currentPage === 'anotherEmailPage'"></send-another-email>
+    <ng-include ng-if="currentPage === 'userMediaPlayer'" src="'partials/displays/user-media-player.html'"></ng-include>
+    <ng-include ng-if="currentPage && currentPage.indexOf('osDetails') !== -1" src="'partials/displays/os-details.html'"></ng-include>
   </div>
 </div>

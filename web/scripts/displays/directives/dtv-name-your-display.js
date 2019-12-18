@@ -23,9 +23,9 @@ angular.module('risevision.displays.directives')
               return;
             }
 
-            // displayFactory.addDisplay().then(function () {
+            displayFactory.addDisplay().then(function () {
               $scope.setCurrentPage('displayAdded');
-            // });
+            });
           };
 
         } //link()
