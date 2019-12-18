@@ -2,9 +2,10 @@
 
 angular.module('risevision.schedules.services')
   .factory('scheduleFactory', ['$q', '$state', '$log', '$modal', '$rootScope', 'schedule', 'scheduleTracker',
-    'processErrorCode',
+    'onboardingFactory', 'processErrorCode',
     'VIEWER_URL',
-    function ($q, $state, $log, $modal, $rootScope, schedule, scheduleTracker, processErrorCode, VIEWER_URL) {
+    function ($q, $state, $log, $modal, $rootScope, schedule, scheduleTracker, onboardingFactory, 
+      processErrorCode, VIEWER_URL) {
       var factory = {};
       var _hasSchedules;
       var _scheduleId;
@@ -141,6 +142,9 @@ angular.module('risevision.schedules.services')
           .then(function (resp) {
             if (resp && resp.item && resp.item.id) {
               _hasSchedules = true;
+
+              $rootScope.$emit('scheduleCreated');
+
               scheduleTracker('Schedule Created', resp.item.id, resp.item.name);
 
               return $q.resolve();
@@ -149,16 +153,20 @@ angular.module('risevision.schedules.services')
             }
           })
           .then(function () {
-            $modal.open({
-              templateUrl: 'partials/schedules/auto-schedule-modal.html',
-              size: 'md',
-              controller: 'AutoScheduleModalController',
-              resolve: {
-                presentationName: function () {
-                  return presentationName;
+            if (onboardingFactory.isTemplateOnboarding()) {
+              $state.go('apps.launcher.onboarding');
+            } else {
+              $modal.open({
+                templateUrl: 'partials/schedules/auto-schedule-modal.html',
+                size: 'md',
+                controller: 'AutoScheduleModalController',
+                resolve: {
+                  presentationName: function () {
+                    return presentationName;
+                  }
                 }
-              }
-            });
+              });              
+            }
           });
       };
 
@@ -172,6 +180,8 @@ angular.module('risevision.schedules.services')
         schedule.add(factory.schedule)
           .then(function (resp) {
             if (resp && resp.item && resp.item.id) {
+              $rootScope.$emit('scheduleCreated');
+
               scheduleTracker('Schedule Created', resp.item.id, resp.item.name);
 
               $state.go('apps.schedules.details', {

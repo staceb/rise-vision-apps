@@ -1,70 +1,249 @@
-<div class="app-header my-4">
-    <!-- App Title -->
-    <h1 class="app-header-title" id="title" translate>Onboarding</h1>
-</div>
+<div id="onboardingContainer" rv-spinner rv-spinner-key="onboarding-loader" rv-spinner-start-active="1">
+  <div class="app-header my-4">
+      <!-- App Title -->
+      <h1 class="app-header-title" id="title" translate>Get Started</h1>
+  </div>
 
-<div class="app-launcher-wizard panel panel-default u_margin-md-top">
-  <ul class="nav nav-tabs nav-justified">
-    <li role="presentation" ng-class="{active : onboarding.currentStep === 1}"><a href="#" ng-click="onboarding.currentStep = 1">Pick a Template.</a></li>
-    <li role="presentation" ng-class="{active : onboarding.currentStep === 2}"><a href="#" ng-click="onboarding.currentStep = 2">Plug in your Display.</a></li>
-    <li role="presentation" ng-class="{active : onboarding.currentStep === 3}"><a href="#" ng-click="onboarding.currentStep = 3">Keep it interesting.</a></li>
-  </ul>
+  <div class="panel panel-default u_margin-md-top">
+    <ul class="nav nav-tabs nav-justified">
+      <li role="presentation" ng-class="{active : factory.isCurrentTab(1)}">
+        <a href="#" ng-click="factory.setCurrentTab(1)">
+          <strong>1. Pick a Template.</strong>
+        </a>
+      </li>
+      <li role="presentation" ng-class="{active : factory.isCurrentTab(2)}">
+        <a href="#" ng-click="factory.setCurrentTab(2)">
+          <strong>2. Plug in your Display.</strong>
+        </a>
+      </li>
+      <li role="presentation" ng-class="{active : factory.isCurrentTab(3)}">
+        <a href="#" ng-click="factory.setCurrentTab(3)">
+          <strong>3. Keep it interesting.</strong>
+        </a>
+      </li>
+    </ul>
 
-  <div class="panel-body aligner">
-
-    <div class="aligner-item" style="max-width: 100%">
-        
-        <div id="wizardStep1" class="app-launcher-wizard_step welcome-step aligner animated fadeIn" ng-show="onboarding.currentStep === 1">
-          <div class="app-launcher-wizard_image aligner-item">
-            <img class="img-responsive" src="https://s3.amazonaws.com/Rise-Images/UI/apps-wizard-ilustration-1.svg">
-          </div><!--wizard-image-->
-          <div class="app-launcher-wizard_text aligner-item">
-            <h1>Welcome to Rise Vision</h1>
-            <h2 class="u_margin-md-bottom">Professional Digital Signage in less than 5 minutes</h2>
-            <button id="getStartedButton1" class="btn btn-lg btn-primary" ng-click="nextStep()"><span class="h4">Start Now</span></button>
+    <div class="panel-body madero-style">
+      <div id="onboardingAddTemplate" class="animated fadeIn" ng-show="factory.isCurrentStep('addTemplate')">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>
+              Welcome to the Rise Vision Get Started Guide! The first thing you need to do to start communicating better is to pick a Template.
+            </p>
+            <p>
+              Pick from our most popular Templates:
+            </p>
           </div>
         </div>
 
-        <div id="wizardStep2" class="app-launcher-wizard_step aligner animated fadeIn" ng-show="onboarding.currentStep === 2">
-          <div class="app-launcher-wizard_image aligner-item">
-            <img class="img-responsive" src="https://s3.amazonaws.com/Rise-Images/UI/apps-wizard-ilustration-2.svg">
-          </div>
-          <div class="app-launcher-wizard_text aligner-item">  
-            <h4>Step 1:</h4>
-            <h1>Create Your Content</h1>
-            <h2>The first step is creating the content you will show. This content is called a Presentation. You can design it from scratch or use one of our 100+ Templates.</h2>
-            <button id="getStartedButton2" class="btn btn-lg btn-primary" ng-click="nextStep()">Next</button>
-          </div>
-        </div>
-
-        <div id="wizardStep3" class="app-launcher-wizard_step aligner animated fadeIn" ng-show="onboarding.currentStep === 3">
-          <div class="app-launcher-wizard_image aligner-item">
-            <img class="img-responsive" src="https://s3.amazonaws.com/Rise-Images/UI/apps-wizard-ilustration-3.svg">
-          </div>
-          <div class="app-launcher-wizard_text aligner-item">  
-            <h4>Step 2:</h4>
-            <h1>Set Up Your Display(s)</h1>
-            <h2>Your Presentation will display on a TV or monitor that is connected to a Media Player that is running our Rise Player software.</h2>
-            <button id="getStartedButton3" class="btn btn-lg btn-primary" ng-click="nextStep()">Next</button>
+        <div class="row weekly-templates">
+          <div class="u_margin-sm-top text-center">
+            <ng-repeat ng-repeat="product in featuredTemplates">
+              <div id="storeProduct" class="col-sm-6 col-md-4 col-lg-3 col-centered u_margin-md-bottom">
+                <div class="product-grid_item panel panel-default u_margin-sm-bottom">
+                  <figure class="product-grid_image">
+                    <img ng-src="{{product.imageUrl}}" class="img-responsive" alt="{{product.name}}">
+                  </figure> 
+                </div>
+                <button id="selectProduct" class="btn btn-default w-100" ng-click="select(product)">
+                  Pick This Template
+                </button>
+              </div>
+            </ng-repeat>
           </div>
         </div>
 
-        <div id="wizardStep4" class="app-launcher-wizard_step aligner animated fadeIn" ng-show="onboarding.currentStep === 4">
-          <div class="app-launcher-wizard_image aligner-item">
-            <img class="img-responsive" src="https://s3.amazonaws.com/Rise-Images/UI/apps-wizard-ilustration-4.svg">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="panel mb-0">
+              <div class="panel-body text-center">
+                <p>
+                  <strong>Don’t see what you’re looking for?</strong>
+                </p>
+                <p>
+                  <a id="browse-templates" href="#" ng-click="editorFactory.addPresentationModal()">
+                    Browse the Template Gallery
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="app-launcher-wizard_text aligner-item"> 
-            <h1>Ready to get started?</h1>
-            <h2>Add Your First Template</h2>
-            <button  id="getStartedAddPresentation" class="btn btn-lg btn-primary" ng-click="editorFactory.addPresentationModal()">Add Template</button>
-            <h2>Or read further into how Rise Vision works.</h2>
-            <a class="btn btn-lg btn-default" target="_blank" href="https://help.risevision.com/hc/en-us/articles/115002868706-The-overview-how-does-this-work-">Learn More</a>
+        </div>
+      </div><!--onboardingAddTemplate-->
+
+      <div id="onboardingTemplateAdded" class="animated fadeIn" ng-show="factory.isCurrentStep('templateAdded')">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>
+              Great job! You’ve successfully picked a template. Proceed to the next step!
+            </p>
           </div>
         </div>
 
-    </div><!--row-->
+        <div class="row">
+          <div class="col-sm-12 u_margin-sm-top">
+            <button id="nextStep" class="btn btn-primary w-100" ng-click="factory.refresh()">
+              Next Step →
+            </button>
+          </div>
+        </div>
+      </div><!--onboardingTemplateAdded-->
 
-    
-  
-  </div><!--panel-body-->
+      <div id="onboardingTemplateNotAdded" class="animated fadeIn" ng-show="factory.isCurrentStep('templateNotAdded1') || factory.isCurrentStep('templateNotAdded2')">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>
+              Oops, you need to select a Template first. Go back to the previous step.
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 u_margin-sm-top">
+            <button id="nextStep" class="btn btn-primary w-100" ng-click="factory.refresh()">
+              ← Previous Step
+            </button>
+          </div>
+        </div>
+      </div><!--onboardingTemplateNotAdded-->
+
+      <div id="onboardingAddDisplay" class="animated fadeIn" ng-if="factory.isCurrentStep('addDisplay') || factory.isCurrentStep('activateDisplay')">
+        <onboarding-display-add download-only="factory.isCurrentStep('activateDisplay')"></onboarding-display-add>
+      </div><!--onboardingAddDisplay-->
+
+      <div id="onboardingDisplayActivated" class="animated fadeIn" ng-show="factory.isCurrentStep('displayActivated')">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>
+              Excellent! You’ve successfully activated a Display. You’re making great progress. We’re proud of you! Proceed to the next step.
+            </p>
+          </div>
+        </div><!--onboardingDisplayActivated-->
+
+        <div class="row">
+          <div class="col-sm-12 u_margin-sm-top">
+            <button id="nextStep" class="btn btn-primary w-100" ng-click="factory.refresh()">
+              Next Step →
+            </button>
+          </div>
+        </div>
+      </div><!--onboardingDisplayActivated-->
+
+      <div id="onboardingDisplayNotActivated" class="animated fadeIn" ng-show="factory.isCurrentStep('displayNotActivated')">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>
+              Oops, you need to activate a Display first. Go back to the previous step.
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 u_margin-sm-top">
+            <button id="nextStep" class="btn btn-primary w-100" ng-click="factory.refresh()">
+              ← Previous Step
+            </button>
+          </div>
+        </div>
+      </div><!--onboardingDisplayNotActivated-->
+
+      <div id="onboardingPlaybookSignup" class="animated fadeIn" ng-show="factory.isCurrentStep('promotePlaybook')">
+        <div class="row">
+          <div class="col-sm-12">
+            <p>
+              Okay, the last step is to keep it interesting. “Keep it interesting” means picking new Templates to put on 
+              your Display each week. To do this, you need to subscribe to our Weekly Playbook email for fresh Template recommendations. 
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 u_margin-sm-top">
+            <p>
+              <strong>Want Template recommendations for your school each week?</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="btn-group w-100" role="group" aria-label="Want Template recommendations for your school each week?" ng-init="playbookSignup = true">
+              <button type="button" class="btn w-50" ng-click="playbookSignup = true" ng-class="{'btn-toggle-blue-off' : !playbookSignup, 'btn-toggle-blue-on' : playbookSignup}">
+                <i class="fa fa-white fa-check icon-left" ng-show="playbookSignup"></i>
+                Yes, sign me up.
+              </button>
+              <button type="button" class="btn w-50" ng-click="playbookSignup = false" ng-class="{'btn-toggle-blue-off' : playbookSignup, 'btn-toggle-blue-on' : !playbookSignup}">
+                <i class="fa fa-white fa-check icon-left" ng-show="!playbookSignup"></i>
+                No, don’t sign me up.
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 u_margin-md-top">
+            <button id="nextButton" type="submit" class="btn btn-primary w-100" aria-label="Next" tabindex="1" ng-click="factory.setNextStep(); factory.setPlaybookSignup(playbookSignup)">
+              Next Step →
+            </button>
+          </div>
+        </div>
+      </div><!--onboardingPlaybookSignup-->
+
+      <div id="onboardingPromoteTraining" class="animated fadeIn" ng-show="factory.isCurrentStep('promoteTraining')">
+        <div class="row">
+          <div class="col-sm-12">
+
+            <p ng-show="playbookSignup">
+              Done! You’re well on your way to communicating better.
+            </p>
+            <p ng-show="playbookSignup">
+              Okay! Noted.
+            </p>
+            <p ng-show="playbookSignup">
+              You’ve already subscribed to our Weekly Playbook email, so this step is done! “Keep it interesting” means
+              picking new Templates to put on your Display each week. Our Weekly Playbook email gives you fresh Template recommendations.
+            </p>
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <p>
+              Did you know we offer free training each week?
+              <a href="https://www.risevision.com/webinars" target="_blank">Register for a free training webinar.</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 u_margin-sm-top">
+            <p>
+              <strong>Can’t wait? Watch a training video now!</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12">
+            <div align="center" class="panel panel-default panel-thick-shadow embed-responsive embed-responsive-16by9">
+              <video controls class="embed-responsive-item">
+                <source src="https://storage.googleapis.com/risemedialibrary-7fa5ee92-7deb-450b-a8d5-e5ed648c575f/apps/Rise_Vision_Weekly_Training_Recording.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 u_margin-md-top">
+            <button id="nextButton" type="submit" class="btn btn-primary w-100" aria-label="Take me to the Templates" tabindex="1" ng-click="factory.completeOnboarding()">
+              I'm finished - take me to the Templates.
+            </button>
+          </div>
+        </div>
+      </div><!--onboardingPromoteTraining-->
+
+    </div><!--panel-body-->
+  </div>
+
 </div>

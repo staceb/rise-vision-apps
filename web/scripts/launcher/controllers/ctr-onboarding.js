@@ -1,16 +1,34 @@
 'use strict';
 
 angular.module('risevision.apps.launcher.controllers')
-  .controller('OnboardingCtrl', ['$scope', '$localStorage',
-    function ($scope, $localStorage) {
-      $scope.onboarding = $localStorage.onboarding;
+  .controller('OnboardingCtrl', ['$scope', '$loading', 'onboardingFactory', 'companyAssetsFactory', 'editorFactory',
+    'FEATURED_TEMPLATES',
+    function ($scope, $loading, onboardingFactory, companyAssetsFactory, editorFactory, 
+      FEATURED_TEMPLATES) {
+      $scope.factory = onboardingFactory;
+      $scope.editorFactory = editorFactory;
+      $scope.featuredTemplates = FEATURED_TEMPLATES;
 
-      $scope.nextStep = function () {
-        $scope.onboarding.currentStep++;
-
-        if ($scope.onboarding.currentStep === 4) {
-          $scope.onboarding.completed = true;
-        }
+      $scope.select = function (product) {
+        editorFactory.addFromProduct(product);
       };
+
+      $scope.$watch('factory.loading', function (loading) {
+        if (loading) {
+          $loading.start('onboarding-loader');
+        } else {
+          $loading.stop('onboarding-loader');
+        }
+      });
+
+      $scope.$on('companyAssetsUpdated', function () {
+        onboardingFactory.refresh();
+      });
+
+      $scope.$on('risevision.company.selectedCompanyChanged', function () {
+        onboardingFactory.refresh(true);
+      });
+
+      onboardingFactory.refresh();
     }
   ]); //ctr

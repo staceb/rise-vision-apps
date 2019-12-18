@@ -17,7 +17,7 @@ angular.module('risevision.displays.services')
         factory.apiError = '';
       };
 
-      var _init = function () {
+      factory.init = function () {
         _displayId = undefined;
 
         factory.display = {
@@ -33,7 +33,7 @@ angular.module('risevision.displays.services')
         _clearMessages();
       };
 
-      _init();
+      factory.init();
 
       factory.addDisplayModal = function (display) {
         displayTracker('Add Display');
@@ -41,7 +41,7 @@ angular.module('risevision.displays.services')
         if (display) {
           factory.display = display;
         } else {
-          _init();
+          factory.init();
         }
 
         $modal.open({
