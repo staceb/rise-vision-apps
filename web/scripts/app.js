@@ -519,7 +519,7 @@ angular.module('risevision.apps', [
     }
   ])
   .config(['$localStorageProvider',
-    function($localStorageProvider) {
+    function ($localStorageProvider) {
       $localStorageProvider.setKeyPrefix('RiseVision-');
     }
   ])
