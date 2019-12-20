@@ -139,7 +139,7 @@ angular.module('risevision.apps.launcher.services')
             return $q.resolve(resp.items[0]);
           }
         });
-      }
+      };
 
       factory.hasDisplays = function () {
         if (addDisplayCompleted && activeDisplayCompleted) {

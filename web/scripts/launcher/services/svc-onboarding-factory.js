@@ -2,31 +2,31 @@
 
 angular.module('risevision.apps.launcher.services')
   .constant('FEATURED_TEMPLATES', [{
-      "productId": "welcome_v2",
-      "name": "Welcome",
-      "imageUrl": "https://s3.amazonaws.com/Store-Products/Rise-Vision/TemplateLibrary/html-template-welcome2.png",
-      "productTag": [
-        "HTMLTemplates"
+      'productId': 'welcome_v2',
+      'name': 'Welcome',
+      'imageUrl': 'https://s3.amazonaws.com/Store-Products/Rise-Vision/TemplateLibrary/html-template-welcome2.png',
+      'productTag': [
+        'HTMLTemplates'
       ],
-      "productCode": "754b4adfee710941ced5d54370537682c9fcf33c"
+      'productCode': '754b4adfee710941ced5d54370537682c9fcf33c'
     },
     {
-      "productId": "fullscreen-image_v1",
-      "name": "Image Full Screen",
-      "imageUrl": "https://s3.amazonaws.com/Store-Products/Rise-Vision/TemplateLibrary/html-template-fullscreen-image2.png",
-      "productTag": [
-        "HTMLTemplates"
+      'productId': 'fullscreen-image_v1',
+      'name': 'Image Full Screen',
+      'imageUrl': 'https://s3.amazonaws.com/Store-Products/Rise-Vision/TemplateLibrary/html-template-fullscreen-image2.png',
+      'productTag': [
+        'HTMLTemplates'
       ],
-      "productCode": "da323a98f097d8aca0a8b9671c9d4143d045ef87"
+      'productCode': 'da323a98f097d8aca0a8b9671c9d4143d045ef87'
     },
     {
-      "productId": "office-greeting_v1",
-      "name": "Office Greeting",
-      "imageUrl": "https://storage.googleapis.com/risemedialibrary-7fa5ee92-7deb-450b-a8d5-e5ed648c575f/Template%20Library/Office%20Greeting/office-greeting-bezel.jpg",
-      "productTag": [
-        "HTMLTemplates"
+      'productId': 'office-greeting_v1',
+      'name': 'Office Greeting',
+      'imageUrl': 'https://storage.googleapis.com/risemedialibrary-7fa5ee92-7deb-450b-a8d5-e5ed648c575f/Template%20Library/Office%20Greeting/office-greeting-bezel.jpg',
+      'productTag': [
+        'HTMLTemplates'
       ],
-      "productCode": "601ee80f3fe2950b7e4f15c57d88bf0963efb57a"
+      'productCode': '601ee80f3fe2950b7e4f15c57d88bf0963efb57a'
     }
   ])
   .factory('onboardingFactory', ['$q', '$localStorage', 'userState', 'companyAssetsFactory',
@@ -106,7 +106,7 @@ angular.module('risevision.apps.launcher.services')
 
       var _getCurrentStep = function () {
         return onboarding.steps[onboarding.currentStep];
-      }
+      };
 
       factory.isCurrentStep = function (step) {
         return !!(_getCurrentStep() && _getCurrentStep().step === step);

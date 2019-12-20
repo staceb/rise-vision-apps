@@ -30,7 +30,7 @@ angular.module('risevision.displays.directives')
 
                 return $q.reject(error);
               });
-          }
+          };
 
           $scope.sendToAnotherEmail = function () {
             _sendEmail($scope.anotherEmail)
