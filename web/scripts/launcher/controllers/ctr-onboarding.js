@@ -3,7 +3,7 @@
 angular.module('risevision.apps.launcher.controllers')
   .controller('OnboardingCtrl', ['$scope', '$loading', 'onboardingFactory', 'companyAssetsFactory', 'editorFactory',
     'FEATURED_TEMPLATES',
-    function ($scope, $loading, onboardingFactory, companyAssetsFactory, editorFactory, 
+    function ($scope, $loading, onboardingFactory, companyAssetsFactory, editorFactory,
       FEATURED_TEMPLATES) {
       $scope.factory = onboardingFactory;
       $scope.editorFactory = editorFactory;

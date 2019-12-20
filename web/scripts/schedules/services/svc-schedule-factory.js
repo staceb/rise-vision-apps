@@ -4,7 +4,7 @@ angular.module('risevision.schedules.services')
   .factory('scheduleFactory', ['$q', '$state', '$log', '$modal', '$rootScope', 'schedule', 'scheduleTracker',
     'onboardingFactory', 'processErrorCode',
     'VIEWER_URL',
-    function ($q, $state, $log, $modal, $rootScope, schedule, scheduleTracker, onboardingFactory, 
+    function ($q, $state, $log, $modal, $rootScope, schedule, scheduleTracker, onboardingFactory,
       processErrorCode, VIEWER_URL) {
       var factory = {};
       var _hasSchedules;
@@ -165,7 +165,7 @@ angular.module('risevision.schedules.services')
                     return presentationName;
                   }
                 }
-              });              
+              });
             }
           });
       };

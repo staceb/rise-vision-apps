@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('risevision.apps.launcher.services')
-  .factory('companyAssetsFactory', ['$rootScope', '$q', 'CachedRequest', 
+  .factory('companyAssetsFactory', ['$rootScope', '$q', 'CachedRequest',
     'presentation', 'schedule', 'display',
     function ($rootScope, $q, CachedRequest, presentation, schedule, display) {
       var factory = {};
@@ -29,7 +29,7 @@ angular.module('risevision.apps.launcher.services')
       var addDisplayListener, addDisplayCompleted;
       var displaysListListener, activeDisplayCompleted;
 
-      var _sendUpdateEvent = function() {
+      var _sendUpdateEvent = function () {
         $rootScope.$emit('companyAssetsUpdated');
       };
 
@@ -39,15 +39,15 @@ angular.module('risevision.apps.launcher.services')
         });
       };
 
-      var _clearScheduleListener = function() {
+      var _clearScheduleListener = function () {
         if (addScheduleListener) {
           addScheduleListener();
-          addScheduleListener = null;          
+          addScheduleListener = null;
         }
       };
 
-      var _addScheduleListener = function() {
-        if (!addScheduleListener) { 
+      var _addScheduleListener = function () {
+        if (!addScheduleListener) {
           addScheduleListener = $rootScope.$on('scheduleCreated', function (event) {
             addScheduleCompleted = true;
 
@@ -74,15 +74,15 @@ angular.module('risevision.apps.launcher.services')
         });
       };
 
-      var _clearDisplayListener = function() {
+      var _clearDisplayListener = function () {
         if (addDisplayListener) {
           addDisplayListener();
-          addDisplayListener = null;          
+          addDisplayListener = null;
         }
       };
 
-      var _addDisplayListener = function() {
-        if (!addDisplayListener) { 
+      var _addDisplayListener = function () {
+        if (!addDisplayListener) {
           addDisplayListener = $rootScope.$on('displayCreated', function (event) {
             addDisplayCompleted = true;
 
@@ -95,25 +95,25 @@ angular.module('risevision.apps.launcher.services')
         }
       };
 
-      var _clearActiveDisplayListener = function() {
+      var _clearActiveDisplayListener = function () {
         if (addDisplayListener) {
           addDisplayListener();
-          addDisplayListener = null;          
+          addDisplayListener = null;
         }
       };
 
-      var _addActiveDisplayListener = function() {
-        if (!displaysListListener) { 
+      var _addActiveDisplayListener = function () {
+        if (!displaysListListener) {
           displaysListListener = $rootScope.$on('displaysLoaded', function (event, displays) {
             _validateActiveDisplay(displays);
           });
         }
       };
 
-      var _validateActiveDisplay = function(displays) {
+      var _validateActiveDisplay = function (displays) {
         activeDisplayCompleted = false;
 
-        displays.forEach(function(display) {
+        displays.forEach(function (display) {
           if (display.playerVersion || display.lastConnectionTime ||
             display.onlineStatus === 'online') {
             activeDisplayCompleted = true;
@@ -135,7 +135,7 @@ angular.module('risevision.apps.launcher.services')
 
           if (!hasDisplays) {
             return $q.resolve();
-          } else {            
+          } else {
             return $q.resolve(resp.items[0]);
           }
         });
@@ -156,7 +156,7 @@ angular.module('risevision.apps.launcher.services')
 
           if (!addDisplayCompleted) {
             _addDisplayListener();
-          } else {            
+          } else {
             _validateActiveDisplay(resp.items);
           }
 

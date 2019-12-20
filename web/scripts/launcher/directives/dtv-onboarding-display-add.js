@@ -10,13 +10,13 @@ angular.module('risevision.apps.launcher.directives')
         },
         templateUrl: 'partials/launcher/onboarding-display-add.html',
         link: function ($scope) {
-          $scope.$watch('downloadOnly', function() {
+          $scope.$watch('downloadOnly', function () {
             if ($scope.downloadOnly) {
-              companyAssetsFactory.getFirstDisplay().then(function(display) {
+              companyAssetsFactory.getFirstDisplay().then(function (display) {
                 if (display) {
                   $scope.setCurrentPage('displayAdded');
 
-                  $scope.display = display;                  
+                  $scope.display = display;
                 }
               });
             } else {

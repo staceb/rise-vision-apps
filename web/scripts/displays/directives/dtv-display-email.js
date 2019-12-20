@@ -21,7 +21,7 @@ angular.module('risevision.displays.directives')
             }
           });
 
-          var _sendEmail = function(email) {
+          var _sendEmail = function (email) {
             $scope.error = false;
 
             return displayEmail.send($scope.display.id, email)
@@ -34,15 +34,15 @@ angular.module('risevision.displays.directives')
 
           $scope.sendToAnotherEmail = function () {
             _sendEmail($scope.anotherEmail)
-              .then(function() {
+              .then(function () {
                 $scope.anotherEmail = null;
                 $scope.anotherEmailForm.$setPristine(true);
               });
           };
 
-          $scope.sendToUserEmail = function() {
+          $scope.sendToUserEmail = function () {
             _sendEmail(userState.getUserEmail())
-              .then(function() {
+              .then(function () {
                 $scope.emailResent = true;
               });
           };
