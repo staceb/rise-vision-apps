@@ -5,7 +5,7 @@ angular.module('risevision.displays.directives')
     function ($q, $loading, userState, displayEmail) {
       return {
         restrict: 'E',
-        templateUrl: 'partials/launcher/display-email.html',
+        templateUrl: 'partials/displays/display-email.html',
         scope: true,
         link: function ($scope) {
           $scope.userEmail = userState.getUserEmail();
