@@ -130,6 +130,7 @@ describe('service: displayFactory:', function() {
     expect(displayFactory.savingDisplay).to.be.false;
     expect(displayFactory.apiError).to.not.be.truely;
     
+    expect(displayFactory.init).to.be.a('function');
     expect(displayFactory.addDisplayModal).to.be.a('function');
     expect(displayFactory.getDisplay).to.be.a('function');
     expect(displayFactory.addDisplay).to.be.a('function');
@@ -158,7 +159,7 @@ describe('service: displayFactory:', function() {
       
       $modalSpy.should.have.been.calledWithMatch({
     	  controller: "displayAddModal",
-    	  size: "md",
+    	  size: "lg",
     	  templateUrl: "partials/displays/display-add-modal.html"
     	});
 
@@ -173,7 +174,7 @@ describe('service: displayFactory:', function() {
 
       $modalSpy.should.have.been.calledWithMatch({
     	  controller: "displayAddModal",
-    	  size: "md",
+    	  size: "lg",
     	  templateUrl: "partials/displays/display-add-modal.html"
     	});
 

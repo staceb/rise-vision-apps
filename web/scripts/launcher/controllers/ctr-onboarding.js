@@ -1,10 +1,9 @@
 'use strict';
 
 angular.module('risevision.apps.launcher.controllers')
-  .controller('OnboardingCtrl', ['$scope', '$loading', 'onboardingFactory', 'companyAssetsFactory', 'editorFactory',
+  .controller('OnboardingCtrl', ['$scope', '$loading', 'onboardingFactory', 'editorFactory',
     'FEATURED_TEMPLATES',
-    function ($scope, $loading, onboardingFactory, companyAssetsFactory, editorFactory,
-      FEATURED_TEMPLATES) {
+    function ($scope, $loading, onboardingFactory, editorFactory, FEATURED_TEMPLATES) {
       $scope.factory = onboardingFactory;
       $scope.editorFactory = editorFactory;
       $scope.featuredTemplates = FEATURED_TEMPLATES;

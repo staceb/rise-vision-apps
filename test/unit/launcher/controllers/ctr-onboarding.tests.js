@@ -20,11 +20,6 @@ describe('controller: Onboarding', function() {
           addFromProduct: sinon.spy()
         };
       });
-      $provide.service('companyAssetsFactory', function() {
-        return {
-          weeklyTemplates: 'weeklyTemplates'
-        };
-      });
     })
     inject(function($injector,$rootScope, $controller) {
       onboardingFactory = $injector.get('onboardingFactory');
@@ -43,7 +38,8 @@ describe('controller: Onboarding', function() {
     expect($scope).to.be.ok;
     expect($scope.factory).to.be.ok;
     expect($scope.editorFactory).to.be.ok;
-    expect($scope.weeklyTemplates).to.equal('weeklyTemplates');
+    expect($scope.featuredTemplates).to.be.an('array');
+    expect($scope.featuredTemplates).to.have.length(3);
 
     expect($scope.select).to.be.a('function');
   });

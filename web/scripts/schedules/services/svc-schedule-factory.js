@@ -2,8 +2,7 @@
 
 angular.module('risevision.schedules.services')
   .factory('scheduleFactory', ['$q', '$state', '$log', '$modal', '$rootScope', 'schedule', 'scheduleTracker',
-    'onboardingFactory', 'processErrorCode',
-    'VIEWER_URL',
+    'onboardingFactory', 'processErrorCode', 'VIEWER_URL',
     function ($q, $state, $log, $modal, $rootScope, schedule, scheduleTracker, onboardingFactory,
       processErrorCode, VIEWER_URL) {
       var factory = {};

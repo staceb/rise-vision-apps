@@ -64,17 +64,17 @@ describe('service: scheduleFactory:', function() {
     });
     $provide.service('$state',function(){
       return {
-        go : function(state, params){
-          if (state){
-            currentState = state;
-          }
-          return currentState;
-        }
+        go : sinon.stub()
       }
     });
     $provide.service('$modal',function(){
       return {
         open: sinon.stub()
+      };
+    });
+    $provide.service('onboardingFactory', function() {
+      return {
+        isTemplateOnboarding: sinon.stub().returns(false)
       };
     });
 
@@ -84,10 +84,10 @@ describe('service: scheduleFactory:', function() {
     $provide.value('VIEWER_URL', 'http://rvaviewer-test.appspot.com');
 
   }));
-  var scheduleFactory, trackerCalled, updateSchedule, currentState, returnList, scheduleListSpy, scheduleAddSpy, processErrorCode, $modal;
+  var scheduleFactory, trackerCalled, updateSchedule, $state, returnList, scheduleListSpy, scheduleAddSpy, processErrorCode, $modal;
+  var $rootScope, onboardingFactory;
   beforeEach(function(){
     trackerCalled = undefined;
-    currentState = undefined;
     updateSchedule = true;
     returnList = null;
 
@@ -98,6 +98,10 @@ describe('service: scheduleFactory:', function() {
       scheduleAddSpy = sinon.spy(schedule,'add');
 
       $modal = $injector.get('$modal');
+      $rootScope = $injector.get('$rootScope');
+      sinon.spy($rootScope, '$emit');
+      $state = $injector.get('$state');
+      onboardingFactory = $injector.get('onboardingFactory');
     });
   });
 
@@ -186,7 +190,8 @@ describe('service: scheduleFactory:', function() {
       expect(scheduleFactory.loadingSchedule).to.be.true;
 
       setTimeout(function(){
-        expect(currentState).to.equal('apps.schedules.details');
+        $state.go.should.have.been.calledWith('apps.schedules.details');
+        $rootScope.$emit.should.have.been.calledWith('scheduleCreated');
         expect(trackerCalled).to.equal('Schedule Created');
         expect(scheduleFactory.savingSchedule).to.be.false;
         expect(scheduleFactory.loadingSchedule).to.be.false;
@@ -206,7 +211,8 @@ describe('service: scheduleFactory:', function() {
       expect(scheduleFactory.loadingSchedule).to.be.true;
 
       setTimeout(function(){
-        expect(currentState).to.be.empty;
+        $state.go.should.not.have.been.called;
+        $rootScope.$emit.should.not.have.been.calledWith('scheduleCreated');
         expect(trackerCalled).to.not.be.ok;
         expect(scheduleFactory.savingSchedule).to.be.false;
         expect(scheduleFactory.loadingSchedule).to.be.false;
@@ -270,7 +276,7 @@ describe('service: scheduleFactory:', function() {
         expect(scheduleFactory.errorMessage).to.not.be.ok;
         expect(scheduleFactory.apiError).to.not.be.ok;
         expect(trackerCalled).to.equal('Schedule Deleted');
-        expect(currentState).to.equal('apps.schedules.list');
+        $state.go.should.have.been.calledWith('apps.schedules.list');
         done();
       },10);
     });
@@ -283,7 +289,7 @@ describe('service: scheduleFactory:', function() {
       expect(scheduleFactory.loadingSchedule).to.be.true;
 
       setTimeout(function(){
-        expect(currentState).to.be.empty;
+        $state.go.should.not.have.been.called;
         expect(trackerCalled).to.not.be.ok;
         expect(scheduleFactory.loadingSchedule).to.be.false;
 
@@ -327,17 +333,39 @@ describe('service: scheduleFactory:', function() {
     it('should create first schedule and show modal', function(done) {
       returnList = {};
       scheduleFactory.createFirstSchedule('presentationId','presentationName')
+      // .then(function(){
+      setTimeout(function() {
+        scheduleListSpy.should.have.been.calledWith({count:1});
+
+        scheduleAddSpy.should.have.been.calledWith(firstScheduleSample);
+
+        $rootScope.$emit.should.have.been.calledWith('scheduleCreated');
+        expect(trackerCalled).to.equal('Schedule Created');
+
+        $state.go.should.not.have.been.called;
+        $modal.open.should.have.been.called;
+
+        expect($modal.open.getCall(0).args[0].templateUrl).to.equal('partials/schedules/auto-schedule-modal.html');
+        expect($modal.open.getCall(0).args[0].controller).to.equal('AutoScheduleModalController');
+
+        done();
+      }, 100);
+    });
+
+    it('should create first schedule and redirect to onboarding', function(done) {
+      returnList = {};
+      onboardingFactory.isTemplateOnboarding.returns(true);
+      scheduleFactory.createFirstSchedule('presentationId','presentationName')
       .then(function(){
         scheduleListSpy.should.have.been.calledWith({count:1});
 
         scheduleAddSpy.should.have.been.calledWith(firstScheduleSample);
 
+        $rootScope.$emit.should.have.been.calledWith('scheduleCreated');
         expect(trackerCalled).to.equal('Schedule Created');
 
-        $modal.open.should.have.been.called;
-
-        expect($modal.open.getCall(0).args[0].templateUrl).to.equal('partials/schedules/auto-schedule-modal.html');
-        expect($modal.open.getCall(0).args[0].controller).to.equal('AutoScheduleModalController');
+        $state.go.should.have.been.calledWith('apps.launcher.onboarding');
+        $modal.open.should.not.have.been.called;
 
         done();
       });
@@ -351,6 +379,7 @@ describe('service: scheduleFactory:', function() {
 
         scheduleAddSpy.should.have.been.calledWith(firstScheduleSample);
 
+        $rootScope.$emit.should.have.been.calledWith('scheduleCreated');
         expect(trackerCalled).to.equal('Schedule Created');
 
         scheduleFactory.createFirstSchedule('presentationId','presentationName').then(function(){
