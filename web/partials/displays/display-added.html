@@ -49,11 +49,11 @@
       <div class="row">
         <div class="col-xs-12">
           <div class="btn-group w-100" role="group" aria-label="Do you have a Media Player?">
-            <button type="button" class="btn w-50" ng-click="hasOwnPlayer = false" ng-class="{'btn-toggle-blue-off' : hasOwnPlayer, 'btn-toggle-blue-on' : !hasOwnPlayer}">
+            <button id="preconfiguredPlayerButton" type="button" class="btn w-50" ng-click="hasOwnPlayer = false" ng-class="{'btn-toggle-blue-off' : hasOwnPlayer, 'btn-toggle-blue-on' : !hasOwnPlayer}">
               <i class="fa fa-white fa-check icon-left" ng-show="!hasOwnPlayer"></i>
               I don’t have a Media Player.
             </button>
-            <button type="button" class="btn w-50" ng-click="hasOwnPlayer = true" ng-class="{'btn-toggle-blue-off' : !hasOwnPlayer, 'btn-toggle-blue-on' : hasOwnPlayer}">
+            <button id="ownPlayerButton" type="button" class="btn w-50" ng-click="hasOwnPlayer = true" ng-class="{'btn-toggle-blue-off' : !hasOwnPlayer, 'btn-toggle-blue-on' : hasOwnPlayer}">
               <i class="fa fa-white fa-check icon-left" ng-show="hasOwnPlayer"></i>
               I have a Media Player.
             </button>
