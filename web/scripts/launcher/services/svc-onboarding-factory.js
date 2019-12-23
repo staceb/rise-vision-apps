@@ -29,8 +29,8 @@ angular.module('risevision.apps.launcher.services')
       'productCode': '601ee80f3fe2950b7e4f15c57d88bf0963efb57a'
     }
   ])
-  .factory('onboardingFactory', ['$q', '$localStorage', 'userState', 'companyAssetsFactory',
-    function ($q, $localStorage, userState, companyAssetsFactory) {
+  .factory('onboardingFactory', ['$q', '$localStorage', 'userState', 'companyAssetsFactory', '$state', 'updateUser',
+    function ($q, $localStorage, userState, companyAssetsFactory, $state, updateUser) {
       var factory = {};
       var onboarding = {
         currentStep: -1,
@@ -121,8 +121,6 @@ angular.module('risevision.apps.launcher.services')
 
         if (_getCurrentStep() && !_getCurrentStep().active) {
           factory.setNextStep();
-        } else if (onboarding.currentStep === 4) {
-          $localStorage.onboarding.completed = true;
         }
       };
 
@@ -165,7 +163,7 @@ angular.module('risevision.apps.launcher.services')
         var company = userState.getCopyOfSelectedCompany();
         var creationDate = ((company && company.creationDate) ? (new Date(company.creationDate)) : (
           new Date()));
-        return creationDate > new Date('Dec 3, 2017');
+        return creationDate > new Date('Dec 3, 2010');
       };
 
       var _isMailSyncEnabled = function () {
@@ -213,12 +211,30 @@ angular.module('risevision.apps.launcher.services')
                 _setCurrentStep('displayActivated');
               } else if (!resp[2]) {
                 _setCurrentStep('promotePlaybook');
+              } else {
+                $localStorage.onboarding.completed = true;
+                factory.alreadySubscribed = true;
+                _setCurrentStep('promoteTraining');
               }
             }
           })
           .finally(function () {
             factory.loading = false;
           });
+      };
+
+      factory.setPlaybookSignup = function (signupToNewsletter) {
+        updateUser(userState.getUsername(), {
+          'mailSyncEnabled': signupToNewsletter
+        }).then(function () {
+          $localStorage.onboarding.completed = true;
+        });
+
+        factory.setNextStep();
+      };
+
+      factory.leaveOnboarding = function () {
+        $state.go('apps.editor.list');
       };
 
       _defaults();
