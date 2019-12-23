@@ -17,6 +17,12 @@ describe('service: company assets factory:', function() {
       };
     });
 
+    $provide.service('schedule', function() {
+      return {
+        list: 'scheduleList'
+      };
+    });
+
     $provide.service('CachedRequest', function() {
       return sinon.stub().returns({
         execute: requestExecute = sinon.stub()
@@ -35,17 +41,24 @@ describe('service: company assets factory:', function() {
 
   it('should exist', function() {
     expect(companyAssetsFactory).to.be.ok;
-    expect(companyAssetsFactory.hasTemplates).to.be.a('function');
+    expect(companyAssetsFactory.hasPresentations).to.be.a('function');
+    expect(companyAssetsFactory.hasSchedules).to.be.a('function');
+    expect(companyAssetsFactory.getFirstDisplay).to.be.a('function');
     expect(companyAssetsFactory.hasDisplays).to.be.a('function');
   });
 
   it('should initialize CachedRequest services', function() {
-    CachedRequest.should.have.been.calledTwice;
+    CachedRequest.should.have.been.calledThrice;
     CachedRequest.should.have.been.calledWith('presentationList', {
       sortBy: 'changeDate',
       reverse: true,
+      count: 1
+    });
+
+    CachedRequest.should.have.been.calledWith('scheduleList', {
       count: 1,
-      filter: 'presentationType:\"HTML Template\"'
+      reverse: true,
+      sortBy: "changeDate"
     });
 
     CachedRequest.should.have.been.calledWith('displayList', {
@@ -55,7 +68,7 @@ describe('service: company assets factory:', function() {
     });
   });
   
-  describe('hasTemplates:', function() {
+  xdescribe('hasTemplates:', function() {
     it('should resolve true if Company has templates', function(done) {
       requestExecute.returns(Q.resolve({
         items: [1]
@@ -108,7 +121,7 @@ describe('service: company assets factory:', function() {
 
   });
 
-  describe('hasDisplays:', function() {
+  xdescribe('hasDisplays:', function() {
     it('should resolve true if Company has displays', function(done) {
       requestExecute.returns(Q.resolve({
         items: [1]
