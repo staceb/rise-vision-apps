@@ -575,16 +575,21 @@ angular.module('risevision.apps.directives', [
   'risevision.common.components.scrolling-list'
 ]);
 
-angular.module('risevision.apps.launcher.controllers', []);
+angular.module('risevision.apps.launcher.controllers', [
+  'risevision.apps.launcher.services'
+]);
 angular.module('risevision.apps.launcher.directives', []);
-angular.module('risevision.apps.launcher.services', []);
+angular.module('risevision.apps.launcher.services', [
+  'ngStorage'
+]);
 
 angular.module('risevision.apps.billing.controllers', []);
 angular.module('risevision.apps.billing.services', []);
 
 angular.module('risevision.schedules.services', [
   'risevision.common.header',
-  'risevision.common.gapi'
+  'risevision.common.gapi',
+  'risevision.apps.launcher.services'
 ]);
 angular.module('risevision.schedules.filters', []);
 angular.module('risevision.schedules.directives', [

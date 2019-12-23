@@ -920,6 +920,12 @@ $maderio-green-disabled: #a2dbb2;
     font-size: 14px;
   }
 
+  a {
+    &.btn {
+      line-height: 26px;
+    }
+  }
+
   .btn {
     font-weight: bold;
     min-height: 40px;

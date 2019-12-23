@@ -10,7 +10,7 @@ angular.module('risevision.apps.services')
           loading: false
         };
 
-        var _request = function() {
+        var _request = function () {
           factory.loading = true;
 
           return request(args)
@@ -23,7 +23,7 @@ angular.module('risevision.apps.services')
             });
         };
 
-        factory.reset = function() {
+        factory.reset = function () {
           _cachedPromise = undefined;
         };
 

@@ -1,5 +1,5 @@
 'use strict';
-describe('service: onboarding factory:', function() {
+describe('service: onboardingFactory:', function() {
   beforeEach(module('risevision.apps.launcher.services'));
 
   beforeEach(module(function ($provide) {
@@ -33,10 +33,9 @@ describe('service: onboarding factory:', function() {
 
   }));
   
-  var onboardingFactory, $rootScope, $localStorage, userState, companyAssetsFactory;
+  var onboardingFactory, $localStorage, userState, companyAssetsFactory;
   beforeEach(function() {
     inject(function($injector) {
-      $rootScope = $injector.get('$rootScope');
       $localStorage = $injector.get('$localStorage');
       userState = $injector.get('userState');
       companyAssetsFactory = $injector.get('companyAssetsFactory');

@@ -4,21 +4,6 @@
   },
   "add": {
     "activate": "Activate your Display",
-    "instructions": {
-      "anotherEmail": "Send To Another E-Mail",
-      "emailInfo": "We’ve also emailed these instructions to",
-      "emailPlaceholder": "Enter Email Address",
-      "os": {
-        "chromeos": "Chrome OS",
-        "linux": "Linux",
-        "pi": "Raspberry Pi",
-        "windows10": "Windows 7 and Up"
-      }
-    },
-    "name": {
-      "name": "Name Your Display"
-    },
-    "next": "Next",
     "title": "Add a Display"
   },
   "alerts": {
@@ -98,7 +83,6 @@
     "webServiceURL": "Web Service URL"
   },
   "details": {
-    "additional-license-warning": "You need to Upgrade your Plan or Purchase Additional Licenses to License this Display.",
     "contact-plan-parent-email": "You don't have access to purchase Display Licenses. Please contact your Plan Administrator at <a href=\"mailto:{{administratorEmail}}\">{{administratorEmail}}</a> to request more.",
     "contact-plan-parent-no-email": "You don't have access to purchase Display Licenses. Please contact your Plan Administrator to request more.",
     "deleteTitle": "Deleting Display",
@@ -108,20 +92,11 @@
     "rpp-is": "Licensed Display is",
     "rpp-loading": "LOADING",
     "rpp-not-supported": "Player version does not support Licensed Display features",
-    "startPlayerProTrial": "Start Licensed Display Trial",
     "title": "Display Settings",
     "unsavedTitle": "Unsaved Changes",
     "unsavedWarning": "You have unsaved changes. Do you want to Save or Discard them?"
   },
   "displayDetails": "Display Details",
-  "download": {
-    "armv7l": "Download Player for Raspbian 8.0 [ARMv7]",
-    "linux32": "Download Player for Ubuntu 16.04 LTS [32-bit]",
-    "linux64": "Download Player for Ubuntu 16.04 LTS [64-bit]",
-    "player": "Download Player",
-    "win32": "Download Player for Windows 7 and Up [32-bit]",
-    "win64": "Download Player for Windows 7 and Up [64-bit]"
-  },
   "fields": {
     "address": {
       "city": "City",
@@ -267,9 +242,6 @@
       "notActivated": "Not Activated"
     }
   },
-  "landing": {
-    "manageDisplaysText": "Manage and monitor your digital signage displays, anywhere, anytime."
-  },
   "list": {
     "empty": "You haven't created any Displays yet.",
     "filter": {
@@ -318,27 +290,6 @@
       "whyOffline": "Why is my Display offline?"
     },
     "viewAll": "View All Displays"
-  },
-  "playerProInfo": {
-    "displayControl": {
-      "title": "<b>Display Control</b> powers off your screen when nothing is showing, and powers on when content is available.",
-      "feature1": "Saves on electricity costs.",
-      "feature2": "Extends the life of your hardware."
-    },
-    "footer": "If you're already subscribed to Rise Player Professional, please assign your Display in your <a href=\"{{accountLink}}\" target=\"_blank\">Store Account</a>.",
-    "heading": "<a href=\"{{productLink}}\" target=\"_blank\">Rise Player Professional</a> offers premium features for your digital signage content!",
-    "offlinePlay": {
-      "title": "<b>Offline Play</b> eliminates having to be connected to the internet in order to start and show your content.",
-      "feature1": "Compatible with many widgets.",
-      "feature2": "Monitors network status.",
-      "feature3": "Refreshes content when connected."
-    },
-    "price": "$9 USD/CAD Per Display Per Month",
-    "title": {
-      "trial": "Try Rise Player Professional",
-      "noTrial": "Rise Player Professional"
-    },
-    "trialInfo": "30 days FREE trial for all Displays in your Company. No credit card required."
   },
   "title": "Displays"
 }

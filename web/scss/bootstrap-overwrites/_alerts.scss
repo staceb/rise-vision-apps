@@ -22,4 +22,8 @@
             border-color: #faebcc;
         }
     }
+    &.alert-lighter-gray
+    {
+        @include alert-variant($lighter-gray, $lighter-gray, $text-color);
+    }
 }

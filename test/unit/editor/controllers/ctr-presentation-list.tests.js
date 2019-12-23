@@ -21,6 +21,9 @@ describe('controller: Presentation List', function() {
       return {
       };
     });
+    $provide.service('templateEditorFactory', function() {
+      return {};
+    });
     $provide.service('$loading',function(){
       return {
         start : function(spinnerKeys){

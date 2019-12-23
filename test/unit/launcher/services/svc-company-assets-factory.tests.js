@@ -51,7 +51,7 @@ describe('service: company assets factory:', function() {
     CachedRequest.should.have.been.calledWith('displayList', {
       sortBy: 'changeDate',
       reverse: true,
-      count: 1
+      count: 20
     });
   });
   
