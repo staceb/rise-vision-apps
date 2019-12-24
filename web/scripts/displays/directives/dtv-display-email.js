@@ -37,6 +37,8 @@ angular.module('risevision.displays.directives')
               .then(function () {
                 $scope.anotherEmail = null;
                 $scope.anotherEmailForm.$setPristine(true);
+                $scope.emailResent = true;
+                $scope.sendAnotherEmail = false;
               });
           };
 
