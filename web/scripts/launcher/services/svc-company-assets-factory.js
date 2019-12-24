@@ -155,6 +155,7 @@ angular.module('risevision.apps.launcher.services')
           addDisplayCompleted = !!(resp && resp.items && resp.items.length > 0);
 
           if (!addDisplayCompleted) {
+            activeDisplayCompleted = false;
             _addDisplayListener();
           } else {
             _validateActiveDisplay(resp.items);

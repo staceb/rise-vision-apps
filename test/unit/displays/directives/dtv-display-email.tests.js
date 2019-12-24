@@ -85,6 +85,8 @@ describe('directive: display email', function() {
       setTimeout(function() {
         expect($scope.anotherEmail).to.not.be.ok;
         expect($scope.error).to.be.false;
+        expect($scope.emailResent).to.be.true;
+        expect($scope.sendAnotherEmail).to.be.false;
 
         done();
       }, 10);

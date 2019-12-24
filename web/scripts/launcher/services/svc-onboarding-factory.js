@@ -116,14 +116,6 @@ angular.module('risevision.apps.launcher.services')
         return !!(_getCurrentStep() && _getCurrentStep().tab === tab);
       };
 
-      factory.setNextStep = function () {
-        onboarding.currentStep++;
-
-        if (_getCurrentStep() && !_getCurrentStep().active) {
-          factory.setNextStep();
-        }
-      };
-
       factory.setCurrentTab = function (tab) {
         // Broken when the last step is the Congratulatory (last step)
         // of a tab. It should come back to the next step after that when
@@ -230,7 +222,7 @@ angular.module('risevision.apps.launcher.services')
           _completeOnboarding();
         });
 
-        factory.setNextStep();
+        _setCurrentStep('promoteTraining');
       };
 
       var _completeOnboarding = function () {
