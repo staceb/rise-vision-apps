@@ -1,7 +1,16 @@
 .nav-tabs-justified {
   >li>a {
     font-size: 16px;
+    .badge {
+      background-color: $blue-border-color;
+    }
  }
+
+ >li.active>a {
+    .badge {
+      background-color: $madero-black;
+    }
+  }
 }
 @media (min-width: $screen-sm) {
   .nav-tabs-justified {
