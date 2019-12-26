@@ -35,6 +35,7 @@ angular.module('risevision.apps.launcher.services')
       var onboarding = {
         currentStep: -1,
         activeStep: -1,
+        tabsCompleted: {},
         steps: [{
             step: 'addTemplate',
             tab: 1,
@@ -91,6 +92,7 @@ angular.module('risevision.apps.launcher.services')
       var _defaults = function () {
         onboarding.currentStep = -1;
         onboarding.activeStep = -1;
+        onboarding.tabsCompleted = {};
 
         $localStorage.onboarding = angular.extend({
           completed: false
@@ -110,6 +112,16 @@ angular.module('risevision.apps.launcher.services')
 
       factory.isCurrentStep = function (step) {
         return !!(_getCurrentStep() && _getCurrentStep().step === step);
+      };
+
+      var _completeTabsUpTo = function (tabIndex) {
+        for (var i = 1; i <= tabIndex; i++) {
+          onboarding.tabsCompleted[i] = true;
+        }
+      };
+
+      factory.isTabCompleted = function (tab) {
+        return onboarding.tabsCompleted[tab] === true;
       };
 
       factory.isCurrentTab = function (tab) {
@@ -195,17 +207,23 @@ angular.module('risevision.apps.launcher.services')
                 _setCurrentStep('addTemplate');
               } else if (factory.isCurrentStep('addTemplate')) {
                 _setCurrentStep('templateAdded');
+                _completeTabsUpTo(1);
               } else if (!resp[1].hasDisplays) {
                 _setCurrentStep('addDisplay');
+                _completeTabsUpTo(1);
               } else if (!resp[1].hasActivatedDisplays) {
                 _setCurrentStep('activateDisplay');
+                _completeTabsUpTo(1);
               } else if (factory.isCurrentStep('addDisplay') || factory.isCurrentStep('activateDisplay')) {
                 _setCurrentStep('displayActivated');
+                _completeTabsUpTo(2);
               } else if (!resp[2]) {
                 _setCurrentStep('promotePlaybook');
+                _completeTabsUpTo(2);
               } else {
                 factory.alreadySubscribed = true;
                 _setCurrentStep('promoteTraining');
+                _completeTabsUpTo(3);
                 _completeOnboarding();
               }
             }
@@ -223,6 +241,7 @@ angular.module('risevision.apps.launcher.services')
         });
 
         _setCurrentStep('promoteTraining');
+        _completeTabsUpTo(3);
       };
 
       var _completeOnboarding = function () {

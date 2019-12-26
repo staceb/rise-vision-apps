@@ -7,17 +7,17 @@
   <ul class="nav nav-tabs nav-justified nav-tabs-justified">
       <li role="presentation" ng-class="{active : factory.isCurrentTab(1)}">
         <a href="#" ng-click="factory.setCurrentTab(1)">
-          <strong>1. Pick a Template.</strong>
+          <strong>{{factory.isTabCompleted(1)? '&#9989;' : '1.'}} Pick a Template.</strong>
         </a>
       </li>
       <li role="presentation" ng-class="{active : factory.isCurrentTab(2)}">
         <a href="#" ng-click="factory.setCurrentTab(2)">
-          <strong>2. Plug in your Display.</strong>
+          <strong>{{factory.isTabCompleted(2)? '&#9989;' : '2.'}} Plug in your Display.</strong>
         </a>
       </li>
       <li role="presentation" ng-class="{active : factory.isCurrentTab(3)}">
         <a href="#" ng-click="factory.setCurrentTab(3)">
-          <strong>3. Keep it interesting.</strong>
+          <strong>{{factory.isTabCompleted(3)? '&#9989;' : '3.'}} Keep it interesting.</strong>
         </a>
       </li>
     </ul>

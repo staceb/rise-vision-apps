@@ -56,6 +56,7 @@ describe('service: onboardingFactory:', function() {
     expect(onboardingFactory.isCurrentStep).to.be.a('function');
     expect(onboardingFactory.isCurrentTab).to.be.a('function');
     expect(onboardingFactory.setCurrentTab).to.be.a('function');
+    expect(onboardingFactory.isTabCompleted).to.be.a('function');
     expect(onboardingFactory.isOnboarding).to.be.a('function');
     expect(onboardingFactory.isTemplateOnboarding).to.be.a('function');
     expect(onboardingFactory.refresh).to.be.a('function');
@@ -126,6 +127,7 @@ describe('service: onboardingFactory:', function() {
       onboardingFactory.refresh().then(function(){
         expect(onboardingFactory.isCurrentStep('addTemplate')).to.be.true;
         expect(onboardingFactory.isCurrentTab(1)).to.be.true;
+        expect(onboardingFactory.isTabCompleted(1)).to.be.false;
         expect(onboardingFactory.loading).to.be.false;
         done();
       });
@@ -138,7 +140,8 @@ describe('service: onboardingFactory:', function() {
       
       onboardingFactory.refresh().then(function(){
         expect(onboardingFactory.isCurrentStep('addTemplate')).to.be.false;
-        expect(onboardingFactory.isCurrentTab(1)).to.be.false;        
+        expect(onboardingFactory.isCurrentTab(1)).to.be.false;
+        expect(onboardingFactory.isTabCompleted(1)).to.be.false;
         done();
       });
     });
@@ -153,6 +156,7 @@ describe('service: onboardingFactory:', function() {
           expect(onboardingFactory.loading).to.be.false;
           expect(onboardingFactory.isCurrentStep('addTemplate')).to.be.false;
           expect(onboardingFactory.isCurrentTab(1)).to.be.false;
+          expect(onboardingFactory.isTabCompleted(1)).to.be.false;
           done();
         });
       expect(onboardingFactory.loading).to.be.true;
@@ -167,6 +171,7 @@ describe('service: onboardingFactory:', function() {
         onboardingFactory.refresh().then(function(){
           expect(onboardingFactory.isCurrentStep('templateAdded')).to.be.true;
           expect(onboardingFactory.isCurrentTab(1)).to.be.true;
+          expect(onboardingFactory.isTabCompleted(1)).to.be.true;
           expect(onboardingFactory.isCurrentStep('addTemplate')).to.be.false;
           done();
         });
@@ -182,6 +187,9 @@ describe('service: onboardingFactory:', function() {
       onboardingFactory.refresh().then(function(){
         expect(onboardingFactory.isCurrentStep('addDisplay')).to.be.true;
         expect(onboardingFactory.isCurrentTab(2)).to.be.true;
+
+        expect(onboardingFactory.isTabCompleted(1)).to.be.true;
+        expect(onboardingFactory.isTabCompleted(2)).to.be.false;
         done();
       });
     });
@@ -196,6 +204,9 @@ describe('service: onboardingFactory:', function() {
       onboardingFactory.refresh().then(function(){
         expect(onboardingFactory.isCurrentStep('activateDisplay')).to.be.true;
         expect(onboardingFactory.isCurrentTab(2)).to.be.true;
+
+        expect(onboardingFactory.isTabCompleted(1)).to.be.true;
+        expect(onboardingFactory.isTabCompleted(2)).to.be.false;
         done();
       });
     });
@@ -214,6 +225,9 @@ describe('service: onboardingFactory:', function() {
         onboardingFactory.refresh().then(function(){
           expect(onboardingFactory.isCurrentStep('displayActivated')).to.be.true;
           expect(onboardingFactory.isCurrentTab(2)).to.be.true;
+
+          expect(onboardingFactory.isTabCompleted(1)).to.be.true;
+          expect(onboardingFactory.isTabCompleted(2)).to.be.true;
           done();
         });
       });
@@ -249,6 +263,7 @@ describe('service: onboardingFactory:', function() {
       onboardingFactory.refresh().then(function(){
         expect(onboardingFactory.isCurrentStep('promotePlaybook')).to.be.true;
         expect(onboardingFactory.isCurrentTab(3)).to.be.true;
+        expect(onboardingFactory.isTabCompleted(3)).to.be.false;
         done();
       });
     });
@@ -264,6 +279,7 @@ describe('service: onboardingFactory:', function() {
       onboardingFactory.refresh().then(function(){
         expect(onboardingFactory.isCurrentStep('promoteTraining')).to.be.true;
         expect(onboardingFactory.isCurrentTab(3)).to.be.true;
+        expect(onboardingFactory.isTabCompleted(3)).to.be.true;
         expect(onboardingFactory.alreadySubscribed).to.be.true;
         expect($localStorage.onboarding.completed).to.be.true;
         
