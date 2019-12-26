@@ -4,8 +4,7 @@
       <h1 class="app-header-title" id="title" translate>Get Started</h1>
   </div>
 
-  <div class="panel panel-default u_margin-md-top">
-    <ul class="nav nav-tabs nav-justified">
+  <ul class="nav nav-tabs nav-justified nav-tabs-justified">
       <li role="presentation" ng-class="{active : factory.isCurrentTab(1)}">
         <a href="#" ng-click="factory.setCurrentTab(1)">
           <strong>1. Pick a Template.</strong>
@@ -22,7 +21,7 @@
         </a>
       </li>
     </ul>
-
+  <div class="panel panel-default nav-tabs-panel">
     <div class="panel-body madero-style">
       <div id="onboardingAddTemplate" class="animated fadeIn" ng-show="factory.isCurrentStep('addTemplate')">
         <div class="row">
