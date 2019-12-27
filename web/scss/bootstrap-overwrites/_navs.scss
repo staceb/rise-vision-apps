@@ -4,6 +4,11 @@
     .badge {
       background-color: $blue-border-color;
     }
+    .checkmark {
+      color: $madero-green;
+      font-size: 1.4em;
+      vertical-align: bottom;
+    }
  }
 
  >li.active>a {

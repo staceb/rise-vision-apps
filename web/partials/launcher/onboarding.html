@@ -7,21 +7,27 @@
   <ul class="nav nav-tabs nav-justified nav-tabs-justified">
       <li role="presentation" ng-class="{active : factory.isCurrentTab(1)}">
         <a href="#" ng-click="factory.setCurrentTab(1)">
-          <span ng-if="factory.isTabCompleted(1)">&#9989;</span>
+          <span ng-if="factory.isTabCompleted(1)">
+            <i class="fa fa-check-circle checkmark"></i>
+          </span>
           <span ng-if="!factory.isTabCompleted(1)" class="badge">1</span>
           <strong>Pick a Template.</strong>
         </a>
       </li>
       <li role="presentation" ng-class="{active : factory.isCurrentTab(2)}">
         <a href="#" ng-click="factory.setCurrentTab(2)">
-          <span ng-if="factory.isTabCompleted(2)">&#9989;</span>
+          <span ng-if="factory.isTabCompleted(2)">
+            <i class="fa fa-check-circle checkmark"></i>
+          </span>
           <span ng-if="!factory.isTabCompleted(2)" class="badge">2</span>
           <strong>Plug in your Display.</strong>
         </a>
       </li>
       <li role="presentation" ng-class="{active : factory.isCurrentTab(3)}">
         <a href="#" ng-click="factory.setCurrentTab(3)">
-          <span ng-if="factory.isTabCompleted(3)">&#9989;</span>
+          <span ng-if="factory.isTabCompleted(3)">
+            <i class="fa fa-check-circle checkmark"></i>
+          </span>
           <span ng-if="!factory.isTabCompleted(3)" class="badge">3</span>
           <strong>Keep it interesting.</strong>
         </a>
