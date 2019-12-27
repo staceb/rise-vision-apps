@@ -24,6 +24,12 @@ describe('service: onboardingFactory:', function() {
       }
     });
 
+    $provide.service('segmentAnalytics',function(){
+      return {
+        track: sinon.stub()
+      }
+    });
+
     $provide.service('updateUser', function() {
       return function() {
         return Q.resolve();
@@ -40,12 +46,13 @@ describe('service: onboardingFactory:', function() {
 
   }));
   
-  var onboardingFactory, $localStorage, userState, companyAssetsFactory;
+  var onboardingFactory, $localStorage, userState, companyAssetsFactory, segmentAnalytics;
   beforeEach(function() {
     inject(function($injector) {
       $localStorage = $injector.get('$localStorage');
       userState = $injector.get('userState');
       companyAssetsFactory = $injector.get('companyAssetsFactory');
+      segmentAnalytics = $injector.get('segmentAnalytics');
       
       onboardingFactory = $injector.get('onboardingFactory');
     });
@@ -282,6 +289,8 @@ describe('service: onboardingFactory:', function() {
         expect(onboardingFactory.isTabCompleted(3)).to.be.true;
         expect(onboardingFactory.alreadySubscribed).to.be.true;
         expect($localStorage.onboarding.completed).to.be.true;
+
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
         
         done();
       });

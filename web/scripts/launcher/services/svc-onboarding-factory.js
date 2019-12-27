@@ -29,8 +29,8 @@ angular.module('risevision.apps.launcher.services')
       'productCode': '601ee80f3fe2950b7e4f15c57d88bf0963efb57a'
     }
   ])
-  .factory('onboardingFactory', ['$q', '$localStorage', 'userState', 'companyAssetsFactory', 'updateUser', '$rootScope',
-    function ($q, $localStorage, userState, companyAssetsFactory, updateUser, $rootScope) {
+  .factory('onboardingFactory', ['$q', '$localStorage', 'userState', 'companyAssetsFactory', 'updateUser', '$rootScope', 'segmentAnalytics',
+    function ($q, $localStorage, userState, companyAssetsFactory, updateUser, $rootScope, segmentAnalytics) {
       var factory = {};
       var onboarding = {
         currentStep: -1,
@@ -220,11 +220,12 @@ angular.module('risevision.apps.launcher.services')
               } else if (!resp[2]) {
                 _setCurrentStep('promotePlaybook');
                 _completeTabsUpTo(2);
+                segmentAnalytics.track('Onboarding Step 3 Visited');
               } else {
                 factory.alreadySubscribed = true;
                 _setCurrentStep('promoteTraining');
                 _completeTabsUpTo(3);
-                _completeOnboarding();
+                _completeOnboarding(true);
               }
             }
           })
@@ -237,16 +238,19 @@ angular.module('risevision.apps.launcher.services')
         updateUser(userState.getUsername(), {
           'mailSyncEnabled': signupToNewsletter
         }).then(function () {
-          _completeOnboarding();
+          _completeOnboarding(signupToNewsletter);
         });
 
         _setCurrentStep('promoteTraining');
         _completeTabsUpTo(3);
       };
 
-      var _completeOnboarding = function () {
+      var _completeOnboarding = function (hasSubscribed) {
         $localStorage.onboarding.completed = true;
         $rootScope.$emit('onboardingCompleted');
+        segmentAnalytics.track('Onboarding Step 3 Completed', {
+          subscribed: hasSubscribed
+        });
       };
 
       _defaults();

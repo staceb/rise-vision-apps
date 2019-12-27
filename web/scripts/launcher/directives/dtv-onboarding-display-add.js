@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.apps.launcher.directives')
-  .directive('onboardingDisplayAdd', ['displayFactory', 'companyAssetsFactory',
-    function (displayFactory, companyAssetsFactory) {
+  .directive('onboardingDisplayAdd', ['displayFactory', 'companyAssetsFactory', 'displayTracker',
+    function (displayFactory, companyAssetsFactory, displayTracker) {
       return {
         restrict: 'E',
         scope: {
@@ -32,6 +32,16 @@ angular.module('risevision.apps.launcher.directives')
 
           $scope.setCurrentPage = function (tabName) {
             $scope.currentPage = tabName;
+          };
+
+          $scope.showMediaPlayerPage = function (hasOwnPlayer) {
+            if (hasOwnPlayer) {
+              $scope.setCurrentPage('userMediaPlayer');
+            } else {
+              $scope.setCurrentPage('preconfiguredMediaPlayer');
+            }
+            displayTracker('Media Player Type Selected', $scope.display.id, $scope.display.name, undefined, !!
+              hasOwnPlayer);
           };
 
         } //link()

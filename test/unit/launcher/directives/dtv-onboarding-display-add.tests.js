@@ -6,7 +6,8 @@ describe('directive: onboarding-display-add', function() {
       element,
       firstDisplay,
       companyAssetsFactory,
-      displayFactory;
+      displayFactory,
+      tracker;
   beforeEach(module('risevision.apps.launcher.directives'));
   beforeEach(module(function ($provide) {
     $provide.service('displayFactory', function() {
@@ -19,7 +20,9 @@ describe('directive: onboarding-display-add', function() {
         getFirstDisplay: sinon.stub().returns(Q.resolve(firstDisplay))        
       };
     });
-   
+    $provide.service('displayTracker', function() { 
+      return tracker = sinon.stub();
+    });
   }));
   beforeEach(inject(function(_$compile_, _$rootScope_, $templateCache, $injector){
     firstDisplay = {id: 'firstDislay'};
@@ -48,6 +51,7 @@ describe('directive: onboarding-display-add', function() {
     it('should initialize scope', function() {
       expect($scope.downloadOnly).to.be.true;
       expect($scope.setCurrentPage).to.be.a.function;
+      expect($scope.showMediaPlayerPage).to.be.a.function;      
       expect($scope.display).to.not.be.ok;
     });
 
@@ -55,6 +59,24 @@ describe('directive: onboarding-display-add', function() {
       $scope.setCurrentPage('name');
 
       expect($scope.currentPage).to.equal('name');
+    });
+  });
+
+  describe('showMediaPlayerPage:',function() {
+    beforeEach(function() {
+      $scope.display = {id: 'id', name: 'name'};
+    });
+
+    it('should show user media player page the and track event', function() {
+      $scope.showMediaPlayerPage(true);
+      expect($scope.currentPage).to.equal('userMediaPlayer');
+      expect(tracker).to.have.been.calledWith('Media Player Type Selected', 'id', 'name', undefined, true);
+    });
+
+    it('should show buy media player page the and track event', function() {
+      $scope.showMediaPlayerPage(false);
+      expect($scope.currentPage).to.equal('preconfiguredMediaPlayer');
+      expect(tracker).to.have.been.calledWith('Media Player Type Selected', 'id', 'name', undefined, false);
     });
   });
 
