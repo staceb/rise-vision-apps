@@ -20,7 +20,9 @@ describe('service: onboardingFactory:', function() {
         }),
         getCopyOfProfile: sinon.stub(),
         isEducationCustomer: sinon.stub().returns(true),
-        _restoreState: function(){}
+        _restoreState: function(){},
+        getUsername: sinon.stub().returns('username'),
+        updateUserProfile: sinon.stub()
       }
     });
 
@@ -30,26 +32,15 @@ describe('service: onboardingFactory:', function() {
       }
     });
 
-    $provide.service('updateUser', function() {
-      return function() {
-        return Q.resolve();
-      };
-    });
-
-    $provide.service('$localStorage', function() {
-      return {
-        onboarding: {
-          currentStep: 2
-        }
-      };
+    $provide.service("updateUser", function() {
+      return updateUser = sinon.stub().returns(Q.resolve({}));
     });
 
   }));
   
-  var onboardingFactory, $localStorage, userState, companyAssetsFactory, segmentAnalytics;
+  var onboardingFactory, userState, companyAssetsFactory, segmentAnalytics, updateUser;
   beforeEach(function() {
     inject(function($injector) {
-      $localStorage = $injector.get('$localStorage');
       userState = $injector.get('userState');
       companyAssetsFactory = $injector.get('companyAssetsFactory');
       segmentAnalytics = $injector.get('segmentAnalytics');
@@ -71,13 +62,6 @@ describe('service: onboardingFactory:', function() {
     expect(onboardingFactory.onboardingStep).to.be.undefined;
   });
 
-  it('should initialize $localStorage.onboarding value', function() {
-    expect($localStorage.onboarding).to.deep.equal({
-      currentStep: 2,
-      completed: false
-    });
-  });
-
   describe('isOnboarding:', function() {
     it('should return false if not an education customer', function() {
       userState.isEducationCustomer.returns(false);
@@ -97,10 +81,12 @@ describe('service: onboardingFactory:', function() {
       expect(onboardingFactory.isOnboarding()).to.be.true;
     });
 
-    it('should return false if company has already completed onboarding', function() {
-      $localStorage.onboarding = {
-        completed: true
-      };
+    it('should return false if user has already completed onboarding', function() {
+      userState.getCopyOfProfile.returns({
+        settings:{
+          onboardingCompleted: "true"
+        }
+      });
 
       expect(onboardingFactory.isOnboarding()).to.be.false;
     });
@@ -284,11 +270,17 @@ describe('service: onboardingFactory:', function() {
       userState.getCopyOfProfile.returns({mailSyncEnabled:true});
       
       onboardingFactory.refresh().then(function(){
+        expect(updateUser).to.have.been.calledWith('username',{
+          'mailSyncEnabled': true,
+          'settings': {
+            'onboardingCompleted': 'true'
+          }
+        });
+
         expect(onboardingFactory.isCurrentStep('promoteTraining')).to.be.true;
         expect(onboardingFactory.isCurrentTab(3)).to.be.true;
         expect(onboardingFactory.isTabCompleted(3)).to.be.true;
         expect(onboardingFactory.alreadySubscribed).to.be.true;
-        expect($localStorage.onboarding.completed).to.be.true;
 
         expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
         
@@ -296,4 +288,50 @@ describe('service: onboardingFactory:', function() {
       });
     });
   });
+
+  describe('setPlaybookSignup', function(){
+    it('should signup to playbook and complete onboarding', function(done) {
+      onboardingFactory.setPlaybookSignup(true);
+      setTimeout(function(){
+        expect(updateUser).to.have.been.calledWith('username',{
+          'mailSyncEnabled': true,
+          'settings': {
+            'onboardingCompleted': 'true'
+          }
+        });
+
+        expect(onboardingFactory.isCurrentStep('promoteTraining')).to.be.true;
+        expect(onboardingFactory.isCurrentTab(3)).to.be.true;
+        expect(onboardingFactory.isTabCompleted(3)).to.be.true;
+        expect(onboardingFactory.alreadySubscribed).to.be.undefined;
+
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        
+        done();
+      },10);
+    });
+
+    it('should not signup to playbook and complete onboarding', function(done) {
+      onboardingFactory.setPlaybookSignup(false);
+      setTimeout(function(){
+        expect(updateUser).to.have.been.calledWith('username',{
+          'mailSyncEnabled': false,
+          'settings': {
+            'onboardingCompleted': 'true'
+          }
+        });
+
+        expect(onboardingFactory.isCurrentStep('promoteTraining')).to.be.true;
+        expect(onboardingFactory.isCurrentTab(3)).to.be.true;
+        expect(onboardingFactory.isTabCompleted(3)).to.be.true;
+        expect(onboardingFactory.alreadySubscribed).to.be.undefined;
+
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        
+        done();
+      },10);
+    });
+    
+  });
+
 });

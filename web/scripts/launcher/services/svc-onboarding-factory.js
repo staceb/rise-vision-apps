@@ -29,8 +29,9 @@ angular.module('risevision.apps.launcher.services')
       'productCode': '601ee80f3fe2950b7e4f15c57d88bf0963efb57a'
     }
   ])
-  .factory('onboardingFactory', ['$q', '$localStorage', 'userState', 'companyAssetsFactory', 'updateUser', '$rootScope', 'segmentAnalytics',
-    function ($q, $localStorage, userState, companyAssetsFactory, updateUser, $rootScope, segmentAnalytics) {
+  .factory('onboardingFactory', ['$q', 'userState', 'companyAssetsFactory', 'updateUser', '$rootScope',
+    'segmentAnalytics', '$exceptionHandler',
+    function ($q, userState, companyAssetsFactory, updateUser, $rootScope, segmentAnalytics, $exceptionHandler) {
       var factory = {};
       var onboarding = {
         currentStep: -1,
@@ -93,10 +94,6 @@ angular.module('risevision.apps.launcher.services')
         onboarding.currentStep = -1;
         onboarding.activeStep = -1;
         onboarding.tabsCompleted = {};
-
-        $localStorage.onboarding = angular.extend({
-          completed: false
-        }, $localStorage.onboarding);
       };
 
       var _setCurrentStep = function (step) {
@@ -177,7 +174,8 @@ angular.module('risevision.apps.launcher.services')
       };
 
       factory.isOnboarding = function () {
-        var completed = $localStorage.onboarding.completed;
+        var profile = userState.getCopyOfProfile();
+        var completed = profile && profile.settings && profile.settings.onboardingCompleted === 'true';
 
         return userState.isEducationCustomer() && _checkCreationDate() && !completed;
       };
@@ -223,9 +221,7 @@ angular.module('risevision.apps.launcher.services')
                 segmentAnalytics.track('Onboarding Step 3 Visited');
               } else {
                 factory.alreadySubscribed = true;
-                _setCurrentStep('promoteTraining');
-                _completeTabsUpTo(3);
-                _completeOnboarding(true);
+                return _completeOnboarding(true);
               }
             }
           })
@@ -235,22 +231,35 @@ angular.module('risevision.apps.launcher.services')
       };
 
       factory.setPlaybookSignup = function (signupToNewsletter) {
-        updateUser(userState.getUsername(), {
-          'mailSyncEnabled': signupToNewsletter
-        }).then(function () {
-          _completeOnboarding(signupToNewsletter);
-        });
-
-        _setCurrentStep('promoteTraining');
-        _completeTabsUpTo(3);
+        _completeOnboarding(signupToNewsletter);
       };
 
-      var _completeOnboarding = function (hasSubscribed) {
-        $localStorage.onboarding.completed = true;
-        $rootScope.$emit('onboardingCompleted');
-        segmentAnalytics.track('Onboarding Step 3 Completed', {
-          subscribed: hasSubscribed
-        });
+      var _completeOnboarding = function (signupToNewsletter) {
+        factory.loading = true;
+
+        return updateUser(userState.getUsername(), {
+            'mailSyncEnabled': signupToNewsletter,
+            'settings': {
+              'onboardingCompleted': 'true'
+            }
+          })
+          .then(function (resp) {
+            userState.updateUserProfile(resp.item);
+
+            $rootScope.$emit('onboardingCompleted');
+            _setCurrentStep('promoteTraining');
+            _completeTabsUpTo(3);
+
+            segmentAnalytics.track('Onboarding Step 3 Completed', {
+              subscribed: signupToNewsletter
+            });
+          })
+          .catch(function (err) {
+            $exceptionHandler(err, 'Onboarding user update failed.', true);
+          })
+          .finally(function () {
+            factory.loading = false;
+          });
       };
 
       _defaults();
