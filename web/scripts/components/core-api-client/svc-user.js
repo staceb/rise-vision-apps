@@ -17,8 +17,7 @@
 
     .constant('USER_WRITABLE_FIELDS', [
       'mailSyncEnabled', 'email', 'firstName', 'lastName', 'telephone',
-      'roles',
-      'status', 'companyRole', 'dataCollectionDate'
+      'roles', 'status', 'companyRole', 'dataCollectionDate', 'settings'
     ])
 
     .factory('getUserProfile', ['coreAPILoader', '$q', '$log',
