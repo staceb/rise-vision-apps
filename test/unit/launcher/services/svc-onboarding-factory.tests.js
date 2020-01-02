@@ -283,7 +283,7 @@ describe('service: onboardingFactory:', function() {
         expect(onboardingFactory.isTabCompleted(3)).to.be.true;
         expect(onboardingFactory.alreadySubscribed).to.be.true;
 
-        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Newsletter Signup Completed')
         
         done();
       });
@@ -308,7 +308,7 @@ describe('service: onboardingFactory:', function() {
         expect(onboardingFactory.alreadySubscribed).to.be.undefined;
 
         expect($rootScope.$emit).to.have.been.calledWith('risevision.user.userUpdated');
-        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Newsletter Signup Completed')
         
         done();
       },10);
@@ -331,7 +331,7 @@ describe('service: onboardingFactory:', function() {
         expect(onboardingFactory.alreadySubscribed).to.be.undefined;
 
         expect($rootScope.$emit).to.have.been.calledWith('risevision.user.userUpdated');
-        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Newsletter Signup Completed')
         
         done();
       },10);

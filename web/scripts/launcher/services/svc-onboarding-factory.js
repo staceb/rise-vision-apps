@@ -218,7 +218,7 @@ angular.module('risevision.apps.launcher.services')
               } else if (!resp[2]) {
                 _setCurrentStep('promotePlaybook');
                 _completeTabsUpTo(2);
-                segmentAnalytics.track('Onboarding Step 3 Visited');
+                segmentAnalytics.track('Onboarding Newsletter Signup Visited');
               } else {
                 factory.alreadySubscribed = true;
                 return _completeOnboarding(true);
@@ -246,11 +246,11 @@ angular.module('risevision.apps.launcher.services')
           .then(function (resp) {
             userState.updateUserProfile(resp.item);
             $rootScope.$emit('risevision.user.userUpdated');
-            
+
             _setCurrentStep('promoteTraining');
             _completeTabsUpTo(3);
 
-            segmentAnalytics.track('Onboarding Step 3 Completed', {
+            segmentAnalytics.track('Onboarding Newsletter Signup Completed', {
               subscribed: signupToNewsletter
             });
           })
