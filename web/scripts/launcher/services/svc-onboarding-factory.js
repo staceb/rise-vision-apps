@@ -245,8 +245,8 @@ angular.module('risevision.apps.launcher.services')
           })
           .then(function (resp) {
             userState.updateUserProfile(resp.item);
-
-            $rootScope.$emit('onboardingCompleted');
+            $rootScope.$emit('risevision.user.userUpdated');
+            
             _setCurrentStep('promoteTraining');
             _completeTabsUpTo(3);
 
