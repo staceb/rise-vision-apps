@@ -45,11 +45,10 @@ describe('service: display tracker:', function() {
   });
   
   it('should call segment analytics service',function(){
-    var hasOwnMediaPlayer = true;
-    displayTracker('Display Updated', 'displayId', 'displayName', 'downloadType', hasOwnMediaPlayer);
+    displayTracker('Display Updated', 'displayId', 'displayName', 'downloadType');
 
     expect(eventName).to.equal('Display Updated');
-    expect(eventData).to.deep.equal({displayId: 'displayId', displayName: 'displayName', companyId: 'companyId', downloadType: 'downloadType', hasOwnMediaPlayer: true});
+    expect(eventData).to.deep.equal({displayId: 'displayId', displayName: 'displayName', companyId: 'companyId', downloadType: 'downloadType'});
     bQSpy.should.not.have.been.called;
   });
 

@@ -70,13 +70,13 @@ describe('directive: onboarding-display-add', function() {
     it('should show user media player page the and track event', function() {
       $scope.showMediaPlayerPage(true);
       expect($scope.currentPage).to.equal('userMediaPlayer');
-      expect(tracker).to.have.been.calledWith('Media Player Type Selected', 'id', 'name', undefined, true);
+      expect(tracker).to.have.been.calledWith('User Media Player Selected', 'id', 'name');
     });
 
     it('should show buy media player page the and track event', function() {
       $scope.showMediaPlayerPage(false);
       expect($scope.currentPage).to.equal('preconfiguredMediaPlayer');
-      expect(tracker).to.have.been.calledWith('Media Player Type Selected', 'id', 'name', undefined, false);
+      expect(tracker).to.have.been.calledWith('Preconfigured Media Player Selected', 'id', 'name');
     });
   });
 
