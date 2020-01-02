@@ -17,35 +17,50 @@ describe('service: company assets factory:', function() {
       };
     });
 
+    $provide.service('schedule', function() {
+      return {
+        list: 'scheduleList'
+      };
+    });
+
     $provide.service('CachedRequest', function() {
       return sinon.stub().returns({
-        execute: requestExecute = sinon.stub()
+        execute: requestExecute = sinon.stub(),
+        reset: requestReset = sinon.stub()
       });
     });
 
   }));
   
-  var companyAssetsFactory, CachedRequest, requestExecute;
+  var companyAssetsFactory, CachedRequest, requestExecute, $rootScope, requestReset;
   beforeEach(function() {
     inject(function($injector) {
       companyAssetsFactory = $injector.get('companyAssetsFactory');
       CachedRequest = $injector.get('CachedRequest');
+      $rootScope = $injector.get('$rootScope');
     });
   });
 
   it('should exist', function() {
     expect(companyAssetsFactory).to.be.ok;
-    expect(companyAssetsFactory.hasTemplates).to.be.a('function');
+    expect(companyAssetsFactory.hasPresentations).to.be.a('function');
+    expect(companyAssetsFactory.hasSchedules).to.be.a('function');
+    expect(companyAssetsFactory.getFirstDisplay).to.be.a('function');
     expect(companyAssetsFactory.hasDisplays).to.be.a('function');
   });
 
   it('should initialize CachedRequest services', function() {
-    CachedRequest.should.have.been.calledTwice;
+    CachedRequest.should.have.been.calledThrice;
     CachedRequest.should.have.been.calledWith('presentationList', {
       sortBy: 'changeDate',
       reverse: true,
+      count: 1
+    });
+
+    CachedRequest.should.have.been.calledWith('scheduleList', {
       count: 1,
-      filter: 'presentationType:\"HTML Template\"'
+      reverse: true,
+      sortBy: "changeDate"
     });
 
     CachedRequest.should.have.been.calledWith('displayList', {
@@ -55,13 +70,13 @@ describe('service: company assets factory:', function() {
     });
   });
   
-  describe('hasTemplates:', function() {
-    it('should resolve true if Company has templates', function(done) {
+  describe('hasPresentations:', function() {
+    it('should resolve true if Company has presentations', function(done) {
       requestExecute.returns(Q.resolve({
         items: [1]
       }));
 
-      companyAssetsFactory.hasTemplates()
+      companyAssetsFactory.hasPresentations()
         .then(function(response) {
           requestExecute.should.have.been.calledWith(undefined);
 
@@ -79,7 +94,7 @@ describe('service: company assets factory:', function() {
         items: []
       }));
 
-      companyAssetsFactory.hasTemplates()
+      companyAssetsFactory.hasPresentations()
         .then(function(response) {
           requestExecute.should.have.been.calledWith(undefined);
 
@@ -95,7 +110,7 @@ describe('service: company assets factory:', function() {
     it('should reject if request fails', function(done) {
       requestExecute.returns(Q.reject('error'));
 
-      companyAssetsFactory.hasTemplates()
+      companyAssetsFactory.hasPresentations()
         .then(function() {
           done('failed');
         })
@@ -108,22 +123,155 @@ describe('service: company assets factory:', function() {
 
   });
 
-  describe('hasDisplays:', function() {
-    it('should resolve true if Company has displays', function(done) {
+  describe('hasSchedules:', function() {
+    it('should resolve true if Company has schedules', function(done) {
       requestExecute.returns(Q.resolve({
         items: [1]
       }));
 
-      companyAssetsFactory.hasDisplays()
+      companyAssetsFactory.hasSchedules()
         .then(function(response) {
-          requestExecute.should.have.been.calledWith(undefined);
-
-          expect(response).to.deep.equal({
-            hasDisplays: true,
-            hasActivatedDisplays: true
-          });
+          requestExecute.should.have.been.calledOnce;
+          expect(response).to.be.true;
 
           done();
+        })
+        .catch(function() {
+          done('error');
+        });
+    });
+
+    it('should not make additional requests if Company has schedules', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: [1]
+      }));
+
+      companyAssetsFactory.hasSchedules()
+        .then(function(response) {
+          requestExecute.should.have.been.calledOnce;
+          expect(response).to.be.true;
+
+          companyAssetsFactory.hasSchedules()
+            .then(function(response){
+              requestExecute.should.have.been.calledOnce;
+              expect(response).to.be.true;
+              done();
+          });
+        })
+        .catch(function() {
+          done('error');
+        });
+    });
+
+    it('should resolve false if Company does not have schedules', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: []
+      }));
+
+      companyAssetsFactory.hasSchedules()
+        .then(function(response) {
+          requestExecute.should.have.been.calledOnce;
+          expect(response).to.be.false;
+
+          done();
+        })
+        .catch(function() {
+          done('error');
+        });
+    });
+
+    it('should listen to "scheduleCreated" if Company does not have schedules and send "companyAssetsUpdated" event', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: []
+      }));
+
+      companyAssetsFactory.hasSchedules().then(function(response) {
+        requestExecute.should.have.been.calledOnce;
+        expect(response).to.be.false;
+        $rootScope.$emit('scheduleCreated');
+        $rootScope.$digest();          
+      });
+
+      $rootScope.$on('companyAssetsUpdated',function() {
+        done();
+      });
+    });
+
+    it('should reject if request fails', function(done) {
+      requestExecute.returns(Q.reject('error'));
+
+      companyAssetsFactory.hasSchedules()
+        .then(function() {
+          done('failed');
+        })
+        .catch(function(error) {
+          expect(error).to.equal('error');
+
+          done();
+        });
+    });
+  });
+
+  describe('hasDisplays:', function() {
+    it('should resolve if Company has displays', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: [
+          {id:'display1'}
+        ]
+      }));
+
+      companyAssetsFactory.hasDisplays()
+        .then(function(response) {
+          requestExecute.should.have.been.calledOnce;
+          expect(response.hasDisplays).to.be.true;
+          expect(response.hasActivatedDisplays).to.be.false;
+
+          done();
+        })
+        .catch(function() {
+          done('error');
+        });
+    });
+
+    it('should indicate if Company has activated displays', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: [
+          {id:'display1', onlineStatus: 'online'}
+        ]
+      }));
+
+      companyAssetsFactory.hasDisplays()
+        .then(function(response) {
+          requestExecute.should.have.been.calledOnce;
+          expect(response.hasDisplays).to.be.true;
+          expect(response.hasActivatedDisplays).to.be.true;
+
+          done();
+        })
+        .catch(function() {
+          done('error');
+        });
+    });
+
+    it('should not make additional requests if Company has activated displays', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: [
+          {id:'display1', onlineStatus: 'online'}
+        ]
+      }));
+
+      companyAssetsFactory.hasDisplays()
+        .then(function(response) {
+          requestExecute.should.have.been.calledOnce;
+          expect(response.hasDisplays).to.be.true;
+          expect(response.hasActivatedDisplays).to.be.true;
+          companyAssetsFactory.hasDisplays()
+            .then(function(response){
+              requestExecute.should.have.been.calledOnce;
+              expect(response.hasDisplays).to.be.true;
+              expect(response.hasActivatedDisplays).to.be.true;
+              done();
+          });
         })
         .catch(function() {
           done('error');
@@ -137,18 +285,32 @@ describe('service: company assets factory:', function() {
 
       companyAssetsFactory.hasDisplays()
         .then(function(response) {
-          requestExecute.should.have.been.calledWith(undefined);
-
-          expect(response).to.deep.equal({
-            hasDisplays: false,
-            hasActivatedDisplays: true
-          });
-
+          requestExecute.should.have.been.calledOnce;
+          expect(response.hasDisplays).to.be.false;
+          expect(response.hasActivatedDisplays).to.be.false;
           done();
         })
         .catch(function() {
           done('error');
         });
+    });
+
+    it('should listen to "displayCreated" if Company does not have displays and send "companyAssetsUpdated" event', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: []
+      }));
+
+      companyAssetsFactory.hasDisplays().then(function(response) {
+        requestExecute.should.have.been.calledOnce;
+        expect(response.hasDisplays).to.be.false;
+        expect(response.hasActivatedDisplays).to.be.false;
+        $rootScope.$emit('displayCreated');
+        $rootScope.$digest();          
+      });
+
+      $rootScope.$on('companyAssetsUpdated',function() {
+        done();
+      });
     });
 
     it('should reject if request fails', function(done) {
@@ -164,7 +326,64 @@ describe('service: company assets factory:', function() {
           done();
         });
     });
+  });
 
+  describe('getFirstDisplay:',function() {
+    it('should resolve a display if Company has displays', function(done) {
+      var display = {id:'display1'};
+      requestExecute.returns(Q.resolve({
+        items: [ display ]
+      }));
+
+      companyAssetsFactory.getFirstDisplay()
+        .then(function(response) {
+          requestExecute.should.have.been.calledOnce;
+          expect(response).to.equal(display);
+          done();
+        })
+        .catch(function() {
+          done('error');
+        });
+    });
+
+    it('should resolve undefined if Company does not have displays', function(done) {
+      requestExecute.returns(Q.resolve({
+        items: []
+      }));
+
+      companyAssetsFactory.getFirstDisplay()
+        .then(function(response) {
+          requestExecute.should.have.been.calledOnce;
+          expect(response).to.be.undefined;
+          done();
+        })
+        .catch(function() {
+          done('error');
+        });
+    });
+
+    it('should reject if request fails', function(done) {
+      requestExecute.returns(Q.reject('error'));
+
+      companyAssetsFactory.getFirstDisplay()
+        .then(function() {
+          done('failed');
+        })
+        .catch(function(error) {
+          expect(error).to.equal('error');
+
+          done();
+        });
+    });
+  });
+
+  describe('selectedCompanyChanged:', function() {
+    it('should reset cache on company changed', function() {
+      $rootScope.$emit('risevision.company.selectedCompanyChanged');
+      $rootScope.$digest();
+
+      requestReset.should.have.been.calledThrice;
+    });
   });
 
 });

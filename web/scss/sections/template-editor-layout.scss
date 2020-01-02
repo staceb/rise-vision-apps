@@ -1,9 +1,4 @@
 $short-phone-height: 570px;
-$madero-black: #020620;
-$madero-gray: #999999;
-$madero-light-blue: #107DDA;
-$madero-green: #45b764;
-$maderio-green-disabled: #a2dbb2;
 
 .template-editor {
   --common-header-height: 93px;
@@ -1127,6 +1122,10 @@ $maderio-green-disabled: #a2dbb2;
         width: 460px;
       }
     }
+  }
+
+  .btn-navbar {
+    min-height: 35px;
   }
 
   .modal-content {

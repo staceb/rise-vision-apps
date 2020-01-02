@@ -155,15 +155,24 @@ var DisplayManageScenarios = function() {
 
       });
 
-      it('should show Display Id but hide the Email Instructions', function() {
-        displayAddModalPage.getPreconfiguredPlayerPanel().click();
+      it('should allow users to pick Media Player option',function() {
+        helper.wait(displayAddModalPage.getDisplayAddedPage(), 'User Player page');
 
-        helper.wait(displayAddModalPage.getPreconfiguredPlayerPage(), 'User Player page');
+        expect(displayAddModalPage.getDisplayAddedPage().isDisplayed()).to.eventually.be.true;
+        expect(displayAddModalPage.getPreconfiguredPlayerButton().isDisplayed()).to.eventually.be.true;
+        expect(displayAddModalPage.getOwnPlayerButton().isDisplayed()).to.eventually.be.true;
+      });
+
+      it('should show Display Id but hide the Email Instructions', function() {
+        displayAddModalPage.getPreconfiguredPlayerButton().click();
+        displayAddModalPage.getNextButton().click();
+
+        helper.wait(displayAddModalPage.getPreconfiguredPlayerPage(), 'Preconfigured Player page');
 
         expect(displayAddModalPage.getDisplayIdField().isDisplayed()).to.eventually.be.true;
-        expect(displayAddModalPage.getDisplayIdField().getAttribute('value')).to.eventually.have.length.greaterThan(0);
+        expect(displayAddModalPage.getDisplayIdField().getText()).to.eventually.have.length.greaterThan(0);
 
-        expect(displayAddModalPage.getEmailedInstructions().isPresent()).to.eventually.be.false;      
+        expect(displayAddModalPage.getEmailedInstructions().isPresent()).to.eventually.be.true;      
       });
 
       it('should close the modal', function() {

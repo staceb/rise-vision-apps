@@ -35,6 +35,8 @@ angular.module('risevision.displays.directives')
           $scope.sendToAnotherEmail = function () {
             _sendEmail($scope.anotherEmail)
               .then(function () {
+                $scope.emailResent = true;
+                $scope.sendAnotherEmail = false;
                 $scope.anotherEmail = null;
                 $scope.anotherEmailForm.$setPristine(true);
               });

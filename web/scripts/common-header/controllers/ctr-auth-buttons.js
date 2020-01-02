@@ -148,10 +148,6 @@ angular.module('risevision.common.header')
         return userState.isSelectedCompanyChargebee();
       };
 
-      $scope.isApps = function () {
-        return APPS_URL === '' || $window.location.href.startsWith(APPS_URL);
-      };
-
       $loading.startGlobal('auth-buttons-silent');
       oauth2APILoader() //force loading oauth api on startup
         //to avoid popup blocker

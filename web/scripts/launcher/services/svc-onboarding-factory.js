@@ -29,12 +29,14 @@ angular.module('risevision.apps.launcher.services')
       'productCode': '601ee80f3fe2950b7e4f15c57d88bf0963efb57a'
     }
   ])
-  .factory('onboardingFactory', ['$q', '$localStorage', 'userState', 'companyAssetsFactory',
-    function ($q, $localStorage, userState, companyAssetsFactory) {
+  .factory('onboardingFactory', ['$q', 'userState', 'companyAssetsFactory', 'updateUser', '$rootScope',
+    'segmentAnalytics', '$exceptionHandler',
+    function ($q, userState, companyAssetsFactory, updateUser, $rootScope, segmentAnalytics, $exceptionHandler) {
       var factory = {};
       var onboarding = {
         currentStep: -1,
         activeStep: -1,
+        tabsCompleted: {},
         steps: [{
             step: 'addTemplate',
             tab: 1,
@@ -91,10 +93,7 @@ angular.module('risevision.apps.launcher.services')
       var _defaults = function () {
         onboarding.currentStep = -1;
         onboarding.activeStep = -1;
-
-        $localStorage.onboarding = angular.extend({
-          completed: false
-        }, $localStorage.onboarding);
+        onboarding.tabsCompleted = {};
       };
 
       var _setCurrentStep = function (step) {
@@ -112,18 +111,18 @@ angular.module('risevision.apps.launcher.services')
         return !!(_getCurrentStep() && _getCurrentStep().step === step);
       };
 
-      factory.isCurrentTab = function (tab) {
-        return !!(_getCurrentStep() && _getCurrentStep().tab === tab);
+      var _completeTabsUpTo = function (tabIndex) {
+        for (var i = 1; i <= tabIndex; i++) {
+          onboarding.tabsCompleted[i] = true;
+        }
       };
 
-      factory.setNextStep = function () {
-        onboarding.currentStep++;
+      factory.isTabCompleted = function (tab) {
+        return onboarding.tabsCompleted[tab] === true;
+      };
 
-        if (_getCurrentStep() && !_getCurrentStep().active) {
-          factory.setNextStep();
-        } else if (onboarding.currentStep === 4) {
-          $localStorage.onboarding.completed = true;
-        }
+      factory.isCurrentTab = function (tab) {
+        return !!(_getCurrentStep() && _getCurrentStep().tab === tab);
       };
 
       factory.setCurrentTab = function (tab) {
@@ -165,7 +164,7 @@ angular.module('risevision.apps.launcher.services')
         var company = userState.getCopyOfSelectedCompany();
         var creationDate = ((company && company.creationDate) ? (new Date(company.creationDate)) : (
           new Date()));
-        return creationDate > new Date('Dec 3, 2017');
+        return creationDate > new Date('Dec 3, 2010');
       };
 
       var _isMailSyncEnabled = function () {
@@ -175,7 +174,8 @@ angular.module('risevision.apps.launcher.services')
       };
 
       factory.isOnboarding = function () {
-        var completed = $localStorage.onboarding.completed;
+        var profile = userState.getCopyOfProfile();
+        var completed = profile && profile.settings && profile.settings.onboardingCompleted === 'true';
 
         return userState.isEducationCustomer() && _checkCreationDate() && !completed;
       };
@@ -205,16 +205,57 @@ angular.module('risevision.apps.launcher.services')
                 _setCurrentStep('addTemplate');
               } else if (factory.isCurrentStep('addTemplate')) {
                 _setCurrentStep('templateAdded');
+                _completeTabsUpTo(1);
               } else if (!resp[1].hasDisplays) {
                 _setCurrentStep('addDisplay');
+                _completeTabsUpTo(1);
               } else if (!resp[1].hasActivatedDisplays) {
                 _setCurrentStep('activateDisplay');
+                _completeTabsUpTo(1);
               } else if (factory.isCurrentStep('addDisplay') || factory.isCurrentStep('activateDisplay')) {
                 _setCurrentStep('displayActivated');
+                _completeTabsUpTo(2);
               } else if (!resp[2]) {
                 _setCurrentStep('promotePlaybook');
+                _completeTabsUpTo(2);
+                segmentAnalytics.track('Onboarding Step 3 Visited');
+              } else {
+                factory.alreadySubscribed = true;
+                return _completeOnboarding(true);
               }
             }
+          })
+          .finally(function () {
+            factory.loading = false;
+          });
+      };
+
+      factory.setPlaybookSignup = function (signupToNewsletter) {
+        _completeOnboarding(signupToNewsletter);
+      };
+
+      var _completeOnboarding = function (signupToNewsletter) {
+        factory.loading = true;
+
+        return updateUser(userState.getUsername(), {
+            'mailSyncEnabled': signupToNewsletter,
+            'settings': {
+              'onboardingCompleted': 'true'
+            }
+          })
+          .then(function (resp) {
+            userState.updateUserProfile(resp.item);
+
+            $rootScope.$emit('onboardingCompleted');
+            _setCurrentStep('promoteTraining');
+            _completeTabsUpTo(3);
+
+            segmentAnalytics.track('Onboarding Step 3 Completed', {
+              subscribed: signupToNewsletter
+            });
+          })
+          .catch(function (err) {
+            $exceptionHandler(err, 'Onboarding user update failed.', true);
           })
           .finally(function () {
             factory.loading = false;

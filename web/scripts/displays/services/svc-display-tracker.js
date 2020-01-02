@@ -9,13 +9,14 @@ angular.module('risevision.displays.services')
     'bigQueryLogging', 'DISPLAY_EVENTS_TO_BQ',
     function (userState, segmentAnalytics, bigQueryLogging,
       DISPLAY_EVENTS_TO_BQ) {
-      return function (eventName, displayId, displayName, downloadType) {
+      return function (eventName, displayId, displayName, downloadType, hasOwnMediaPlayer) {
         if (eventName) {
           segmentAnalytics.track(eventName, {
             displayId: displayId,
             displayName: displayName,
             companyId: userState.getSelectedCompanyId(),
-            downloadType: downloadType
+            downloadType: downloadType,
+            hasOwnMediaPlayer: hasOwnMediaPlayer
           });
           if (DISPLAY_EVENTS_TO_BQ.indexOf(eventName) !== -1) {
             bigQueryLogging.logEvent(eventName, displayId);

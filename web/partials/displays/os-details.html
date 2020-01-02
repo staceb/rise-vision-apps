@@ -27,39 +27,45 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="sideways-panels" ng-show="currentPage === 'osDetailsWindows'">
-            <a href="http://install-versions.risevision.com/installer-win-32.exe" class="btn btn-default w-50 mr-3">
+      <div class="row">        
+        <div ng-show="currentPage === 'osDetailsWindows'">
+          <div class="col-sm-6">
+            <a href="http://install-versions.risevision.com/installer-win-32.exe" class="btn btn-default w-100">
               Download for Windows 7 and Up (32-bit)
             </a>
-            <a href="http://install-versions.risevision.com/installer-win-64.exe" class="btn btn-default w-50">
+          </div>
+          <div class="col-sm-6">
+            <a id="downloadWindows64" href="http://install-versions.risevision.com/installer-win-64.exe" class="btn btn-default w-100">
               Download for Windows 7 and Up (64-bit)
             </a>
           </div>
+        </div>
 
-          <div class="sideways-panels" ng-show="currentPage === 'osDetailsLinux'">
-            <a href="http://install-versions.risevision.com/installer-lnx-32.sh" class="btn btn-default w-50 mr-3">
+        <div ng-show="currentPage === 'osDetailsLinux'">
+          <div class="col-sm-6">
+            <a href="http://install-versions.risevision.com/installer-lnx-32.sh" class="btn btn-default w-100">
               Download for Ubuntu 16.04 LTS (32-bit)
             </a>
-            <a href="http://install-versions.risevision.com/installer-lnx-64.sh" class="btn btn-default w-50">
+          </div>
+          <div class="col-sm-6">
+            <a href="http://install-versions.risevision.com/installer-lnx-64.sh" class="btn btn-default w-100">
               Download for Ubuntu 16.04 LTS (64-bit)
             </a>
           </div>
-
-          <div ng-show="currentPage === 'osDetailsChromeOs'">
-            <a href="https://help.risevision.com/hc/en-us/articles/360001252066" target="_blank" class="btn btn-default w-100">
-              Download for Chrome OS
-            </a>
-          </div>
-
-          <div ng-show="currentPage === 'osDetailsRaspberryPi'">
-            <a href="http://install-versions.risevision.com/installer-lnx-armv7l.sh" class="btn btn-default w-100">
-              Download for Raspberry Pi
-            </a>
-          </div>
-
         </div>
+
+        <div class="col-sm-12" ng-show="currentPage === 'osDetailsChromeOs'">
+          <a href="https://help.risevision.com/hc/en-us/articles/360001252066" target="_blank" class="btn btn-default w-100">
+            Download for Chrome OS
+          </a>
+        </div>
+
+        <div class="col-sm-12" ng-show="currentPage === 'osDetailsRaspberryPi'">
+          <a href="http://install-versions.risevision.com/installer-lnx-armv7l.sh" class="btn btn-default w-100">
+            Download for Raspberry Pi
+          </a>
+        </div>
+
       </div>
 
       <div class="row">
@@ -71,7 +77,7 @@
       </div>
 
       <div class="alert alert-lighter-gray text-center mb-0">
-        <strong>{{display.id}}</strong>
+        <strong id="displayIdField">{{display.id}}</strong>
       </div>
 
       <display-email></display-email>

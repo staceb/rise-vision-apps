@@ -49,11 +49,11 @@
       <div class="row">
         <div class="col-xs-12">
           <div class="btn-group w-100" role="group" aria-label="Do you have a Media Player?">
-            <button type="button" class="btn w-50" ng-click="hasOwnPlayer = false" ng-class="{'btn-toggle-blue-off' : hasOwnPlayer, 'btn-toggle-blue-on' : !hasOwnPlayer}">
+            <button id="preconfiguredPlayerButton" type="button" class="btn w-50" ng-click="hasOwnPlayer = false" ng-class="{'btn-toggle-blue-off' : hasOwnPlayer, 'btn-toggle-blue-on' : !hasOwnPlayer}">
               <i class="fa fa-white fa-check icon-left" ng-show="!hasOwnPlayer"></i>
               I don’t have a Media Player.
             </button>
-            <button type="button" class="btn w-50" ng-click="hasOwnPlayer = true" ng-class="{'btn-toggle-blue-off' : !hasOwnPlayer, 'btn-toggle-blue-on' : hasOwnPlayer}">
+            <button id="ownPlayerButton" type="button" class="btn w-50" ng-click="hasOwnPlayer = true" ng-class="{'btn-toggle-blue-off' : !hasOwnPlayer, 'btn-toggle-blue-on' : hasOwnPlayer}">
               <i class="fa fa-white fa-check icon-left" ng-show="hasOwnPlayer"></i>
               I have a Media Player.
             </button>
@@ -65,7 +65,7 @@
     <div class="panel-footer">
       <div class="row">
         <div class="col-xs-12">
-          <button id="nextButton" type="submit" class="btn btn-primary w-100" aria-label="Next" tabindex="1" ng-click="hasOwnPlayer ? setCurrentPage('userMediaPlayer') : setCurrentPage('preconfiguredMediaPlayer')">Next Step →</button>
+          <button id="nextButton" type="submit" class="btn btn-primary w-100" aria-label="Next" tabindex="1" ng-click="showMediaPlayerPage(hasOwnPlayer)">Next Step →</button>
         </div>
       </div>
     </div>
