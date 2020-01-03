@@ -16,7 +16,7 @@ angular.module('risevision.apps.launcher.directives')
             }
           };
           $rootScope.$on('risevision.company.selectedCompanyChanged', checkOnboarding);
-          $rootScope.$on('onboardingCompleted', checkOnboarding);
+          $rootScope.$on('risevision.user.userUpdated', checkOnboarding);
         }
       };
     }

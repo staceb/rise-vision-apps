@@ -45,17 +45,17 @@ describe('directive: if-onboarding', function() {
     });
   });
 
-  describe('on onboardingCompleted:',function() {
+  describe('on risevision.user.userUpdated:',function() {
     it('should show element if onboarding', function() {
       onboardingFactory.isOnboarding.returns(true);
-      $rootScope.$emit('onboardingCompleted');
+      $rootScope.$emit('risevision.user.userUpdated');
       $rootScope.$digest();      
       expect(element.css('display')).to.equal('');
     });
 
     it('should hide element if not onboarding',function(){
       onboardingFactory.isOnboarding.returns(false);
-      $rootScope.$emit('onboardingCompleted');
+      $rootScope.$emit('risevision.user.userUpdated');
       $rootScope.$digest();
       expect(element.css('display')).to.equal('none');
     });

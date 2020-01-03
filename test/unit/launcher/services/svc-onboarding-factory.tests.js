@@ -38,12 +38,13 @@ describe('service: onboardingFactory:', function() {
 
   }));
   
-  var onboardingFactory, userState, companyAssetsFactory, segmentAnalytics, updateUser;
+  var onboardingFactory, userState, companyAssetsFactory, segmentAnalytics, updateUser, $rootScope;
   beforeEach(function() {
     inject(function($injector) {
       userState = $injector.get('userState');
       companyAssetsFactory = $injector.get('companyAssetsFactory');
       segmentAnalytics = $injector.get('segmentAnalytics');
+      $rootScope = $injector.get('$rootScope');
       
       onboardingFactory = $injector.get('onboardingFactory');
     });
@@ -282,7 +283,7 @@ describe('service: onboardingFactory:', function() {
         expect(onboardingFactory.isTabCompleted(3)).to.be.true;
         expect(onboardingFactory.alreadySubscribed).to.be.true;
 
-        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Newsletter Signup Completed')
         
         done();
       });
@@ -291,6 +292,7 @@ describe('service: onboardingFactory:', function() {
 
   describe('setPlaybookSignup', function(){
     it('should signup to playbook and complete onboarding', function(done) {
+      sinon.spy($rootScope,'$emit');
       onboardingFactory.setPlaybookSignup(true);
       setTimeout(function(){
         expect(updateUser).to.have.been.calledWith('username',{
@@ -305,13 +307,15 @@ describe('service: onboardingFactory:', function() {
         expect(onboardingFactory.isTabCompleted(3)).to.be.true;
         expect(onboardingFactory.alreadySubscribed).to.be.undefined;
 
-        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        expect($rootScope.$emit).to.have.been.calledWith('risevision.user.userUpdated');
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Newsletter Signup Completed')
         
         done();
       },10);
     });
 
     it('should not signup to playbook and complete onboarding', function(done) {
+      sinon.spy($rootScope,'$emit');
       onboardingFactory.setPlaybookSignup(false);
       setTimeout(function(){
         expect(updateUser).to.have.been.calledWith('username',{
@@ -326,7 +330,8 @@ describe('service: onboardingFactory:', function() {
         expect(onboardingFactory.isTabCompleted(3)).to.be.true;
         expect(onboardingFactory.alreadySubscribed).to.be.undefined;
 
-        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Step 3 Completed')
+        expect($rootScope.$emit).to.have.been.calledWith('risevision.user.userUpdated');
+        expect(segmentAnalytics.track).to.have.been.calledWith('Onboarding Newsletter Signup Completed')
         
         done();
       },10);

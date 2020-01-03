@@ -37,11 +37,11 @@ angular.module('risevision.apps.launcher.directives')
           $scope.showMediaPlayerPage = function (hasOwnPlayer) {
             if (hasOwnPlayer) {
               $scope.setCurrentPage('userMediaPlayer');
+              displayTracker('User Media Player Selected', $scope.display.id, $scope.display.name);
             } else {
               $scope.setCurrentPage('preconfiguredMediaPlayer');
+              displayTracker('Preconfigured Media Player Selected', $scope.display.id, $scope.display.name);
             }
-            displayTracker('Media Player Type Selected', $scope.display.id, $scope.display.name, undefined, !!
-              hasOwnPlayer);
           };
 
         } //link()
