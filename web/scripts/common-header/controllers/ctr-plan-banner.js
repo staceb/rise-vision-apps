@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('risevision.common.header')
-  .controller('PlanBannerCtrl', ['$scope', '$rootScope', '$window', 'userState', 'plansFactory',
-    'currentPlanFactory', 'STORE_URL', 'ACCOUNT_PATH', 'APPS_URL',
-    function ($scope, $rootScope, $window, userState, plansFactory, currentPlanFactory,
-      STORE_URL, ACCOUNT_PATH, APPS_URL) {
+  .controller('PlanBannerCtrl', ['$scope', '$rootScope', 'userState', 'plansFactory',
+    'currentPlanFactory', 'STORE_URL', 'ACCOUNT_PATH',
+    function ($scope, $rootScope, userState, plansFactory, currentPlanFactory,
+      STORE_URL, ACCOUNT_PATH) {
       $scope.plan = {};
       $scope.showPlans = plansFactory.showPlansModal;
       $scope.storeAccountUrl = STORE_URL + ACCOUNT_PATH;
@@ -39,10 +39,5 @@ angular.module('risevision.common.header')
 
         return banner;
       };
-
-      $scope.isApps = function () {
-        return APPS_URL === '' || $window.location.href.startsWith(APPS_URL);
-      };
-
     }
   ]);

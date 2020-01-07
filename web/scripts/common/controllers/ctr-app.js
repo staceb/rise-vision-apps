@@ -9,8 +9,7 @@ angular.module('risevision.apps.controllers')
         cid: true,
         states: [
           'apps.launcher.home',
-          'apps.launcher.signup',
-          'apps.launcher.signin'
+          'apps.launcher.onboarding'
         ]
       }, {
         title: 'Presentations',

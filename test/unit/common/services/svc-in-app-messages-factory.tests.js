@@ -1,15 +1,12 @@
 'use strict';
 describe('service: in-app-messages-factory', function() {
   var sandbox = sinon.sandbox.create();
-  var factory, selectedCompany, localStorageService, executeStub, userState, $rootScope;
+  var factory, selectedCompany, localStorageService, companyAssetsFactory, userState, $rootScope;
 
   beforeEach(module('risevision.apps.services'));
   beforeEach(module(mockTranslate()));
   beforeEach(module(function ($provide) {
 
-    $provide.service('presentation', function() {
-      return {};
-    });
 
     $provide.service('userState', function() {
       return {
@@ -32,11 +29,9 @@ describe('service: in-app-messages-factory', function() {
       }
     });
 
-    $provide.service('CachedRequest', function() {
-      return function(request, args) {
-        return {
-          execute: executeStub = sandbox.stub().returns(Q.resolve('OK'))
-        }
+    $provide.service('companyAssetsFactory', function() {
+      return {
+        hasPresentations: sandbox.stub().returns(Q.resolve(true))
       }
     });
   }));
@@ -47,6 +42,7 @@ describe('service: in-app-messages-factory', function() {
       userState = $injector.get('userState');
       localStorageService = $injector.get('localStorageService');
       $rootScope = $injector.get('$rootScope');
+      companyAssetsFactory = $injector.get('companyAssetsFactory');
       selectedCompany = {};
     });
   });
@@ -70,7 +66,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.be.undefined;
-        executeStub.should.have.been.called;
+        companyAssetsFactory.hasPresentations.should.have.been.called;
       });
 
       it('should not show if user profile is not available', function() {
@@ -78,7 +74,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.be.undefined;
-        executeStub.should.have.been.called;
+        companyAssetsFactory.hasPresentations.should.have.been.called;
       });
 
       it('should not show if userConfirmed value is not there', function() {
@@ -87,7 +83,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.be.undefined;
-        executeStub.should.have.been.called;
+        companyAssetsFactory.hasPresentations.should.have.been.called;
       });
 
       it('should show account has not been confirmed', function() {
@@ -98,7 +94,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.equal('confirmEmail');
-        executeStub.should.not.have.been.called;
+        companyAssetsFactory.hasPresentations.should.not.have.been.called;
       });
 
       it('should not show if account has been confirmed', function() {
@@ -109,7 +105,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.be.undefined;
-        executeStub.should.have.been.called;
+        companyAssetsFactory.hasPresentations.should.have.been.called;
       });
 
     });
@@ -120,7 +116,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.be.undefined;
-        executeStub.should.have.been.called;
+        companyAssetsFactory.hasPresentations.should.have.been.called;
       });      
 
       it('should show notice if company creationDate is before Jun 25',function() {
@@ -128,7 +124,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.equal('pricingChanges');
-        executeStub.should.not.have.been.called;
+        companyAssetsFactory.hasPresentations.should.not.have.been.called;
       });  
 
       it('should not show notice if dismissed',function() {
@@ -139,7 +135,7 @@ describe('service: in-app-messages-factory', function() {
         factory.pickMessage();
 
         expect(factory.messageToShow).to.be.undefined;
-        executeStub.should.have.been.called;
+        companyAssetsFactory.hasPresentations.should.have.been.called;
       });    
     });
 
@@ -149,7 +145,6 @@ describe('service: in-app-messages-factory', function() {
       });
 
       it('should show training message for education customers if pricing message was dismissed and company has created presentations',function(done){
-        executeStub.returns(Q.resolve({items:[{id: 'presentationId'}]}));
         userState.isEducationCustomer.returns(true);
 
         factory.pickMessage();
@@ -160,7 +155,6 @@ describe('service: in-app-messages-factory', function() {
       });
 
       it('should not show training message if not an education customer',function(done){
-        executeStub.returns(Q.resolve({items:[{id: 'presentationId'}]}));
         userState.isEducationCustomer.returns(false);
 
         factory.pickMessage();
@@ -171,7 +165,7 @@ describe('service: in-app-messages-factory', function() {
       });
 
       it('should not show training message if company does not have presentations',function(done){
-        executeStub.returns(Q.resolve({items:[]}));
+        companyAssetsFactory.hasPresentations.returns(Q.resolve(false));
 
         factory.pickMessage();
         setTimeout(function(){
@@ -181,8 +175,6 @@ describe('service: in-app-messages-factory', function() {
       });
 
       it('should not show training message if dismissed',function(done){
-        executeStub.returns(Q.resolve({items:[{id: 'presentationId'}]}));
-
         localStorageService.get.withArgs('promoteTrainingAlert.dismissed').returns(true);
 
         factory.pickMessage();

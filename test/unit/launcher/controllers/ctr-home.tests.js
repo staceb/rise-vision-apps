@@ -6,8 +6,7 @@ describe('controller: Home', function() {
     module(function ($provide) {
       $provide.service('$loading', function() {
         return $loading = {
-          startGlobal: sinon.spy(),
-          stopGlobal: sinon.spy(),
+          start: sinon.spy(),
           stop: sinon.spy()
         };
       });
@@ -52,7 +51,7 @@ describe('controller: Home', function() {
     });
 
     it("should show spinner on init",function(){
-      $loading.startGlobal.should.have.been.calledWith("launcher.loading");
+      $loading.start.should.have.been.calledWith('launcher-loader');
     });
 
     it("should add watchers",function(){
@@ -64,21 +63,21 @@ describe('controller: Home', function() {
     it("should hide spinner and global spinner after loading presentations",function(){
       $scope.launcherFactory.presentations.loadingItems = false;
       $scope.$apply();
-      $loading.stopGlobal.should.have.been.calledWith("launcher.loading");
+      $loading.stop.should.have.been.calledWith('launcher-loader');
       $loading.stop.should.have.been.calledWith("presentation-list-loader");
     });
 
     it("should hide spinner after loading schedules",function(){
       $scope.launcherFactory.schedules.loadingItems = false;
       $scope.$apply();
-      $loading.stopGlobal.should.not.have.been.calledWith("launcher.loading");
+      $loading.stop.should.not.have.been.calledWith('launcher-loader');
       $loading.stop.should.have.been.calledWith("schedules-list-loader");
     });
 
     it("should hide spinner after loading displays",function(){
       $scope.launcherFactory.displays.loadingItems = false;
       $scope.$apply();
-      $loading.stopGlobal.should.not.have.been.calledWith("launcher.loading");
+      $loading.stop.should.not.have.been.calledWith('launcher-loader');
       $loading.stop.should.have.been.calledWith("displays-list-loader");
     });
 

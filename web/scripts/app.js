@@ -76,8 +76,9 @@ angular.module('risevision.apps', [
         })
 
         .state('apps.launcher', {
+          url: '?cid',
           abstract: true,
-          template: '<div class="app-launcher" ui-view></div>'
+          template: '<div class="container app-launcher" ui-view></div>'
         })
 
         .state('apps.launcher.home', {
@@ -88,34 +89,68 @@ angular.module('risevision.apps', [
           }],
           controller: 'HomeCtrl',
           resolve: {
-            canAccessApps: ['canAccessApps',
-              function (canAccessApps) {
-                return canAccessApps();
+            canAccessApps: ['$state', '$location', 'canAccessApps', 'onboardingFactory',
+              function ($state, $location, canAccessApps, onboardingFactory) {
+                return canAccessApps().then(function () {
+                  if (onboardingFactory.isOnboarding()) {
+                    $location.replace();
+                    $state.go('apps.launcher.onboarding');
+                  }
+                });
               }
             ]
           }
         })
 
-        .state('apps.launcher.signup', {
+        .state('apps.launcher.onboarding', {
+          url: '/onboarding',
+          templateProvider: ['$templateCache', function ($templateCache) {
+            return $templateCache.get(
+              'partials/launcher/onboarding.html');
+          }],
+          controller: 'OnboardingCtrl',
+          resolve: {
+            canAccessApps: ['$state', '$location', 'canAccessApps', 'onboardingFactory',
+              function ($state, $location, canAccessApps, onboardingFactory) {
+                return canAccessApps().then(function () {
+                  if (!onboardingFactory.isOnboarding()) {
+                    $location.replace();
+                    $state.go('apps.launcher.home');
+                  }
+                });
+              }
+            ]
+          }
+        })
+
+        .state('common.auth.signup', {
           url: '/signup',
           controller: ['$location', '$state', 'canAccessApps', 'plansFactory',
             function ($location, $state, canAccessApps, plansFactory) {
+              // jshint camelcase:false
+              var showProduct = $location.search().show_product;
+              // jshint camelcase:true
+
               canAccessApps(true).then(function () {
-                // jshint camelcase:false
-                if ($location.search().show_product) {
+                if (showProduct) {
                   plansFactory.showPlansModal();
                 }
 
                 $state.go('apps.launcher.home');
-                // jshint camelcase:true
               });
             }
           ]
         })
 
-        .state('apps.launcher.signin', {
+        .state('common.auth.signin', {
           url: '/signin',
-          controller: 'SignInCtrl'
+          controller: ['$state', 'canAccessApps',
+            function ($state, canAccessApps) {
+              canAccessApps().then(function () {
+                $state.go('apps.launcher.home');
+              });
+            }
+          ]
         })
 
         .state('common.auth.unregistered', {
@@ -448,7 +483,8 @@ angular.module('risevision.apps', [
           resolve: {
             presentationInfo: ['$stateParams', 'canAccessApps', 'editorFactory', 'templateEditorFactory',
               'checkTemplateAccess', 'financialLicenseFactory',
-              function ($stateParams, canAccessApps, editorFactory, templateEditorFactory, checkTemplateAccess, financialLicenseFactory) {
+              function ($stateParams, canAccessApps, editorFactory, templateEditorFactory, checkTemplateAccess,
+                financialLicenseFactory) {
                 var signup = false;
 
                 if ($stateParams.presentationId === 'new' && $stateParams.productId) {
@@ -468,7 +504,8 @@ angular.module('risevision.apps', [
                     }
                   })
                   .then(function () {
-                    if ($stateParams.presentationId === 'new' && financialLicenseFactory.needsFinancialDataLicense()) {
+                    if ($stateParams.presentationId === 'new' && financialLicenseFactory
+                      .needsFinancialDataLicense()) {
                       financialLicenseFactory.showFinancialDataLicenseRequiredMessage();
                     } else if (!$stateParams.skipAccessNotice) {
                       checkTemplateAccess(true);
@@ -502,6 +539,11 @@ angular.module('risevision.apps', [
 
     }
   ])
+  .config(['$localStorageProvider',
+    function ($localStorageProvider) {
+      $localStorageProvider.setKeyPrefix('RiseVision-');
+    }
+  ])
   .run(['$rootScope', '$state', '$modalStack', 'userState', 'displayFactory', '$window',
     function ($rootScope, $state, $modalStack, userState, displayFactory, $window) {
 
@@ -530,6 +572,7 @@ angular.module('risevision.apps', [
           $state.current.name === 'apps.displays.alerts' ||
           $state.current.name === 'apps.storage.home' ||
           $state.current.name === 'apps.launcher.home' ||
+          $state.current.name === 'apps.launcher.onboarding' ||
           $state.current.name === 'apps.billing.home') {
 
           $state.go($state.current, null, {
@@ -553,16 +596,21 @@ angular.module('risevision.apps.directives', [
   'risevision.common.components.scrolling-list'
 ]);
 
-angular.module('risevision.apps.launcher.controllers', []);
+angular.module('risevision.apps.launcher.controllers', [
+  'risevision.apps.launcher.services'
+]);
 angular.module('risevision.apps.launcher.directives', []);
-angular.module('risevision.apps.launcher.services', []);
+angular.module('risevision.apps.launcher.services', [
+  'ngStorage'
+]);
 
 angular.module('risevision.apps.billing.controllers', []);
 angular.module('risevision.apps.billing.services', []);
 
 angular.module('risevision.schedules.services', [
   'risevision.common.header',
-  'risevision.common.gapi'
+  'risevision.common.gapi',
+  'risevision.apps.launcher.services'
 ]);
 angular.module('risevision.schedules.filters', []);
 angular.module('risevision.schedules.directives', [

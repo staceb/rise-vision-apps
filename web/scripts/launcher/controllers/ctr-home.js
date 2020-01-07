@@ -10,7 +10,7 @@ angular.module('risevision.apps.launcher.controllers')
       $scope.displayFactory = displayFactory;
       $scope.openPresentation = presentationUtils.openPresentation;
 
-      $loading.startGlobal('launcher.loading');
+      $loading.start('launcher-loader');
 
       $scope.$watchGroup([
         'launcherFactory.presentations.loadingItems',
@@ -18,7 +18,7 @@ angular.module('risevision.apps.launcher.controllers')
         'launcherFactory.displays.loadingItems',
       ], function (newValues) {
         if (!newValues[0]) {
-          $loading.stopGlobal('launcher.loading');
+          $loading.stop('launcher-loader');
           $loading.stop('presentation-list-loader');
         }
 

@@ -102,11 +102,11 @@ angular.module('risevision.common.header', [
   .directive('commonHeader', ['$rootScope', '$q', '$loading',
     '$interval', 'oauth2APILoader', '$log',
     '$templateCache', 'userState', '$location', 'bindToScopeWithWatch',
-    '$document', 'cookieTester', 'companyIcpFactory', 'ENV_NAME',
+    '$document', 'cookieTester', 'companyIcpFactory', 'ENV_NAME', '$window', 'APPS_URL',
     function ($rootScope, $q, $loading, $interval,
       oauth2APILoader, $log, $templateCache, userState, $location,
       bindToScopeWithWatch, $document, cookieTester, companyIcpFactory,
-      ENV_NAME) {
+      ENV_NAME, $window, APPS_URL) {
       return {
         restrict: 'E',
         template: $templateCache.get('partials/common-header/common-header.html'),
@@ -145,6 +145,10 @@ angular.module('risevision.common.header', [
           //default to true
           $scope.hideHelpMenu = attr.hideHelpMenu !== '0' &&
             attr.hideHelpMenu !== 'false';
+
+          $scope.isApps = function () {
+            return APPS_URL === '' || $window.location.href.startsWith(APPS_URL);
+          };
 
           // used by userState; determines if the URL root is used for
           // Authentication redirect

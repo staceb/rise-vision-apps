@@ -5,10 +5,11 @@ var DisplayAddModalPage = function() {
   var displayNameField = element(by.model('display.name'));
 
   var displayAddedPage = element(by.id('displayAddedPage'));
-  var preconfiguredPlayerPanel = element(by.id('preconfiguredPlayerPanel'));
-  var userPlayerPanel = element(by.id('userPlayerPanel'));
+  var preconfiguredPlayerButton = element(by.id('preconfiguredPlayerButton'));
+  var ownPlayerButton = element(by.id('ownPlayerButton'));
 
   var userPlayerPage = element(by.id('userPlayerPage'));
+  var pickWindowsLink = element(by.id('pickWindowsLink'));
   var downloadWindows64Button = element(by.id('downloadWindows64'));
   var preconfiguredPlayerLink = element(by.id('preconfiguredPlayerLink'));
 
@@ -19,6 +20,7 @@ var DisplayAddModalPage = function() {
   var emailedInstructions = element(by.id('emailedInstructions'));
 
   var nextButton = element(by.id('nextButton'));
+  var previousButton = element(by.id('previousButton'));
   var dismissButton = element(by.id('dismissButton'));
 
   this.getDisplayAddModal = function() {
@@ -37,8 +39,12 @@ var DisplayAddModalPage = function() {
     return displayAddedPage;
   };
 
-  this.getPreconfiguredPlayerPanel = function() {
-    return preconfiguredPlayerPanel;
+  this.getPreconfiguredPlayerButton = function() {
+    return preconfiguredPlayerButton;
+  };
+
+  this.getOwnPlayerButton = function() {
+    return ownPlayerButton;
   };
 
   this.getUserPlayerPanel = function() {
@@ -47,6 +53,10 @@ var DisplayAddModalPage = function() {
 
   this.getUserPlayerPage = function() {
     return userPlayerPage;
+  };
+
+  this.getPickWindowsLink = function() {
+    return pickWindowsLink;
   };
 
   this.getDownloadWindows64Button = function() {
@@ -75,6 +85,10 @@ var DisplayAddModalPage = function() {
 
   this.getNextButton = function() {
     return nextButton;
+  };
+
+  this.getPreviousButton = function() {
+    return previousButton;
   };
 
   this.getDismissButton = function() {

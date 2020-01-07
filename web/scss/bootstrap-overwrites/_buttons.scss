@@ -33,6 +33,20 @@
     }
 }
 
+.btn-toggle-blue-on {
+    @include button-variant($white, $btn-primary-bg, $btn-primary-bg, $btn-default-border-disabled, #fff, #d5d5d5);
+    .fa:before {
+        color: $white;
+    }
+}
+
+.btn-toggle-blue-off {
+    @include button-variant($btn-primary-bg, $white, $btn-primary-bg, $btn-default-border-disabled, #fff, #d5d5d5);
+    .fa:before {
+        color: $btn-primary-bg;
+    }
+}
+
 .btn-white {
     @include button-variant(darken($rise-green, 10%), $white, $white, $btn-default-border-disabled, darken($white, 10%), lighten($white, 5%));
 }
@@ -79,6 +93,3 @@
           }
     }
 }
-
-
-

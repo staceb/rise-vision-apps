@@ -1,10 +1,9 @@
 'use strict';
 
 angular.module('risevision.apps.services')
-  .factory('inAppMessagesFactory', ['localStorageService', 'userState', 'CachedRequest', 'presentation', '$q',
+  .factory('inAppMessagesFactory', ['localStorageService', 'userState', 'companyAssetsFactory', '$q',
     '$rootScope',
-    function (localStorageService, userState, CachedRequest, presentation, $q, $rootScope) {
-      var presentationListReq = new CachedRequest(presentation.list, {});
+    function (localStorageService, userState, companyAssetsFactory, $q, $rootScope) {
       var factory = {
         messageToShow: undefined
       };
@@ -22,8 +21,8 @@ angular.module('risevision.apps.services')
         } else if (_shouldShowPricingChanges()) {
           factory.messageToShow = 'pricingChanges';
         } else {
-          presentationListReq.execute(forceReload).then(function (resp) {
-            if (_shouldShowPromoteTraining(resp.items)) {
+          companyAssetsFactory.hasPresentations(forceReload).then(function (hasAddedPresentation) {
+            if (_shouldShowPromoteTraining(hasAddedPresentation)) {
               factory.messageToShow = 'promoteTraining';
             } else {
               factory.messageToShow = undefined;
@@ -65,8 +64,7 @@ angular.module('risevision.apps.services')
         return isPastCreationDate && !_isDismissed('pricingChanges');
       };
 
-      var _shouldShowPromoteTraining = function (presentations) {
-        var hasAddedPresentation = presentations && presentations.length > 0;
+      var _shouldShowPromoteTraining = function (hasAddedPresentation) {
         return userState.isEducationCustomer() && hasAddedPresentation && !_isDismissed('promoteTraining');
       };
 

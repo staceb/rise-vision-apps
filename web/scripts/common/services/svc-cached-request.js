@@ -4,32 +4,54 @@ angular.module('risevision.apps.services')
   .service('CachedRequest', ['$q',
     function ($q) {
       return function (request, args) {
-        var _cachedResponse;
+        var _cachedPromise;
 
         var factory = {
           loading: false
         };
 
-        factory.execute = function (forceReload) {
-          if (_cachedResponse && !forceReload) {
-            return $q.resolve(_cachedResponse);
-          }
-
-          var deferred = $q.defer();
+        var _request = function () {
           factory.loading = true;
-          _cachedResponse = undefined;
 
-          request(args)
-            .then(function (response) {
-              _cachedResponse = response;
-              deferred.resolve(response);
-            })
+          return request(args)
             .catch(function (e) {
               factory.apiError = e.message ? e.message : e.toString();
-              deferred.reject(e);
+              return $q.reject(e);
             })
             .finally(function () {
               factory.loading = false;
+            });
+        };
+
+        factory.reset = function () {
+          _cachedPromise = undefined;
+        };
+
+        factory.execute = function (forceReload) {
+          var deferred;
+
+          // Clear
+          if (forceReload) {
+            factory.reset();
+          }
+
+          // Return cached promise
+          if (_cachedPromise) {
+            return _cachedPromise.promise;
+          } else {
+            _cachedPromise = $q.defer();
+          }
+
+          // Always resolve local copy of promise
+          // in case cached version is cleared
+          deferred = _cachedPromise;
+
+          _request()
+            .then(function (response) {
+              deferred.resolve(response);
+            })
+            .catch(function (e) {
+              deferred.reject(e);
             });
 
           return deferred.promise;

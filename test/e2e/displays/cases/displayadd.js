@@ -58,35 +58,45 @@ var DisplayAddScenarios = function() {
       displayAddModalPage.getDisplayNameField().sendKeys(displayName);
       expect(displayAddModalPage.getNextButton().isEnabled()).to.eventually.be.true;
       displayAddModalPage.getNextButton().click();
-      helper.waitDisappear(displayAddModalPage.getNextButton(), 'Next Button');
-      expect(displayAddModalPage.getNextButton().isPresent()).to.eventually.be.false;
     });
 
     it('should show display activation instructions', function() {
       helper.wait(displayAddModalPage.getDisplayAddedPage(), 'Display Added page');
 
       expect(displayAddModalPage.getDisplayAddedPage().isDisplayed()).to.eventually.be.true;
-      expect(displayAddModalPage.getPreconfiguredPlayerPanel().isDisplayed()).to.eventually.be.true;
-      expect(displayAddModalPage.getUserPlayerPanel().isDisplayed()).to.eventually.be.true;
+      expect(displayAddModalPage.getPreconfiguredPlayerButton().isDisplayed()).to.eventually.be.true;
+      expect(displayAddModalPage.getOwnPlayerButton().isDisplayed()).to.eventually.be.true;
     });
 
     it('should show instructions on how to configure Own Media Player', function() {
-      displayAddModalPage.getUserPlayerPanel().click();
+      displayAddModalPage.getOwnPlayerButton().click();
+      displayAddModalPage.getNextButton().click();
 
-      helper.wait(displayAddModalPage.getUserPlayerPage(), 'User Player page');
-
+      helper.wait(displayAddModalPage.getUserPlayerPage(), 'User Player page');      
       expect(displayAddModalPage.getUserPlayerPage().isDisplayed()).to.eventually.be.true;
-      expect(displayAddModalPage.getPreconfiguredPlayerLink().isDisplayed()).to.eventually.be.true;
-      expect(displayAddModalPage.getDownloadWindows64Button().isDisplayed()).to.eventually.be.true;
+      expect(displayAddModalPage.getPickWindowsLink().isDisplayed()).to.eventually.be.true;
+    });
 
+    it('should show activation instructions', function() {
+      displayAddModalPage.getPickWindowsLink().click();
+
+      helper.wait(displayAddModalPage.getDownloadWindows64Button(), 'Download Windoes 64 link'); 
+
+      expect(displayAddModalPage.getDownloadWindows64Button().isDisplayed()).to.eventually.be.true;
       expect(displayAddModalPage.getDisplayIdField().isDisplayed()).to.eventually.be.true;
-      expect(displayAddModalPage.getDisplayIdField().getAttribute('value')).to.eventually.have.length.greaterThan(0);
+      expect(displayAddModalPage.getDisplayIdField().getText()).to.eventually.have.length.greaterThan(0);
 
       expect(displayAddModalPage.getEmailedInstructions().isDisplayed()).to.eventually.be.true;
     });
 
     it('should show instructions on how order the Preconfigured Media Player', function() {
-      displayAddModalPage.getPreconfiguredPlayerLink().click();
+      displayAddModalPage.getPreviousButton().click();
+      displayAddModalPage.getPreviousButton().click();
+
+      helper.wait(displayAddModalPage.getDisplayAddedPage(), 'Display Added page');
+      
+      displayAddModalPage.getPreconfiguredPlayerButton().click();
+      displayAddModalPage.getNextButton().click();
 
       helper.wait(displayAddModalPage.getPreconfiguredPlayerPage(), 'Preconfigured Player page');
 
@@ -94,7 +104,7 @@ var DisplayAddScenarios = function() {
       expect(displayAddModalPage.getPurchasePlayerLink().isDisplayed()).to.eventually.be.true;
 
       expect(displayAddModalPage.getDisplayIdField().isDisplayed()).to.eventually.be.true;
-      expect(displayAddModalPage.getDisplayIdField().getAttribute('value')).to.eventually.have.length.greaterThan(0);
+      expect(displayAddModalPage.getDisplayIdField().getText()).to.eventually.have.length.greaterThan(0);
 
       expect(displayAddModalPage.getEmailedInstructions().isDisplayed()).to.eventually.be.true;
     });
