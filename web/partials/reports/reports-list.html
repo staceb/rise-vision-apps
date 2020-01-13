@@ -1,0 +1,21 @@
+<div class="u_margin-sm-top">
+  <div class="panel panel-default grid-selector">
+    <table id="reportsList" class="table table--hover table--selector table--multiple-selector" ng-show="isReportsListVisible()">
+      <thead class="table-header"></thead>
+      <tbody class="table-body">
+        <tr class="table-body__row"
+          ng-click="selectReport(report);"
+          ng-class="{'active': report.isChecked }"
+          ng-repeat="report in reports track by report.id">
+          <td class="col-sm-6 table-body__cell">
+            <span>
+              <span class="table-body__cell" data-toggle="tooltip" title="{{report.name}}">
+                <strong>{{report.name}}</strong>
+              </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

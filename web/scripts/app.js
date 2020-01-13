@@ -52,6 +52,7 @@ angular.module('risevision.apps', [
     'risevision.storage.directives',
     'risevision.storage.filters',
     'risevision.reports.controllers',
+    'risevision.reports.services',
     'risevision.widgets.services',
     'risevision.widgets.controllers',
     'risevision.widgets.directives',
@@ -681,6 +682,9 @@ angular.module('risevision.storage.controllers', []);
 angular.module('risevision.storage.filters', ['risevision.common.i18n']);
 
 angular.module('risevision.reports.controllers', []);
+angular.module('risevision.reports.services', [
+  'risevision.common.gapi'
+]);
 
 // Declare legacy subscription-status [error without it]
 angular.module('risevision.widget.common.subscription-status', []);
