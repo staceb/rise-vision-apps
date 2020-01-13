@@ -51,6 +51,7 @@ angular.module('risevision.apps', [
     'risevision.storage.controllers',
     'risevision.storage.directives',
     'risevision.storage.filters',
+    'risevision.reports.controllers',
     'risevision.widgets.services',
     'risevision.widgets.controllers',
     'risevision.widgets.directives',
@@ -535,7 +536,23 @@ angular.module('risevision.apps', [
               }
             ]
           }
+        })
+
+        // reports
+        .state('apps.reports', {
+          url: '?cid',
+          abstract: true,
+          template: '<div class="container reports-app" ui-view></div>'
+        })
+
+        .state('apps.reports.home', {
+          url: '/reports',
+          templateProvider: ['$templateCache', function ($templateCache) {
+            return $templateCache.get('partials/reports/reports.html');
+          }],
+          controller: 'reports'
         });
+
 
     }
   ])
@@ -579,6 +596,7 @@ angular.module('risevision.apps', [
           $state.current.name === 'apps.displays.list' ||
           $state.current.name === 'apps.displays.alerts' ||
           $state.current.name === 'apps.storage.home' ||
+          $state.current.name === 'apps.reports.home' ||
           $state.current.name === 'apps.launcher.home' ||
           $state.current.name === 'apps.launcher.onboarding' ||
           $state.current.name === 'apps.billing.home') {
@@ -661,6 +679,8 @@ angular.module('risevision.storage.services', [
 angular.module('risevision.storage.directives', []);
 angular.module('risevision.storage.controllers', []);
 angular.module('risevision.storage.filters', ['risevision.common.i18n']);
+
+angular.module('risevision.reports.controllers', []);
 
 // Declare legacy subscription-status [error without it]
 angular.module('risevision.widget.common.subscription-status', []);

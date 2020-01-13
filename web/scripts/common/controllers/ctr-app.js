@@ -47,6 +47,11 @@ angular.module('risevision.apps.controllers')
         link: $state.href('apps.storage.home'),
         cid: true,
         states: ['apps.storage.home']
+      }, {
+        title: 'Reports',
+        link: $state.href('apps.reports.home'),
+        cid: true,
+        states: ['apps.reports.home']
       }];
       $scope.navSelected = 'apps.launcher.home';
       $scope.hideCommonHeader = false;
