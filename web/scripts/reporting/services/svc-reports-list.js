@@ -46,7 +46,7 @@ angular.module('risevision.reports.services')
         coreApi.query.run({id: report.id})
         .then(function (resp) {
           if (!resp.result || !resp.result.item) {return;}
-          responses.push(resp.result.item);
+          responses.push({name: report.name, status: resp.status});
           deferred.resolve(responses);
         });
       });

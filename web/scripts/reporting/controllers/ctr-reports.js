@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('risevision.reports.controllers')
-.controller('reports', ['$scope', '$log', 'reportsList',
-  function ($scope, $log, reportsList) {
+.controller('reports', ['$scope', '$log', 'reportsList', 'userState',
+  function ($scope, $log, reportsList, userState) {
     $scope.reports = reportsList.reports;
     $scope.responses = reportsList.responses;
+    $scope.userEmail = userState.getUserEmail();
 
     $scope.isReportsListVisible = function () {
       return !(reportsList.loadingItems || $scope.isEmptyState());

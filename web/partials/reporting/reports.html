@@ -11,11 +11,14 @@
       <span translate>reports-app.run</span>
     </label>
   </div>
-  <div ng-if="isSubmitted()" class="panel">
-    <div ng-repeat="response in responses">
-      <div class="panel-body">
-        <span><i class="fa fa-bell-o icon-left"></i>{{response}}</span>
+  <div ng-if="isSubmitted()">
+    <div class="panel col-sm-6">
+      <div ng-repeat="response in responses">
+        <div class="panel-body">
+          <span><i class="fa fa-bell-o icon-left"></i><strong>{{response.name}}</strong> is running.</span>
+        </div>
       </div>
     </div>
+    <div class="clear-both">Results will be sent to <strong>{{userEmail}}</strong> when ready.</div>
   </div>
 </div>
