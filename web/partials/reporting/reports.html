@@ -1,6 +1,6 @@
 <div class="app-header my-4">
     <!-- App Title -->
-    <h1 class="app-header-title" translate>reports-app.title</h1>
+    <h1 class="app-header-title">Reports</h1>
 </div>
 
 <div class="container" ng-controller="reports">
@@ -8,7 +8,7 @@
     <ng-include src="'partials/reporting/reports-list.html'"></ng-include>
 
     <label id="reportRunButton" ng-click="runReports()" class="btn btn-primary">
-      <span translate>reports-app.run</span>
+      <span>Run</span>
     </label>
   </div>
   <div ng-if="isSubmitted() && hasResults()">
