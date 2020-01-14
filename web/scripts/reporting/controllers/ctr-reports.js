@@ -7,12 +7,8 @@ angular.module('risevision.reports.controllers')
     $scope.responses = reportsList.responses;
     $scope.userEmail = userState.getUserEmail();
 
-    $scope.isReportsListVisible = function () {
-      return !(reportsList.loadingItems || $scope.isEmptyState());
-    };
-
-    $scope.isEmptyState = function () {
-      return !reportsList.reports.length;
+    $scope.hasListing = function () {
+      return reportsList.reports && reportsList.reports.length;
     };
 
     $scope.selectReport = function (report) {

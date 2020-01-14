@@ -4,7 +4,7 @@
 </div>
 
 <div class="container" ng-controller="reports">
-  <div ng-if="!isSubmitted()">
+  <div ng-if="!isSubmitted() && hasListing()">
     <ng-include src="'partials/reporting/reports-list.html'"></ng-include>
 
     <label id="reportRunButton" ng-click="runReports()" class="btn btn-primary">
