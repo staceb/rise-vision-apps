@@ -49,6 +49,7 @@ angular.module('risevision.apps.controllers')
         states: ['apps.storage.home']
       }, {
         title: 'Reports',
+        internalUseOnly: true,
         link: $state.href('apps.reports.home'),
         cid: true,
         states: ['apps.reports.home']

@@ -168,6 +168,16 @@ angular.module('risevision.common.header', [
             }
           });
 
+          $scope.hidePerInternalUseOnly = function (navOption) {
+            if (!navOption.internalUseOnly) {return false;}
+
+            var userEmail = userState.getUserEmail();
+
+            if (!userEmail) {return true;}
+
+            return !userEmail.endsWith('risevision.com');
+          };
+
           //insert meta tag to page to prevent zooming in in mobile mode
           var viewPortTag = $document[0].createElement('meta');
           viewPortTag.id = 'viewport';
