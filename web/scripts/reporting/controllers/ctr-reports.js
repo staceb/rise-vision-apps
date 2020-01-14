@@ -29,5 +29,9 @@ angular.module('risevision.reports.controllers')
 
       return submittedReports.length;
     };
+
+    $scope.hasResults = function () {
+      return $scope.responses && $scope.responses.length;
+    };
   }
 ]);

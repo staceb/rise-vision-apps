@@ -11,7 +11,7 @@
       <span translate>reports-app.run</span>
     </label>
   </div>
-  <div ng-if="isSubmitted()">
+  <div ng-if="isSubmitted() && hasResults()">
     <div class="panel col-sm-6">
       <div ng-repeat="response in responses">
         <div class="panel-body">
