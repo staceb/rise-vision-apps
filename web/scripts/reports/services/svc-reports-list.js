@@ -9,7 +9,6 @@ angular.module('risevision.reports.services')
       return coreApi.query.list();
     })
     .then(function (resp) {
-      console.log(resp);
       loadingItems = false;
 
       if (!resp.result.items) {return;}
