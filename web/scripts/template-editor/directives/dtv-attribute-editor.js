@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('risevision.template-editor.directives')
-  .directive('templateAttributeEditor', ['$timeout', 'templateEditorFactory', 'templateEditorUtils',
-    function ($timeout, templateEditorFactory, templateEditorUtils) {
+  .directive('templateAttributeEditor', ['$timeout', 'templateEditorFactory', 'templateEditorUtils', 
+  'blueprintFactory', '$window', 'HTML_TEMPLATE_DOMAIN',
+    function ($timeout, templateEditorFactory, templateEditorUtils, blueprintFactory, $window, 
+      HTML_TEMPLATE_DOMAIN) {
       return {
         restrict: 'E',
         templateUrl: 'partials/template-editor/attribute-editor.html',
@@ -12,6 +14,8 @@ angular.module('risevision.template-editor.directives')
           $scope.directives = {};
           $scope.panels = [];
           $scope.factory.selected = null;
+
+          window.addEventListener( "message", _handleMessageFromTemplate );
 
           $scope.registerDirective = function (directive) {
             directive.element.hide();
@@ -74,6 +78,17 @@ angular.module('risevision.template-editor.directives')
             }
 
             return 'template.' + component.type;
+          };
+
+          $scope.highlightComponent = function (component) {
+            var message = {
+              type: 'highlightComponent',
+              value: component.id
+            };
+            var iframe = $window.document.getElementById('template-editor-preview');
+            iframe.contentWindow.postMessage(JSON.stringify(message), HTML_TEMPLATE_DOMAIN);
+            console.log("posted");
+
           };
 
           $scope.isHeaderBottomRuleVisible = function (component) {
@@ -172,6 +187,26 @@ angular.module('risevision.template-editor.directives')
             _showElement(swappedInSelector, 'left');
             _hideElement(swappedOutSelector);
           }
+          
+          function _handleMessageFromTemplate(event) {
+            const data = JSON.parse(event.data);
+
+            switch (data.type) {
+            case "editComponent":
+              console.log(data.value);
+              var component = blueprintFactory.blueprintData.components.find(element => element.id === data.value);
+              if (component) {
+                if ($scope.factory.selected) {
+                  $scope.backToList();
+                }
+                $scope.editComponent(component);
+              }
+              break;
+            default:
+              break;
+            }
+          }
+
         }
       };
     }

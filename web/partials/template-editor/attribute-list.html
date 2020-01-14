@@ -21,8 +21,8 @@
   <label class="u_margin-md-top">Settings for this Template:</label>
 </div>
 
-<div class="attribute-row" ng-repeat="comp in components track by $index">
-  <div class="col-xs-10 pl-0 attribute-desc">
+<div class="attribute-row attribute-row-hover" ng-repeat="comp in components track by $index">
+  <div class="col-xs-10 pl-0 attribute-desc" ng-mouseover="highlightComponent(comp)">
     <component-icon icon="{{ getComponentIcon(comp) }}" type="{{ getComponentIconType(comp) }}"></component-icon>
     <span>
       {{ getComponentTitle(comp) | translate }} -
