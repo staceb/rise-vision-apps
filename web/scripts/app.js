@@ -549,7 +549,7 @@ angular.module('risevision.apps', [
         .state('apps.reports.home', {
           url: '/reports',
           templateProvider: ['$templateCache', function ($templateCache) {
-            return $templateCache.get('partials/reports/reports.html');
+            return $templateCache.get('partials/reporting/reports.html');
           }],
           controller: 'reports'
         });
