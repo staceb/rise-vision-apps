@@ -3,9 +3,8 @@
 angular.module('risevision.reports.controllers')
 .controller('reports', ['$scope', '$log', 'reportsList',
   function ($scope, $log, reportsList) {
-    $log.debug("reports");
-
     $scope.reports = reportsList.reports;
+    $scope.responses = reportsList.responses;
 
     $scope.isReportsListVisible = function () {
       return !(reportsList.loadingItems || $scope.isEmptyState());
@@ -15,13 +14,19 @@ angular.module('risevision.reports.controllers')
       return !reportsList.reports.length;
     };
 
-    $scope.fileNameOrderFunction = function (report) {
-      return report.name;
-    };
-
     $scope.selectReport = function (report) {
       reportsList.onReportSelect(report);
     };
 
+    $scope.runReports = function () {
+      reportsList.runReports();
+    };
+
+    $scope.isSubmitted = function () {
+      var submittedReports = reportsList.reports
+        .filter(function (report) {return report.isSubmitted;});
+
+      return submittedReports.length;
+    };
   }
 ]);

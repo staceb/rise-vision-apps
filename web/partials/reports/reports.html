@@ -4,9 +4,18 @@
 </div>
 
 <div class="container" ng-controller="reports">
-  <ng-include src="'partials/reports/reports-list.html'"></ng-include>
-</div>
+  <div ng-if="!isSubmitted()">
+    <ng-include src="'partials/reports/reports-list.html'"></ng-include>
 
-<label id="reportRunButton" class="btn btn-primary">
-  <span translate>reports-app.run</span>
-</label>
+    <label id="reportRunButton" ng-click="runReports()" class="btn btn-primary">
+      <span translate>reports-app.run</span>
+    </label>
+  </div>
+  <div ng-if="isSubmitted()" class="panel">
+    <div ng-repeat="response in responses">
+      <div class="panel-body">
+        <span><i class="fa fa-bell-o icon-left"></i>{{response}}</span>
+      </div>
+    </div>
+  </div>
+</div>

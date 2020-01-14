@@ -1,17 +1,28 @@
 <div class="u_margin-sm-top">
-  <div class="panel panel-default grid-selector">
+  <div class="panel panel-default">
     <table id="reportsList" class="table table--hover table--selector table--multiple-selector" ng-show="isReportsListVisible()">
-      <thead class="table-header"></thead>
+      <thead class="table-header">
+        <tr class="table-header__row">
+          <th class="col-sm-4 table-header__cell">
+            <span>Name</span>
+          </th>
+          <th class="col-sm-8 table-header__cell">
+            <span>Description</span>
+          </th>
+      </thead>
       <tbody class="table-body">
         <tr class="table-body__row"
           ng-click="selectReport(report);"
           ng-class="{'active': report.isChecked }"
-          ng-repeat="report in reports track by report.id">
-          <td class="col-sm-6 table-body__cell">
-            <span>
-              <span class="table-body__cell" data-toggle="tooltip" title="{{report.name}}">
-                <strong>{{report.name}}</strong>
-              </span>
+          ng-repeat="report in reports | orderBy : report.id track by report.id">
+          <td class="col-sm-4 table-body__cell">
+            <span style="display:inline" class="table-body__cell" data-toggle="tooltip" title="{{report.name}}">
+              <strong>{{report.name}}</strong>
+            </span>
+          </td>
+          <td class="col-sm-8 table-body__cell">
+            <span class="table-body__cell" data-toggle="tooltip" title="description">
+              <span>{{report.description}}</span>
             </span>
           </td>
         </tr>
