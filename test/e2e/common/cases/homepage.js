@@ -46,24 +46,25 @@ var HomepageScenarios = function() {
     describe('NavMenu', function(){
 
       it("should load menu items", function() {
-        // expect 10 menu items (5 for the off-canvas menu)
-        expect(commonHeaderPage.getCommonHeaderMenuItems().count()).to.eventually.equal(10);
+        // expect 12 menu items (6 for the off-canvas menu)
+        expect(commonHeaderPage.getCommonHeaderMenuItems().count()).to.eventually.equal(12);
         
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(0).getText()).to.eventually.equal('Home');
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(1).getText()).to.eventually.equal('Presentations');
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(2).getText()).to.eventually.equal('Schedules');
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(3).getText()).to.eventually.equal('Displays');
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(4).getText()).to.eventually.equal('Storage');
+        expect(commonHeaderPage.getCommonHeaderMenuItems().get(5).getText()).to.eventually.equal('Reports');
       });
 
       it("off canvas menu should not show", function() {
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(0).isDisplayed()).to.eventually.be.true;
 
-        expect(commonHeaderPage.getCommonHeaderMenuItems().get(5).isDisplayed()).to.eventually.be.false;
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(6).isDisplayed()).to.eventually.be.false;
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(7).isDisplayed()).to.eventually.be.false;
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(8).isDisplayed()).to.eventually.be.false;
         expect(commonHeaderPage.getCommonHeaderMenuItems().get(9).isDisplayed()).to.eventually.be.false;
+        expect(commonHeaderPage.getCommonHeaderMenuItems().get(10).isDisplayed()).to.eventually.be.false;
       });
 
       it("links target & href should be configured", function(done) {
