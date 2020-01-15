@@ -168,10 +168,10 @@ angular.module('risevision.common.header', [
             }
           });
 
-          $scope.hidePerInternalUseOnly = function (navOption) {
-            if (!navOption.internalUseOnly) {return false;}
+          $scope.satisfiesInternalUseOnly = function (navOption) {
+            if (!navOption.internalUseOnly) {return true;}
 
-            return !userState.isRiseAdmin();
+            return userState.isRiseAdmin();
           };
 
           //insert meta tag to page to prevent zooming in in mobile mode
