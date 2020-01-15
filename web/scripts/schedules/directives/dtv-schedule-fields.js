@@ -7,7 +7,8 @@ angular.module('risevision.schedules.directives')
         restrict: 'E',
         templateUrl: 'partials/schedules/schedule-fields.html',
         link: function ($scope) {
-          $scope.previewUrl = scheduleFactory.getPreviewUrl();
+
+          $scope.previewUrl = _getPreviewUrl();
 
           var openPlaylistModal = function (playlistItem) {
             $modal.open({
@@ -42,13 +43,16 @@ angular.module('risevision.schedules.directives')
             });
           };
 
-          $scope.isPreviewAvailable = function () {
-            var htmlPresentations = _.filter($scope.schedule.content, function (presentation) {
+          function _getPreviewUrl() {
+            var scheduleHasOnlyHtmlTemplates = _.every($scope.schedule.content, function (presentation) {
               return presentationUtils.isHtmlPresentation(presentation);
             });
 
-            return htmlPresentations.length === 0;
-          };
+            var previewUrl = scheduleFactory.getPreviewUrl();
+
+            return scheduleHasOnlyHtmlTemplates ? previewUrl.replace('http', 'https') : previewUrl;
+          }
+
         } //link()
       };
     }
