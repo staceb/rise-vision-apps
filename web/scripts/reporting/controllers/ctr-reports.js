@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('risevision.reports.controllers')
-.controller('reports', ['$scope', '$log', 'reportsList', 'userState',
-  function ($scope, $log, reportsList, userState) {
+.controller('reports', ['$scope', '$log', 'reportsList', 'userState', 'companyState',
+  function ($scope, $log, reportsList, userState, companyState) {
     $scope.reports = reportsList.reports;
     $scope.responses = reportsList.responses;
     $scope.userEmail = userState.getUserEmail();
+    $scope.userCompanyName = companyState.getUserCompanyName();
 
     $scope.hasListing = function () {
       return reportsList.reports && reportsList.reports.length;

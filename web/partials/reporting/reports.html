@@ -4,6 +4,8 @@
 </div>
 
 <div class="container" ng-controller="reports">
+  <div ng-if="userCompanyName && !isSubmitted()">Reports will be sent to {{userEmail}} for {{userCompanyName}}</div>
+
   <div ng-if="!isSubmitted() && hasListing()">
     <ng-include src="'partials/reporting/reports-list.html'"></ng-include>
 
