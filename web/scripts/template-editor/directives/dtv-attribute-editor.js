@@ -46,6 +46,8 @@ angular.module('risevision.template-editor.directives')
           };
 
           $scope.onBackButton = function () {
+            $scope.highlightComponent(null);
+
             var component = $scope.factory.selected;
             var directive = $scope.directives[component.type];
 
@@ -84,10 +86,10 @@ angular.module('risevision.template-editor.directives')
             return 'template.' + component.type;
           };
 
-          $scope.highlightComponent = function (component) {
+          $scope.highlightComponent = function (componentId) {
             var message = {
               type: 'highlightComponent',
-              value: component.id
+              value: componentId
             };
             var iframe = $window.document.getElementById('template-editor-preview');
             iframe.contentWindow.postMessage(JSON.stringify(message), HTML_TEMPLATE_DOMAIN);
