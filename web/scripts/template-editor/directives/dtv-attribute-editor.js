@@ -205,12 +205,8 @@ angular.module('risevision.template-editor.directives')
           function _handleMessageFromTemplate(event) {
             var data = JSON.parse(event.data);
 
-            switch (data.type) {
-            case 'editComponent':
+            if (data.type === 'editComponent') {
               $scope.editHighlightedComponent(data.value);
-              break;
-            default:
-              break;
             }
           }
 
