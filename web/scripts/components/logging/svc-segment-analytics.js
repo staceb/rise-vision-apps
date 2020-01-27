@@ -2,9 +2,9 @@
 
   'use strict';
 
-  angular.module('risevision.common.components.analytics', [])
+  angular.module('risevision.common.components.logging')
 
-    .value('SEGMENT_API_KEY', 'AFtY3tN10BQj6RbnfpDDp9Hx8N1modKN')
+    .value('SEGMENT_API_KEY', 'pFutwqoxdVfhEF0J948V28YuzNLIP3MY')
     .value('GA_LINKER_USE_ANCHOR', true)
 
     .factory('segmentAnalytics', ['$rootScope', '$window', '$log', '$location',
@@ -48,12 +48,14 @@
 
         service.ready(function () {
           var ga = $window.ga;
-          ga('require', 'linker');
-          ga('linker:autoLink', ['community.risevision.com',
-            'store.risevision.com', 'help.risevision.com',
-            'apps.risevision.com', 'risevision.com',
-            'preview.risevision.com', 'rva.risevision.com'
-          ], GA_LINKER_USE_ANCHOR);
+          if (ga) {
+            ga('require', 'linker');
+            ga('linker:autoLink', ['community.risevision.com',
+              'store.risevision.com', 'help.risevision.com',
+              'apps.risevision.com', 'risevision.com',
+              'preview.risevision.com', 'rva.risevision.com'
+            ], GA_LINKER_USE_ANCHOR);            
+          }
         });
 
         /**
