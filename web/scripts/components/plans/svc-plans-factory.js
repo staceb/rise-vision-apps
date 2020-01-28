@@ -22,7 +22,7 @@
         save: 0
       }
     }, {
-      name: 'Volume',
+      name: 'Display Licenses',
       type: 'volume',
       order: 1,
       productId: '2317',
@@ -49,7 +49,7 @@
         'RELIGIOUS_INSTITUTIONS'
       ]
     }, {
-      name: 'Volume for Education',
+      name: 'Display Licenses for Education',
       // cannot use type 'volume', it may interfere with the other plan
       type: 'volume for education',
       order: 1,
@@ -162,8 +162,6 @@
     .factory('plansFactory', ['$modal', '$templateCache', 'userState', 'PLANS_LIST',
       function ($modal, $templateCache, userState, PLANS_LIST) {
         var _factory = {};
-        var _plansByType = _.keyBy(PLANS_LIST, 'type');
-        var _plansByCode = _.keyBy(PLANS_LIST, 'productCode');
 
         _factory.showPlansModal = function () {
           if (!_factory.isPlansModalOpen) {
@@ -182,9 +180,11 @@
         };
 
         _factory.initVolumePlanTrial = function () {
-          var plan = _plansByType.volume;
+          var plan = _.find(PLANS_LIST, {
+            type: 'volume'
+          });
+          var licenses = plan.proLicenseCount;
           var selectedCompany = userState.getCopyOfSelectedCompany(true);
-          var licenses = _plansByCode[plan.productCode].proLicenseCount;
           var trialExpiry = new Date();
           trialExpiry.setDate(trialExpiry.getDate() + plan.trialPeriod);
           // Round down the date otherwise the subtraction may calculate an extra day
