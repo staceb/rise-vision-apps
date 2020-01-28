@@ -46,6 +46,11 @@ describe('controller: schedule details', function() {
         }
       }
     });
+    $provide.service('bigQueryLogging',function(){
+      return {
+        logEvent: function () {}
+      };
+    });
   }));
   var $scope, $state, updateCalled, deleteCalled, confirmDelete;
   beforeEach(function(){

@@ -2,11 +2,13 @@
 
 angular.module('risevision.schedules.controllers')
   .controller('scheduleDetails', ['$scope', '$q', '$state',
-    'scheduleFactory', '$loading', '$log', '$modal', '$templateCache',
+    'scheduleFactory', '$loading', '$log', '$modal', '$templateCache', 'bigQueryLogging',
     function ($scope, $q, $state, scheduleFactory, $loading, $log, $modal,
-      $templateCache) {
+      $templateCache, bigQueryLogging) {
       $scope.factory = scheduleFactory;
       $scope.schedule = scheduleFactory.schedule;
+
+      var _previousTransitions = _scheduleHasTransitions($scope.schedule);
 
       $scope.$watch('factory.loadingSchedule', function (loading) {
         if (loading) {
@@ -85,9 +87,30 @@ angular.module('risevision.schedules.controllers')
 
           return $q.reject();
         } else {
+          _logTransitionUsage();
+
           return scheduleFactory.updateSchedule();
         }
       };
 
+      function _logTransitionUsage() {
+        var addedTransitions = _scheduleHasTransitions($scope.schedule);
+
+        if (!_previousTransitions && addedTransitions) {
+          bigQueryLogging.logEvent('transitionsAdded', $scope.schedule.id);
+        } else if (_previousTransitions && !addedTransitions) {
+          bigQueryLogging.logEvent('transitionsRemoved', $scope.schedule.id);
+        }
+
+        _previousTransitions = addedTransitions;
+      }
+
+      function _scheduleHasTransitions (schedule) {
+        var content = schedule.content;
+
+        return _.find(content || [], function (item) {
+          return item.transitionType && item.transitionType !== 'normal';
+        });
+      }
     }
   ]);
