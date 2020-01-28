@@ -2,9 +2,9 @@
 
 angular.module('risevision.schedules.controllers')
   .controller('scheduleDetails', ['$scope', '$q', '$state',
-    'scheduleFactory', '$loading', '$log', '$modal', '$templateCache', 'bigQueryLogging',
+    'scheduleFactory', '$loading', '$log', '$modal', '$templateCache', 'scheduleTracker',
     function ($scope, $q, $state, scheduleFactory, $loading, $log, $modal,
-      $templateCache, bigQueryLogging) {
+      $templateCache, scheduleTracker) {
       $scope.factory = scheduleFactory;
       $scope.schedule = scheduleFactory.schedule;
 
@@ -97,9 +97,9 @@ angular.module('risevision.schedules.controllers')
         var addedTransitions = _scheduleHasTransitions($scope.schedule);
 
         if (!_previousTransitions && addedTransitions) {
-          bigQueryLogging.logEvent('transitionsAdded', $scope.schedule.id);
+          scheduleTracker('Transitions Added', $scope.schedule.id, $scope.schedule.name);
         } else if (_previousTransitions && !addedTransitions) {
-          bigQueryLogging.logEvent('transitionsRemoved', $scope.schedule.id);
+          scheduleTracker('Transitions Removed', $scope.schedule.id, $scope.schedule.name);
         }
 
         _previousTransitions = addedTransitions;

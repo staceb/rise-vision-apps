@@ -46,9 +46,9 @@ describe('controller: schedule details', function() {
         }
       }
     });
-    $provide.service('bigQueryLogging',function(){
-      return {
-        logEvent: function () {}
+    $provide.service('scheduleTracker',function(){
+      return function () {
+
       };
     });
   }));
