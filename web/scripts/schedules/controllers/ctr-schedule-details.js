@@ -2,13 +2,13 @@
 
 angular.module('risevision.schedules.controllers')
   .controller('scheduleDetails', ['$scope', '$q', '$state',
-    'scheduleFactory', '$loading', '$log', '$modal', '$templateCache', 'scheduleTracker',
+    'scheduleFactory', '$loading', '$log', '$modal', '$templateCache',
     function ($scope, $q, $state, scheduleFactory, $loading, $log, $modal,
-      $templateCache, scheduleTracker) {
+      $templateCache) {
       $scope.factory = scheduleFactory;
       $scope.schedule = scheduleFactory.schedule;
 
-      var _previousTransitions = _scheduleHasTransitions($scope.schedule);
+      var _oldSchedule = _.cloneDeep($scope.schedule);
 
       $scope.$watch('factory.loadingSchedule', function (loading) {
         if (loading) {
@@ -87,30 +87,12 @@ angular.module('risevision.schedules.controllers')
 
           return $q.reject();
         } else {
-          _logTransitionUsage();
-
-          return scheduleFactory.updateSchedule();
+          return scheduleFactory.updateSchedule()
+            .then(function () {
+              scheduleFactory.logTransitionUsage($scope.schedule, _oldSchedule);
+              _oldSchedule = _.cloneDeep($scope.schedule);
+            });
         }
       };
-
-      function _logTransitionUsage() {
-        var addedTransitions = _scheduleHasTransitions($scope.schedule);
-
-        if (!_previousTransitions && addedTransitions) {
-          scheduleTracker('Transitions Added', $scope.schedule.id, $scope.schedule.name);
-        } else if (_previousTransitions && !addedTransitions) {
-          scheduleTracker('Transitions Removed', $scope.schedule.id, $scope.schedule.name);
-        }
-
-        _previousTransitions = addedTransitions;
-      }
-
-      function _scheduleHasTransitions (schedule) {
-        var content = schedule.content;
-
-        return _.find(content || [], function (item) {
-          return item.transitionType && item.transitionType !== 'normal';
-        });
-      }
     }
   ]);

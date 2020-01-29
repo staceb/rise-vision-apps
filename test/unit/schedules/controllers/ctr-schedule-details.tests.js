@@ -15,7 +15,8 @@ describe('controller: schedule details', function() {
         },
         deleteSchedule: function() {
           deleteCalled = true;
-        }
+        },
+        logTransitionUsage: function() {}
       }
     });
     $provide.service('$state',function(){
@@ -45,11 +46,6 @@ describe('controller: schedule details', function() {
           };
         }
       }
-    });
-    $provide.service('scheduleTracker',function(){
-      return function () {
-
-      };
     });
   }));
   var $scope, $state, updateCalled, deleteCalled, confirmDelete;
