@@ -44,29 +44,34 @@ describe('service: blueprint factory', function() {
 
   it('should exist',function(){
     expect(blueprintFactory).to.be.ok;
-    expect(blueprintFactory.load).to.be.a('function');
+    expect(blueprintFactory.getBlueprintCached).to.be.a('function');
     expect(blueprintFactory.isPlayUntilDone).to.be.a('function');
     expect(blueprintFactory.hasBranding).to.be.a('function');
   });
 
-  describe('load: ', function() {
+  describe('getBlueprintCached: ', function() {
 
     it('should call API and return blueprintData',function(done) {
       $httpBackend.expect('GET', 'https://widgets.risevision.com/staging/templates/template123/blueprint.json').respond(200, 'blueprintData');
 
-      blueprintFactory.load(PRODUCT_CODE)
+      blueprintFactory.getBlueprintCached(PRODUCT_CODE)
         .then(function(resp) {
           expect(resp).to.equal('blueprintData');
+
+          expect(blueprintFactory.loadingBlueprint).to.be.false;
+
           done();
         });
+
+      expect(blueprintFactory.loadingBlueprint).to.be.true;
 
       $httpBackend.flush();
     });
 
-    it('should populate factory object on load',function(done) {
+    it('should populate factory object on api response',function(done) {
       $httpBackend.expect('GET', 'https://widgets.risevision.com/staging/templates/template123/blueprint.json').respond(200, 'blueprintData');
 
-      blueprintFactory.load(PRODUCT_CODE)
+      blueprintFactory.getBlueprintCached(PRODUCT_CODE)
         .then(function(resp) {
           expect(blueprintFactory.blueprintData).to.equal('blueprintData');
           done();
@@ -75,23 +80,57 @@ describe('service: blueprint factory', function() {
       $httpBackend.flush();
     });
 
+    it('should cache api response',function(done) {
+      $httpBackend.expect('GET', 'https://widgets.risevision.com/staging/templates/template123/blueprint.json').respond(200, 'blueprintData');
+
+      blueprintFactory.getBlueprintCached(PRODUCT_CODE)
+        .then(function(resp) {
+          expect(blueprintFactory.blueprintData).to.equal('blueprintData');
+
+          blueprintFactory.getBlueprintCached(PRODUCT_CODE)
+            .then(function(resp) {
+              expect(blueprintFactory.blueprintData).to.equal('blueprintData');
+
+              done();
+            });
+        });
+
+      $httpBackend.flush();
+    });
+
     it('should reject on http error',function(done) {
       $httpBackend.expect('GET', 'https://widgets.risevision.com/staging/templates/template123/blueprint.json').respond(500, { error: 'Error' });
 
-      blueprintFactory.load(PRODUCT_CODE)
+      blueprintFactory.getBlueprintCached(PRODUCT_CODE)
         .then(null,function(error) {
           expect(error).to.be.ok;
+
+          expect(blueprintFactory.loadingBlueprint).to.be.false;
+
           done();
         });
+
+      expect(blueprintFactory.loadingBlueprint).to.be.true;
 
       $httpBackend.flush();
     });
   });
 
   describe('isPlayUntilDone: ', function() {
+    beforeEach(function() {
+      sinon.stub(blueprintFactory, 'getBlueprintCached').returns(Q.resolve());
+    });
+
+    it('should return a promise',function() {
+      expect(blueprintFactory.isPlayUntilDone('productCode').then).to.be.a('function');
+
+      blueprintFactory.getBlueprintCached.should.have.been.calledWith('productCode');
+    });
 
     it('should return false if blueprintData is not populated',function() {
-      expect(blueprintFactory.isPlayUntilDone()).to.be.false;
+      return blueprintFactory.isPlayUntilDone().then(function(result) {
+        expect(result).to.be.false;
+      });
     });
 
     it('should return true if blueprintData.playUntilDone is true',function() {
@@ -99,7 +138,9 @@ describe('service: blueprint factory', function() {
         playUntilDone: true
       };
 
-      expect(blueprintFactory.isPlayUntilDone()).to.be.true;
+      return blueprintFactory.isPlayUntilDone().then(function(result) {
+        expect(result).to.be.true;
+      });
     });
 
     it('should return true if blueprintData.playUntilDone exists',function() {
@@ -107,7 +148,9 @@ describe('service: blueprint factory', function() {
         playUntilDone: "something"
       };
 
-      expect(blueprintFactory.isPlayUntilDone()).to.be.true;
+      return blueprintFactory.isPlayUntilDone().then(function(result) {
+        expect(result).to.be.true;
+      });
     });
 
     it('should return false otherwise',function() {
@@ -115,7 +158,9 @@ describe('service: blueprint factory', function() {
         playUntilDone: false
       };
 
-      expect(blueprintFactory.isPlayUntilDone()).to.be.false;
+      return blueprintFactory.isPlayUntilDone().then(function(result) {
+        expect(result).to.be.false;
+      });
     });
   });
 
