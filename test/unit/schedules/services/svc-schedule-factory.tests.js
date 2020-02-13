@@ -430,25 +430,6 @@ describe('service: scheduleFactory:', function() {
       });
     });
 
-    it('should cache result',function(done){
-      returnList = { items: [{name:'schedule'}] };
-      scheduleFactory.createFirstSchedule('presentationId','presentationName')
-      .then(null, function(){
-        scheduleListSpy.should.have.been.calledWith({count:1});
-        scheduleAddSpy.should.not.have.been.called;
-        expect(trackerCalled).to.not.be.ok;
-
-        scheduleFactory.createFirstSchedule('presentationId','presentationName').then(function(){
-          done("Error: schedule created again");
-        },function(){
-          scheduleListSpy.should.have.been.calledOnce;
-          scheduleAddSpy.should.not.have.been.called;
-          expect(trackerCalled).to.not.be.ok;
-          done();
-        });
-      });
-    });
-
     describe('scheduleHasTransitions', function() {
       it('should return false if the schedule does not have transitions', function() {
         expect(scheduleFactory.scheduleHasTransitions({})).to.be.false;
