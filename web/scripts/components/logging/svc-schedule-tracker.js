@@ -4,13 +4,13 @@ angular.module('risevision.common.components.logging')
   .value('SCHEDULE_EVENTS_TO_BQ', [
     'Schedule Created', 'Transitions Added', 'Transitions Removed'
   ])
-  .factory('scheduleTracker', ['userState', 'segmentAnalytics',
+  .factory('scheduleTracker', ['userState', 'analyticsFactory',
     'bigQueryLogging', 'SCHEDULE_EVENTS_TO_BQ',
-    function (userState, segmentAnalytics, bigQueryLogging,
+    function (userState, analyticsFactory, bigQueryLogging,
       SCHEDULE_EVENTS_TO_BQ) {
       return function (eventName, scheduleId, scheduleName) {
         if (eventName) {
-          segmentAnalytics.track(eventName, {
+          analyticsFactory.track(eventName, {
             scheduleId: scheduleId,
             scheduleName: scheduleName,
             companyId: userState.getSelectedCompanyId()
