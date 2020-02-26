@@ -46,7 +46,7 @@ describe('directive: templateComponentText', function() {
     expect(directive.show).to.be.a('function');
   });
 
-  it('should load text from attribute data', function() {
+  it('should load text from attribute data', function(done) {
     var directive = $scope.registerDirective.getCall(0).args[0];
     var sampleValue = "test text";
 
@@ -56,8 +56,11 @@ describe('directive: templateComponentText', function() {
 
     directive.show();
 
-    expect($scope.componentId).to.equal("TEST-ID");
-    expect($scope.value).to.equal(sampleValue);
+    setTimeout(function () {
+      expect($scope.componentId).to.equal("TEST-ID");
+      expect($scope.value).to.equal(sampleValue);
+      done();
+    });
   });
 
   it('should save text to attribute data', function() {
