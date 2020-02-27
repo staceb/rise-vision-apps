@@ -25,8 +25,8 @@ angular.module('risevision.template-editor.directives')
             $scope.value = $scope.getAvailableAttributeData($scope.componentId, 'value');
 
             setTimeout(function () {
-              console.log("componentId: ", $scope.componentId, "fontsize: ", $scope.fontsize, "fontsizeInt: ", fontsizeInt);
-              console.log("minFontSize: ", $scope.minFontSize, "maxFontSize: ", $scope.maxFontSize);
+              console.log('componentId: ', $scope.componentId, 'fontsize: ', $scope.fontsize, 'fontsizeInt: ', fontsizeInt);
+              console.log('minFontSize: ', $scope.minFontSize, 'maxFontSize: ', $scope.maxFontSize);
 
               if ($scope.fontsize !== fontsizeInt) {
                 $scope.fontsize = fontsizeInt;
