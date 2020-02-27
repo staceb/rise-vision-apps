@@ -12,19 +12,26 @@ angular.module('risevision.template-editor.directives')
 
           function _load() {
             var fontsize = $scope.getAvailableAttributeData($scope.componentId, 'fontsize');
+            var fontsizeInt = templateEditorUtils.intValueFor(fontsize, null);
             var minfontsize = $scope.getAvailableAttributeData($scope.componentId, 'minfontsize');
+            var minfontsizeInt = templateEditorUtils.intValueFor(minfontsize, 1);
             var maxfontsize = $scope.getAvailableAttributeData($scope.componentId, 'maxfontsize');
+            var maxfontsizeInt = templateEditorUtils.intValueFor(maxfontsize, 200);
 
-            $scope.minFontSize = templateEditorUtils.intValueFor(minfontsize, 1);
-            $scope.maxFontSize = templateEditorUtils.intValueFor(maxfontsize, 200);
+            $scope.minFontSize = minfontsizeInt;
+            $scope.maxFontSize = maxfontsizeInt;
+            $scope.fontsize = fontsizeInt;
+            $scope.showFontSize = !!fontsizeInt;
+            $scope.value = $scope.getAvailableAttributeData($scope.componentId, 'value');
 
             setTimeout(function () {
-              var fontsizeInt = templateEditorUtils.intValueFor(fontsize, null);
+              console.log("componentId: ", $scope.componentId, "fontsize: ", $scope.fontsize, "fontsizeInt: ", fontsizeInt);
+              console.log("minFontSize: ", $scope.minFontSize, "maxFontSize: ", $scope.maxFontSize);
 
-              $scope.value = $scope.getAvailableAttributeData($scope.componentId, 'value');
-              $scope.fontsize = fontsizeInt;
-              $scope.showFontSize = !!fontsizeInt;
-            });
+              if ($scope.fontsize !== fontsizeInt) {
+                $scope.fontsize = fontsizeInt;
+              }
+            }, 500);
           }
 
           $scope.save = function () {
