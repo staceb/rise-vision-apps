@@ -107,7 +107,7 @@
 
             var properties = {
               userId: userState.getUsername(),
-              email: profile.email,
+              email: profile.email || userState.getUsername(),
               firstName: profile.firstName ? profile.firstName : '',
               lastName: profile.lastName ? profile.lastName : '',
               registeredDate: profile.termsAcceptanceDate

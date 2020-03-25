@@ -49,7 +49,8 @@ describe("Services: analyticsFactory", function() {
       $scope = $rootScope;
       companyId = "companyId";
       profile = {
-        termsAcceptanceDate: "2020-01-01"
+        termsAcceptanceDate: "2020-01-01",
+        email: "email"
       };
       
       analyticsFactory = $injector.get("analyticsFactory");
@@ -81,7 +82,7 @@ describe("Services: analyticsFactory", function() {
         companyIndustry: "K-12 Education",
         parentId: "parent123",
         userId: "username",
-        email: undefined,
+        email: "email",
         firstName: "",
         lastName: "",
         registeredDate: "2020-01-01",
@@ -107,6 +108,34 @@ describe("Services: analyticsFactory", function() {
     }, 10);
   });
 
+  it("should user username as email property when email is not defined", function(done) {
+    var identifySpy = sinon.spy(analyticsFactory, "identify");
+
+    profile.email = undefined
+
+    analyticsEvents.identify();
+    
+    setTimeout(function() {
+      var expectProperties = {
+        company: { id: "companyId", name: "companyName", companyIndustry: "K-12 Education", parentId: "parent123" },
+        companyId: "companyId",
+        companyName: "companyName",
+        companyIndustry: "K-12 Education",
+        parentId: "parent123",
+        userId: "username",
+        email: "username",
+        firstName: "",
+        lastName: "",
+        registeredDate: "2020-01-01",
+        subscriptionRenewalDate: undefined,
+        subscriptionStatus: "Free",
+        subscriptionTrialExpiryDate: undefined
+      };
+      identifySpy.should.have.been.calledWith("username",expectProperties);
+      done();
+    }, 10);
+  });
+
   it("should identify user but not send 'logged in' event if user has not finalized registration", function(done) {
     var identifySpy = sinon.spy(analyticsFactory, "identify");
     var trackSpy = sinon.spy(analyticsFactory, "track");
@@ -123,7 +152,7 @@ describe("Services: analyticsFactory", function() {
         companyIndustry: "K-12 Education",
         parentId: "parent123",
         userId: "username",
-        email: undefined,
+        email: "email",
         firstName: "",
         lastName: "",
         registeredDate: undefined,
@@ -154,7 +183,7 @@ describe("Services: analyticsFactory", function() {
         companyIndustry: "K-12 Education",
         parentId: "parent123",
         userId: "username",
-        email: undefined,
+        email: "email",
         firstName: "",
         lastName: "",
         registeredDate: "2020-01-01",
@@ -182,7 +211,7 @@ describe("Services: analyticsFactory", function() {
     setTimeout(function() {
       identifySpy.should.have.been.calledWith("username",{
         userId: "username",
-        email: undefined,
+        email: "email",
         firstName: "",
         lastName: "",
         registeredDate: "2020-01-01"
