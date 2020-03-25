@@ -120,7 +120,7 @@
 
           if (!isCustomAuth) {
             helper.wait(signOutModal, 'Sign Out Modal');
-            signOutRvOnlyButton.click();            
+            signOutRvOnlyButton.click();
           }
 
           helper.waitDisappear(signOutModal, 'Sign Out Modal');
@@ -168,7 +168,7 @@
 
       addSubcompanyModalNameField.sendKeys(selfCommonHeaderPage.addStageSuffix(name));
       if (industryValue) {
-        addSubcompanyModalIndustryField.$('[value="'+industryValue+'"]').click(); 
+        addSubcompanyModalIndustryField.$('[value="'+industryValue+'"]').click();
       }
       helper.clickWhenClickable(addSubcompanyModalSaveButton, 'Add Sub Company Modal Save Button');
       helper.waitRemoved(addSubcompanyModal, "Add Subcompany Modal");
@@ -188,7 +188,7 @@
       console.log('Creating Subscribed Subcompany');
 
       this.deleteSubCompanyIfExists(name);
-      
+
       this.selectSubCompany(JENKINS_SUBSCRIBED, false, true);
 
       _createSubCompany(name, industryValue);
@@ -216,6 +216,10 @@
           throw "Could not find the Sub Company: " + subCompanyName;
         }
       });
+    };
+
+    this.selectSubscribedSubCompany = function() {
+      this.selectSubCompany(JENKINS_SUBSCRIBED, false, true);
     };
 
     this.selectUnsubscribedSubCompany = function() {
@@ -259,7 +263,7 @@
       helper.wait(safeDeleteModal, "Safe Delete Modal");
       safeDeleteModalInput.sendKeys('DELETE');
       helper.clickWhenClickable(safeDeleteModalDeleteForeverButton, "Safe Delete Modal Delete Forever Button");
-      
+
       helper.waitRemoved(companySettingsModal, "Company Settings Modal");
       helper.waitDisappear(loader, 'CH spinner loader');
       helper.waitDisappear(subcompanyAlert, "Subcompany Alert");
@@ -277,10 +281,10 @@
       // Ensure the right User is being deleted
       expect(userSettingsModalPage.getUsernameLabel().getText()).to.eventually.equal(emailAddress);
 
-      userSettingsModalPage.getDeleteButton().click();          
+      userSettingsModalPage.getDeleteButton().click();
       browser.sleep(500);
-      helper.wait(userSettingsModalPage.getDeleteForeverButton(), 'User Delete Forever Button');      
-      helper.clickWhenClickable(userSettingsModalPage.getDeleteForeverButton(), 'User Delete Forever Button');          
+      helper.wait(userSettingsModalPage.getDeleteForeverButton(), 'User Delete Forever Button');
+      helper.clickWhenClickable(userSettingsModalPage.getDeleteForeverButton(), 'User Delete Forever Button');
       helper.waitDisappear(userSettingsModalPage.getLoader(), "User Settings Modal");
     }
 
