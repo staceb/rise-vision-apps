@@ -5,8 +5,7 @@
   </div>
 
   <form id="form.paymentMethodsForm" role="form" class="u_margin-md-top" name="form.paymentMethodsForm" novalidate>
-    <!-- Alpha Release - Select New Card by default -->
-    <div class="row u_margin-md-top">
+    <div ng-show="!purchase.plan.isMonthly" class="row u_margin-md-top">
       <div class="col-md-8 col-xs-12 form-inline">
         <div class="form-group">
           <label for="payment-method-select" class="u_margin-right">Payment Method</label>
@@ -17,7 +16,7 @@
         </div>
       </div>
     </div>
-    <hr />
+    <hr ng-show="!purchase.plan.isMonthly" />
 
     <div id="credit-card-form" ng-if="paymentMethods.paymentMethod === 'card'">
       <!-- Alpha Release - Select New Card by default -->
