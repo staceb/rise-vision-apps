@@ -108,4 +108,47 @@ describe("Services: plans factory", function() {
     });
   });
 
+  describe("showUnlockThisFeatureModal:", function() {
+    it('should open Unlock This Feature Modal', function(){
+      plansFactory.showUnlockThisFeatureModal();
+
+      expect($modal.open).to.have.been.calledOnce;
+      expect($modal.open).to.have.been.calledWith({
+        templateUrl: 'partials/components/plans/unlock-this-feature-modal.html',
+        controller: "confirmModalController",
+        resolve: {
+          cancelButton: null,
+          confirmationButton: null,
+          confirmationMessage: null,
+          confirmationTitle: null
+        },
+        windowClass: 'madero-style centered-modal unlock-this-feature-modal',
+        size: 'sm'
+      });
+    });
+
+    it('should open Plans Modal on confimation', function(done) {
+      $modal.open.returns({result: Q.resolve()});
+
+      plansFactory.showUnlockThisFeatureModal();
+
+      setTimeout(function(){
+        expect($modal.open).to.have.been.calledTwice;
+        expect($modal.open).to.have.been.calledWithMatch({controller: "confirmModalController"});
+        expect($modal.open).to.have.been.calledWithMatch({controller: 'PlansModalCtrl'});
+        done();
+      },10);
+    });
+
+    it('should not open Plans Modal if dismissed', function() {
+      $modal.open.returns({result: Q.reject()});
+
+      plansFactory.showUnlockThisFeatureModal();
+
+      expect($modal.open).to.have.been.calledOnce;
+      expect($modal.open).to.have.been.calledWithMatch({controller: "confirmModalController"});
+      expect($modal.open).to.not.have.been.calledWithMatch({controller: 'PlansModalCtrl'});
+    });
+  });
+
 });
