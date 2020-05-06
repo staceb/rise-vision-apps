@@ -181,10 +181,20 @@ gulp.task("clean-tmp", function () {
 gulp.task("clean", ["clean-dist", "clean-tmp"]);
 
 gulp.task("lint", function() {
+  let lintError;
+
   return gulp.src(appJSFiles)
     .pipe(jshint())
     .pipe(jshint.reporter("jshint-stylish"))
-    .pipe(jshint.reporter("fail"));
+    .pipe(jshint.reporter("fail"))
+    .on("error", function(e){
+      lintError = true;
+    })
+    .on("end", function(){
+      if(lintError) {
+        process.exit();
+      }
+    });
 });
 
 function buildHtml(path) {
@@ -380,7 +390,7 @@ gulp.task('default', [], function() {
   return true;
 });
 
-gulp.task('dev', ['build-pieces', 'browser-sync', 'watch']);
+gulp.task('dev', ['lint', 'build-pieces', 'browser-sync', 'watch']);
 
 /**
  * Default task, running just `gulp` will compile the sass, launch BrowserSync & watch files.
