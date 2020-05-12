@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('risevision.template-editor.services')
-  .factory('templateEditorUtils', ['messageBox',
-    function (messageBox) {
+  .factory('templateEditorUtils', ['messageBox', '$window',
+    function (messageBox, $window) {
       var svc = {};
 
       svc.intValueFor = function (providedValue, defaultValue) {
@@ -46,6 +46,18 @@ angular.module('risevision.template-editor.services')
 
       svc.isFolder = function (path) {
         return path[path.length - 1] === '/';
+      };
+
+      svc.isStaging = function () {
+        try {
+          var hostname = $window.location.hostname;
+
+          return hostname.includes('apps-stage-');
+        } catch (err) {
+          console.log('can\'t access hostname of window.location');
+        }
+
+        return false;
       };
 
       svc.fileNameOf = function (path) {
