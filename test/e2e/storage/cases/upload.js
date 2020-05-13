@@ -11,6 +11,7 @@ var UploadScenarios = function() {
   describe('Upload', function () {  
     var storageSelectorModalPage = new StorageSelectorModalPage();
     var filesListPage = new FilesListPage();
+    var uploadFilePath;
   
     var describeUpload = function () {
 
@@ -20,7 +21,7 @@ var UploadScenarios = function() {
       });
 
       it('should upload file', function(){
-        var uploadFilePath = process.cwd() + '/package.json';
+        uploadFilePath = uploadFilePath || (process.cwd() + '/package.json');
         storageSelectorModalPage.getUploadInput().sendKeys(uploadFilePath);
 
         expect(storageSelectorModalPage.getUploadPanel().isDisplayed()).to.eventually.be.true;
@@ -61,6 +62,16 @@ var UploadScenarios = function() {
       describe('Upload File:', describeUpload);
     });
     
+    describe('And he is using Storage Home with encoding enabled:',function(){
+      before(function () {
+        StorageHelper.setupStorageHomeWithEncoding();
+        uploadFilePath = process.cwd() + '/web/videos/e2e-upload-video-1.mp4';
+      });
+      after(function () {
+        uploadFilePath = null;
+      });
+      describe('Upload File:', describeUpload);
+    });
   });
 };
 module.exports = UploadScenarios;

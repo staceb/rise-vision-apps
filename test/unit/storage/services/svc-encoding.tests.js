@@ -3,6 +3,7 @@ describe('service: encoding:', function() {
   var encoding, $httpBackend, authRequestHandler, $timeout;
 
   beforeEach(module('risevision.storage.services'));
+  beforeEach(module('risevision.apps.config'));
 
   beforeEach(module(function ($provide) {
     $provide.service('$q', function() {return Q;});
@@ -35,8 +36,9 @@ describe('service: encoding:', function() {
   });
 
   describe('applicability', function() {
+    console.log('service: encoding: applicability');
     it('should be applicable if file is video', function() {
-      $httpBackend.when('HEAD', /.*encoding-switch-on/).respond(200, {});
+      $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
 
       return encoding.isApplicable('video/subtype')
       .then(function(resp) {
@@ -45,7 +47,7 @@ describe('service: encoding:', function() {
     });
 
     it('should not be applicable if file is not video', function() {
-      $httpBackend.when('HEAD', /.*encoding-switch-on/).respond(200, {});
+      $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
 
       return encoding.isApplicable('text/subtype')
       .then(function(resp) {
@@ -54,7 +56,7 @@ describe('service: encoding:', function() {
     });
 
     it('should not be applicable if master switch is off', function() {
-      $httpBackend.when('HEAD', /.*encoding-switch-on/).respond(403, {});
+      $httpBackend.when('HEAD', /.*encoding/).respond(403, {});
 
       return encoding.isApplicable('video/subtype')
       .then(function(resp) {
@@ -65,8 +67,9 @@ describe('service: encoding:', function() {
   });
 
   describe('upload uri', function() {
+    console.log('service: encoding: upload uri');
     it('should retrieve encoder upload uri from storage server api', function() {
-      $httpBackend.when('HEAD', /.*encoding-switch-on/).respond(200, {});
+      $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
 
       return encoding.getResumableUploadURI('filename')
       .then(function(resp) {
@@ -76,6 +79,7 @@ describe('service: encoding:', function() {
   });
 
   describe('task status checks', function() {
+    console.log('service: encoding: ');
     var taskToken = '12345';
 
     var item = {
@@ -87,7 +91,7 @@ describe('service: encoding:', function() {
       var statusResponse = {statuses: {}};
       statusResponse.statuses[taskToken] = {percent: 50};
 
-      $httpBackend.when('HEAD', /.*encoding-switch-on/).respond(200, {});
+      $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
       $httpBackend.when('POST', /.*status/).respond(200, statusResponse);
 
       var statusPromise = encoding.monitorStatus(item, onProgressSetStatusComplete);
@@ -106,7 +110,7 @@ describe('service: encoding:', function() {
     });
 
     it('retries on monitor check failure', function() {
-      $httpBackend.when('HEAD', /.*encoding-switch-on/).respond(200, {});
+      $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
 
       var statusResponse = {statuses: {}};
       statusResponse.statuses[taskToken] = {percent: 100};
@@ -135,8 +139,9 @@ describe('service: encoding:', function() {
   });
 
   describe('file acceptance', function() {
+    console.log('service: encoding: file acceptance');
     it('should accept the file after encoding', function() {
-      $httpBackend.when('HEAD', /.*encoding-switch-on/).respond(200, {});
+      $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
 
       return encoding.acceptEncodedFile('companyid', 'filename')
       .then(function(resp) {

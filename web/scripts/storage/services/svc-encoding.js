@@ -1,10 +1,9 @@
 'use strict';
 
 angular.module('risevision.storage.services')
-  .service('encoding', ['$q', '$log', '$http', 'storageAPILoader', 'userState', '$timeout',
-    function ($q, $log, $http, storageAPILoader, userState, $timeout) {
+  .service('encoding', ['ENCODING_MASTER_SWITCH_URL', '$q', '$log', '$http', 'storageAPILoader', 'userState', '$timeout',
+    function (switchURL, $q, $log, $http, storageAPILoader, userState, $timeout) {
       $log.debug('Loading encoding service');
-      var switchURL = 'https://storage.googleapis.com/risemedialibrary/encoding-switch-on';
       var masterSwitchPromise = $http({method: 'HEAD', url: switchURL});
 
       var service = {};
@@ -13,6 +12,8 @@ angular.module('risevision.storage.services')
         $log.debug('Checking encoding applicability for ' + fileType);
 
         if (fileType.indexOf('video/') !== 0) { return $q.resolve(false); }
+
+        if (sessionStorage.getItem('force-upload-encoding') === 'true') {return $q.resolve(true);}
 
         return masterSwitchPromise
         .then(function() {return true;}, function() {return false;});
