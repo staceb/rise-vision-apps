@@ -11,7 +11,7 @@ describe('service: templateEditorFactory:', function() {
 
     $provide.service('presentation',function () {
       return {
-        add : function() {},
+        add : sinon.stub().returns(Q.resolve()),
         update : function() {},
         get: function() {},
         delete: function () {},
@@ -53,8 +53,15 @@ describe('service: templateEditorFactory:', function() {
       };
     });
 
+    $provide.factory('scheduleFactory', function() {
+      return {
+        hasSchedules: sandbox.stub().returns(true)
+      };
+    });
+
     $provide.factory('brandingFactory', function() {
       return {
+        isRevised: sandbox.stub().returns(false),
         publishBranding: sandbox.stub(),
         saveBranding: sandbox.stub()
       };
@@ -71,7 +78,7 @@ describe('service: templateEditorFactory:', function() {
   }));
 
   var $state, templateEditorFactory, templateEditorUtils, blueprintFactory, presentation, processErrorCode,
-    HTML_PRESENTATION_TYPE, storeProduct, plansFactory, createFirstSchedule, brandingFactory;
+    HTML_PRESENTATION_TYPE, storeProduct, plansFactory, createFirstSchedule, scheduleFactory, brandingFactory;
 
   beforeEach(function() {
     inject(function($injector) {
@@ -81,6 +88,7 @@ describe('service: templateEditorFactory:', function() {
       presentation = $injector.get('presentation');
       plansFactory = $injector.get('plansFactory');
       createFirstSchedule = $injector.get('createFirstSchedule');
+      scheduleFactory = $injector.get('scheduleFactory');
       brandingFactory = $injector.get('brandingFactory');
       storeProduct = $injector.get('storeProduct');
       templateEditorUtils = $injector.get('templateEditorUtils');
@@ -116,6 +124,8 @@ describe('service: templateEditorFactory:', function() {
       ];
 
       templateEditorFactory.addFromProduct({ productCode: 'test-id', name: 'Test HTML Template' }).then(function () {
+        expect(presentation.add).to.have.been.called;
+
         expect(templateEditorFactory.presentation.id).to.be.undefined;
         expect(templateEditorFactory.presentation.productCode).to.equal('test-id');
         expect(templateEditorFactory.presentation.name).to.equal('Copy of Test HTML Template');
@@ -154,7 +164,7 @@ describe('service: templateEditorFactory:', function() {
 
   describe('save: ', function() {
     beforeEach(function() {
-      sandbox.stub(presentation, 'add').returns(Q.resolve({
+      presentation.add.returns(Q.resolve({
         item: {
           name: 'Test Presentation',
           id: 'presentationId',
@@ -169,10 +179,7 @@ describe('service: templateEditorFactory:', function() {
         }
       }));
 
-      templateEditorFactory.addFromProduct({ productCode: 'test-id', name: 'Test HTML Template' });
-      expect(templateEditorFactory.presentation.id).to.be.undefined;
-      expect(templateEditorFactory.presentation.productCode).to.equal('test-id');
-      expect(templateEditorFactory.presentation.templateAttributeData).to.deep.equal({});
+      templateEditorFactory.presentation.templateAttributeData = {};
     });
 
     it('should wait for both promises to resolve', function(done) {
@@ -590,6 +597,56 @@ describe('service: templateEditorFactory:', function() {
     });
   });
 
+  describe('isPublishDisabled: ', function() {
+    beforeEach(function() {
+      templateEditorFactory.presentation.revisionStatusName = 'Published';
+      templateEditorFactory.savingPresentation = false;
+      templateEditorFactory.hasUnsavedChanges = false;
+    });
+
+    it('should return true if neither factory isRevised', function() {
+      expect(templateEditorFactory.isPublishDisabled()).to.be.true;
+    });
+
+    it('should return false if this factory hasUnsavedChanges', function() {
+      templateEditorFactory.presentation.revisionStatusName = 'Revised';
+
+      expect(templateEditorFactory.isPublishDisabled()).to.be.false;
+    });
+
+    it('should return false if branding hasUnsavedChanges', function() {
+      brandingFactory.isRevised.returns(true);
+
+      expect(templateEditorFactory.isPublishDisabled()).to.be.false;
+    });
+
+    it('should return false if both factories have UnsavedChanges', function() {
+      templateEditorFactory.presentation.revisionStatusName = 'Revised';
+      brandingFactory.isRevised.returns(true);
+
+      expect(templateEditorFactory.isPublishDisabled()).to.be.false;
+    });
+
+    it('should return true if factory hasUnsavedChanges', function() {
+      templateEditorFactory.presentation.revisionStatusName = 'Revised';
+      brandingFactory.isRevised.returns(true);
+
+      templateEditorFactory.hasUnsavedChanges = true;
+
+      expect(templateEditorFactory.isPublishDisabled()).to.be.true;
+    });
+
+    it('should return true if factory is saving', function() {
+      templateEditorFactory.presentation.revisionStatus = 'Revised';
+      brandingFactory.isRevised.returns(true);
+
+      templateEditorFactory.savingPresentation = true;
+
+      expect(templateEditorFactory.isPublishDisabled()).to.be.true;
+    });
+
+  });
+
   describe('publish: ', function() {
     beforeEach(function (done) {
       createFirstSchedule.returns(Q.resolve());
@@ -637,8 +694,10 @@ describe('service: templateEditorFactory:', function() {
     });
 
     describe('publishTemplate: ', function() {
+      beforeEach(function() {
+        sandbox.stub(presentation, 'publish').returns(Q.resolve());
+      });
       it('should not publish the presentation if it is not revised', function(done) {
-        sandbox.stub(presentation, 'publish');
         sandbox.stub(templateEditorFactory, 'isRevised').returns(false);
 
         templateEditorFactory.publish()
@@ -654,8 +713,6 @@ describe('service: templateEditorFactory:', function() {
       });
 
       it('should publish the presentation', function(done) {
-        sandbox.stub(presentation, 'publish').returns(Q.resolve());
-
         var timeBeforePublish = new Date();
 
         templateEditorFactory.publish()
@@ -684,7 +741,7 @@ describe('service: templateEditorFactory:', function() {
       });
 
       it('should show an error if fails to publish the presentation', function(done) {
-        sandbox.stub(presentation, 'publish').returns(Q.reject());
+        presentation.publish.returns(Q.reject());
 
         templateEditorFactory.publish()
           .then(null, function(e) {
@@ -701,9 +758,7 @@ describe('service: templateEditorFactory:', function() {
       });
 
       it('should create first Schedule when publishing first presentation and show modal', function(done) {
-        sandbox.stub(presentation, 'publish').returns(Q.resolve());
-
-        templateEditorFactory.publish(templateEditorFactory)
+        templateEditorFactory.publish()
           .then(function() {
             setTimeout(function() {
               createFirstSchedule.should.have.been.calledWith(templateEditorFactory.presentation);
@@ -716,6 +771,24 @@ describe('service: templateEditorFactory:', function() {
           })
           .then(null, done);
       });
+
+      it('should create first Schedule and show modal even if not revised', function(done) {
+        sandbox.stub(templateEditorFactory, 'isRevised').returns(false);
+
+        templateEditorFactory.publish()
+          .then(function() {
+            setTimeout(function() {
+              createFirstSchedule.should.have.been.calledWith(templateEditorFactory.presentation);
+
+              done();
+            });
+          })
+          .then(null, function(err) {
+            done(err);
+          })
+          .then(null, done);
+      });
+
     });
 
     describe('publishBranding: ', function() {
