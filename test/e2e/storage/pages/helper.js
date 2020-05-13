@@ -48,6 +48,11 @@
       helper.waitDisappear(filesListPage.getFilesListLoader(), 'Storage Files Loader');
     },
 
+    setupStorageHomeWithEncoding: function() {
+      browser.driver.executeScript('sessionStorage.setItem("force-upload-encoding", true)');
+      factory.setupStorageHome();
+    },
+
     setupAppsSingleFileSelector: function(){
       homepage.getEditor();
       signInPage.signIn();
