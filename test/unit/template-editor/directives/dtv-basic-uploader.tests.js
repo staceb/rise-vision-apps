@@ -334,7 +334,7 @@ describe('directive: basicUploader', function () {
 
       $scope.setAcceptAttribute();
 
-      expect($scope.accept).to.be.equal('video/*');
+      expect($scope.accept).to.be.equal('*');
     });
   });
 });
