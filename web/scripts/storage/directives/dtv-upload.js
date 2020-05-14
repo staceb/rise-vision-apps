@@ -66,6 +66,7 @@
               var fileName = fileItem.file.name;
               var extension = fileName && fileName.split('.').pop();
               if (videoTypesNotSupported.indexOf(extension) !== -1) {
+                if (fileItem.encodingFileName) {return;}
                 $scope.warnings.push({
                   fileName: fileName,
                   message: 'storage-client.warning.video-not-supported'
@@ -98,7 +99,6 @@
 
               if (!fileItem.isRetrying) {
                 fileItem.file.name = ($scope.filesFactory.folderPath || '') + fileItem.file.name;
-                chekFileType(fileItem);
               }
 
               $translate('storage-client.uploading', {
@@ -112,12 +112,15 @@
                   $rootScope.$emit('refreshSubscriptionStatus',
                     'trial-available');
 
+                  fileItem.url = resp.message;
+                  fileItem.taskToken = resp.taskToken;
+                  fileItem.encodingFileName = resp.newFileName;
+                  fileItem.chunkSize =
+                    STORAGE_UPLOAD_CHUNK_SIZE;
+
+                  chekFileType(fileItem);
+
                   uploadOverwriteWarning.checkOverwrite(resp).then(function () {
-                    fileItem.url = resp.message;
-                    fileItem.taskToken = resp.taskToken;
-                    fileItem.encodingFileName = resp.newFileName;
-                    fileItem.chunkSize =
-                      STORAGE_UPLOAD_CHUNK_SIZE;
                     FileUploader.uploadItem(fileItem);
                   }).catch(function () {
                     FileUploader.removeFromQueue(fileItem);
