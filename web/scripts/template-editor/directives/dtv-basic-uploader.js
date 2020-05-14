@@ -54,20 +54,26 @@ angular.module('risevision.template-editor.directives')
           $scope.fileNameOf = templateEditorUtils.fileNameOf;
 
           $scope.uploadSelectedFiles = function (selectedFiles) {
-            var validExtensions = $scope.validExtensions ? $scope.validExtensions.split(',') : [];
-            var validFiles = selectedFiles.filter(function (file) {
-              return templateEditorUtils.fileHasValidExtension(file.name, validExtensions);
-            });
-
-            if (validExtensions.length > 0 && validFiles.length < selectedFiles.length) {
-              templateEditorUtils.showInvalidExtensionsMessage(validExtensions);
-            }
-
-            return $scope.uploader.removeExif(validFiles)
+            return $scope.uploader.removeExif(selectedFiles)
               .then(function (fileItems) {
                 return $scope.uploader.addToQueue(fileItems);
               });
           };
+
+          function checkFileType(fileItem) {
+            var validExtensions = $scope.validExtensions ? $scope.validExtensions.split(',') : [];
+
+            if (!validExtensions.length) {return;}
+
+            if (templateEditorUtils.fileHasValidExtension(fileItem.name || fileItem.file.name, validExtensions)) {return;}
+
+            if (fileItem.file && fileItem.file.type && fileItem.file.type.indexOf('video') === 0 && fileItem.encodingFileName) {return;}
+
+            if ($scope.fileTypeWarned) {return true;}
+            $scope.fileTypeWarned = true;
+            templateEditorUtils.showInvalidExtensionsMessage(validExtensions);
+            return true;
+          }
 
           inputElement.bind('change', function () {
             var selectedFiles = Array.from(this.files);
@@ -94,9 +100,14 @@ angular.module('risevision.template-editor.directives')
             UploadURIService.getURI(fileItem.file)
               .then(function (resp) {
 
+                fileItem.url = resp.message;
+                fileItem.taskToken = resp.taskToken;
+                fileItem.encodingFileName = resp.newFileName;
+                fileItem.chunkSize = STORAGE_UPLOAD_CHUNK_SIZE;
+
+                if (checkFileType(fileItem)) {return FileUploader.removeFromQueue(fileItem);}
+
                 uploadOverwriteWarning.checkOverwrite(resp, true).then(function () {
-                  fileItem.url = resp.message;
-                  fileItem.chunkSize = STORAGE_UPLOAD_CHUNK_SIZE;
                   FileUploader.uploadItem(fileItem);
                 }).catch(function () {
                   FileUploader.removeFromQueue(fileItem);
@@ -130,7 +141,7 @@ angular.module('risevision.template-editor.directives')
             }
 
             var baseFile = {
-              'name': item.file.name,
+              'name': item.encodingFileName || item.file.name,
               'updated': {
                 'value': new Date().valueOf().toString()
               },
@@ -139,7 +150,7 @@ angular.module('risevision.template-editor.directives')
             };
 
             // Retrieve to force thumbnail creation
-            storage.refreshFileMetadata(item.file.name)
+            storage.refreshFileMetadata(item.encodingFileName || item.file.name)
               .then(function (file) {
                 console.log('Add file to list of available files', file);
                 $scope.uploadManager.addFile(file);
@@ -157,7 +168,7 @@ angular.module('risevision.template-editor.directives')
             if (presentationUtils.isMobileBrowser() && _.includes(ALLOWED_VALID_TYPES, $scope.validType)) {
               $scope.accept = $scope.validType + '/*';
             } else {
-              $scope.accept = $scope.validExtensions;
+              $scope.accept = ($scope.validExtensions && $scope.validExtensions.indexOf('mp4') >= 0) ? '*' : $scope.validExtensions;
             }
           };
 

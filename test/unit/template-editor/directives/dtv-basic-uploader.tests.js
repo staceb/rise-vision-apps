@@ -18,8 +18,10 @@ describe('directive: basicUploader', function () {
       return function () {
         return FileUploader = {
           addToQueue: function(files){
-            FileUploader.onAddingFiles({file:files[0]});
-            FileUploader.onAfterAddingFile({file:files[0]});
+            files.forEach(function(file) {
+              FileUploader.onAddingFiles({file:file});
+              FileUploader.onAfterAddingFile({file:file});
+            });
           },
           uploadItem: sinon.stub(),
           queue: [],
@@ -283,12 +285,14 @@ describe('directive: basicUploader', function () {
       var file1 = { name: 'test.jpg' };
       $scope.uploadSelectedFiles([ file1 ])
       .then (function () {
-        expect($scope.uploader.removeExif).to.have.been.called;
-        expect($scope.uploader.addToQueue).to.have.been.calledWith([ file1 ]);
-        expect(templateEditorUtils.fileHasValidExtension).to.have.been.called;
-        expect(templateEditorUtils.showInvalidExtensionsMessage).to.have.not.been.called;
+        setTimeout(function() {
+          expect($scope.uploader.removeExif).to.have.been.called;
+          expect($scope.uploader.addToQueue).to.have.been.calledWith([ file1 ]);
+          expect(templateEditorUtils.fileHasValidExtension).to.have.been.called;
+          expect(templateEditorUtils.showInvalidExtensionsMessage).to.have.not.been.called;
 
-        done();
+          done();
+        }, 50);
       });
     });
 
@@ -297,12 +301,15 @@ describe('directive: basicUploader', function () {
       var file2 = { name: 'test.pdf' };
       $scope.uploadSelectedFiles([ file1, file2 ])
       .then (function () {
-        expect($scope.uploader.removeExif).to.have.been.called;
-        expect($scope.uploader.addToQueue).to.have.been.calledWith([ file1 ]);
-        expect(templateEditorUtils.fileHasValidExtension).to.have.been.called;
-        expect(templateEditorUtils.showInvalidExtensionsMessage).to.have.been.called;
+        setTimeout(function() {
+          expect($scope.uploader.removeExif).to.have.been.called;
+          expect($scope.uploader.uploadItem).to.have.been.calledOnce;
+          expect($scope.uploader.uploadItem.getCall(0).args[0].file.name).to.equal(file1.name);
+          expect(templateEditorUtils.fileHasValidExtension).to.have.been.called;
+          expect(templateEditorUtils.showInvalidExtensionsMessage).to.have.been.called;
 
-        done();
+          done();
+        }, 50);
       });
     });
   });
@@ -319,7 +326,7 @@ describe('directive: basicUploader', function () {
       expect($scope.accept).to.be.equal('image/*')
     });
 
-    it('should use a specific accept attribute value when not on a mobile device', function () {
+    it('should accept any video type in the file picker pop up if selecting videos when not on a mobile device', function () {
       sinon.stub(presentationUtils, 'isMobileBrowser').callsFake(function() { return false; });
 
       $scope.validExtensions = '.webm, .mp4';
@@ -327,7 +334,7 @@ describe('directive: basicUploader', function () {
 
       $scope.setAcceptAttribute();
 
-      expect($scope.accept).to.be.equal($scope.validExtensions);
+      expect($scope.accept).to.be.equal('*');
     });
   });
 });
