@@ -168,7 +168,7 @@ angular.module('risevision.template-editor.directives')
             if (presentationUtils.isMobileBrowser() && _.includes(ALLOWED_VALID_TYPES, $scope.validType)) {
               $scope.accept = $scope.validType + '/*';
             } else {
-              $scope.accept = $scope.validExtensions;
+              $scope.accept = ($scope.validExtensions && $scope.validExtensions.indexOf('mp4') >= 0) ? 'video/*' : $scope.validExtensions;
             }
           };
 

@@ -326,7 +326,7 @@ describe('directive: basicUploader', function () {
       expect($scope.accept).to.be.equal('image/*')
     });
 
-    it('should use a specific accept attribute value when not on a mobile device', function () {
+    it('should accept any video type in the file picker pop up if selecting videos when not on a mobile device', function () {
       sinon.stub(presentationUtils, 'isMobileBrowser').callsFake(function() { return false; });
 
       $scope.validExtensions = '.webm, .mp4';
@@ -334,7 +334,7 @@ describe('directive: basicUploader', function () {
 
       $scope.setAcceptAttribute();
 
-      expect($scope.accept).to.be.equal($scope.validExtensions);
+      expect($scope.accept).to.be.equal('video/*');
     });
   });
 });
