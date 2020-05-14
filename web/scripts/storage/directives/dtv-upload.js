@@ -160,7 +160,7 @@
               }
 
               var baseFile = {
-                'name': item.file.name,
+                'name': item.encodingFileName || item.file.name,
                 'updated': {
                   'value': new Date().valueOf().toString()
                 },
@@ -169,7 +169,7 @@
               };
 
               //retrieve to generate thumbnail
-              storage.refreshFileMetadata(item.file.name)
+              storage.refreshFileMetadata(item.encodingFileName || item.file.name)
                 .then(function (file) {
                   console.log('Add file to list of available files', file);
                   $scope.filesFactory.addFile(file);

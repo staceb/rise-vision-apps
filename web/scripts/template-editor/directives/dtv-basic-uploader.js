@@ -130,7 +130,7 @@ angular.module('risevision.template-editor.directives')
             }
 
             var baseFile = {
-              'name': item.file.name,
+              'name': item.encodingFileName || item.file.name,
               'updated': {
                 'value': new Date().valueOf().toString()
               },
@@ -139,7 +139,7 @@ angular.module('risevision.template-editor.directives')
             };
 
             // Retrieve to force thumbnail creation
-            storage.refreshFileMetadata(item.file.name)
+            storage.refreshFileMetadata(item.encodingFileName || item.file.name)
               .then(function (file) {
                 console.log('Add file to list of available files', file);
                 $scope.uploadManager.addFile(file);
