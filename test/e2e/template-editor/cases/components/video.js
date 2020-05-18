@@ -207,9 +207,9 @@ var VideoComponentScenarios = function () {
     });
 
     describe('file types', function () {
-      it('should use a specific accept attribute value when not on a mobile device', function (done) {
+      it('should accept any video type when not on a mobile device', function (done) {
         videoComponentPage.getUploadInputMain().getAttribute('accept').then(accept => {
-          expect(accept).to.equal('.mp4, .webm');
+          expect(accept).to.equal('*');
           done();
         });
       });
