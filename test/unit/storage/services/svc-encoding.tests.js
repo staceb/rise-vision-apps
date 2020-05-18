@@ -46,6 +46,15 @@ describe('service: encoding:', function() {
       });
     });
 
+    it('should not be applicable if file name contains # (temporary workaround for Qencode issue)', function() {
+      $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
+
+      return encoding.isApplicable('video/subtype', 'my#file.mp4')
+      .then(function(resp) {
+        expect(resp).to.be.false;
+      });
+    });
+
     it('should not be applicable if file is not video', function() {
       $httpBackend.when('HEAD', /.*encoding/).respond(200, {});
 

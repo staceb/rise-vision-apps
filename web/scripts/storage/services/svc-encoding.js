@@ -8,10 +8,11 @@ angular.module('risevision.storage.services')
 
       var service = {};
 
-      service.isApplicable = function(fileType) {
+      service.isApplicable = function(fileType, fileName) {
         $log.debug('Checking encoding applicability for ' + fileType);
 
         if (fileType.indexOf('video/') !== 0) { return $q.resolve(false); }
+        if (fileName && fileName.indexOf('#') >= 0) { return $q.resolve(false); }
 
         if (sessionStorage.getItem('force-upload-encoding') === 'true') {return $q.resolve(true);}
 
