@@ -106,30 +106,34 @@ angular.module('risevision.template-editor.directives')
 
             $scope.uploadManager.onUploadStatus(_isUploading());
 
-            UploadURIService.getURI(fileItem.file)
-              .then(function (resp) {
-
-                fileItem.url = resp.message;
-                fileItem.taskToken = resp.taskToken;
-                fileItem.encodingFileName = resp.newFileName;
-                fileItem.chunkSize = STORAGE_UPLOAD_CHUNK_SIZE;
-
-                if (checkFileType(fileItem)) {
-                  return FileUploader.removeFromQueue(fileItem);
-                }
-
-                uploadOverwriteWarning.checkOverwrite(resp, true).then(function () {
-                  FileUploader.uploadItem(fileItem);
-                }).catch(function () {
-                  FileUploader.removeFromQueue(fileItem);
-                  $scope.uploadManager.onUploadStatus(_isUploading());
-                });
-              })
+            return UploadURIService.getURI(fileItem.file)
+              .then(uploadFile)
               .then(null, function (resp) {
                 console.log('getURI error', resp);
+
+                if (resp.message === 'Unencodable overwrite') {
+                  return UploadURIService.getURI(fileItem.file, true).then(uploadFile);
+                }
+
                 FileUploader.notifyErrorItem(fileItem, resp.status);
                 $scope.status.message = resp.message;
               });
+
+            function uploadFile(resp) {
+              fileItem.url = resp.message;
+              fileItem.taskToken = resp.taskToken;
+              fileItem.encodingFileName = resp.newFileName;
+              fileItem.chunkSize = STORAGE_UPLOAD_CHUNK_SIZE;
+
+              if (checkFileType(fileItem)) {return FileUploader.removeFromQueue(fileItem);}
+
+              return uploadOverwriteWarning.checkOverwrite(resp, true).then(function () {
+                FileUploader.uploadItem(fileItem);
+              }).catch(function () {
+                FileUploader.removeFromQueue(fileItem);
+                $scope.uploadManager.onUploadStatus(_isUploading());
+              });
+            }
           };
 
           FileUploader.onBeforeUploadItem = function (item) {

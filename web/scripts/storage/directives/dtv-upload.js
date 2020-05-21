@@ -109,8 +109,21 @@
                 $scope.status.message = msg;
               });
 
-              UploadURIService.getURI(fileItem.file)
-                .then(function (resp) {
+              return UploadURIService.getURI(fileItem.file)
+                .then(uploadFile)
+                .then(null, function (resp) {
+                  console.log('getURI error', resp);
+
+                  if (resp.message === 'Unencodable overwrite') {
+                    return UploadURIService.getURI(fileItem.file, true)
+                    .then(uploadFile);
+                  }
+
+                  FileUploader.notifyErrorItem(fileItem, resp.status);
+                  $scope.status.message = resp.message;
+                });
+
+                function uploadFile(resp) {
                   $rootScope.$emit('refreshSubscriptionStatus',
                     'trial-available');
 
@@ -122,17 +135,12 @@
 
                   chekFileType(fileItem);
 
-                  uploadOverwriteWarning.checkOverwrite(resp).then(function () {
+                  return uploadOverwriteWarning.checkOverwrite(resp).then(function () {
                     FileUploader.uploadItem(fileItem);
                   }).catch(function () {
                     FileUploader.removeFromQueue(fileItem);
                   });
-                })
-                .then(null, function (resp) {
-                  console.log('getURI error', resp);
-                  FileUploader.notifyErrorItem(fileItem, resp.status);
-                  $scope.status.message = resp.message;
-                });
+                }
             };
 
             FileUploader.onBeforeUploadItem = function (item) {

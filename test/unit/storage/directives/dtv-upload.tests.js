@@ -165,6 +165,27 @@ describe('directive: upload', function() {
     expect(args[0].name).to.be.equal('test/test1.jpg');
   });
 
+  it('should fall back to storage encoding if overwriting non mp4', function () {
+    UploadURIService.getURI = sinon.stub()
+      .onCall(0).returns(Q.reject({message: 'Unencodable overwrite'}))
+      .onCall(1).returns(Q.resolve({}));
+
+    var fileName = 'test1.webm';
+    var file1 = { name: fileName, size: 200, slice: function () {}, file: { name: fileName } };
+
+    return FileUploader.onAfterAddingFile(file1)
+    .then(function () {
+      var firstCallArgs = UploadURIService.getURI.getCall(0).args;
+      var secondCallArgs = UploadURIService.getURI.getCall(1).args;
+
+      expect(UploadURIService.getURI.called).to.be.true;
+      expect(firstCallArgs[0].name).to.be.equal('test1.webm');
+      expect(firstCallArgs[1]).to.be.equal(undefined);
+      expect(secondCallArgs[0].name).to.be.equal('test1.webm');
+      expect(secondCallArgs[1]).to.be.equal(true);
+    });
+  });
+
   it('should not modify the name if the file is being retried', function() {
     var fileName = 'test/test1.jpg';
     var file1 = { name: fileName, size: 200, slice: function() {}, isRetrying: true, file: { name: fileName } };
