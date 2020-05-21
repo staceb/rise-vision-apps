@@ -1,4 +1,5 @@
 'use strict';
+
 describe('service: displayFactory:', function() {
   var sandbox = sinon.sandbox.create();
 
@@ -64,22 +65,34 @@ describe('service: displayFactory:', function() {
         trackerCalled = name;
       };
     });
+    $provide.service('$modal', function() {
+      return {
+        open: sinon.stub().returns({result: Q.resolve()})
+      }
+    });
     $provide.service('$state',function(){
       return {
-        go : function(state, params){
-          if (state){
-            currentState = state;
-          }
-          return currentState;
-        }
+        go : sinon.spy()
+      }
+    });
+    $provide.factory('userState', function() {
+      return {
+        isRiseAdmin: sandbox.stub().returns(false),
+        _restoreState: function(){}
       }
     });
     $provide.factory('playerLicenseFactory', function() {
       return {
         toggleDisplayLicenseLocal: function () {},
-        areAllProLicensesUsed: function () {}
+        getProLicenseCount: sinon.stub(),
+        areAllProLicensesUsed: sinon.stub().returns(true)
       };
     });
+    $provide.factory('plansFactory', function() {
+      return {
+        showPlansModal: sinon.spy()
+      };
+    })
     $provide.service('processErrorCode', function() {
       return processErrorCode = sinon.spy(function() { return 'error'; });
     });
@@ -97,11 +110,10 @@ describe('service: displayFactory:', function() {
       }
     });
   }));
-  var displayFactory, $rootScope, $modal, trackerCalled, updateDisplay, currentState, returnList, 
-  displayListSpy, displayAddSpy, playerLicenseFactory, display, processErrorCode, validateAddress, storeService;
+  var displayFactory, $rootScope, $modal, $state, userState, trackerCalled, updateDisplay, returnList, 
+  displayListSpy, displayAddSpy, playerLicenseFactory, plansFactory, display, processErrorCode, validateAddress, storeService;
   beforeEach(function(){
     trackerCalled = undefined;
-    currentState = undefined;
     updateDisplay = true;
     validateAddress = true;
     returnList = null;
@@ -109,10 +121,13 @@ describe('service: displayFactory:', function() {
     inject(function($injector){
       displayFactory = $injector.get('displayFactory');
       playerLicenseFactory = $injector.get('playerLicenseFactory');
+      plansFactory = $injector.get('plansFactory');
       storeService = $injector.get('storeService');
       display = $injector.get('display');
       $modal = $injector.get('$modal');
       $rootScope = $injector.get('$rootScope');
+      $state = $injector.get('$state');
+      userState = $injector.get('userState');
       displayListSpy = sinon.spy(display,'list');
       displayAddSpy = sinon.spy(display,'add');
     });
@@ -123,12 +138,12 @@ describe('service: displayFactory:', function() {
   });
 
   it('should exist',function(){
-    expect(displayFactory).to.be.truely;
+    expect(displayFactory).to.be.ok;
     
-    expect(displayFactory.display).to.be.truely;
+    expect(displayFactory.display).to.be.ok;
     expect(displayFactory.loadingDisplay).to.be.false;
     expect(displayFactory.savingDisplay).to.be.false;
-    expect(displayFactory.apiError).to.not.be.truely;
+    expect(displayFactory.apiError).to.not.be.ok;
     
     expect(displayFactory.init).to.be.a('function');
     expect(displayFactory.addDisplayModal).to.be.a('function');
@@ -136,6 +151,10 @@ describe('service: displayFactory:', function() {
     expect(displayFactory.addDisplay).to.be.a('function');
     expect(displayFactory.updateDisplay).to.be.a('function');
     expect(displayFactory.deleteDisplay).to.be.a('function'); 
+
+    expect(displayFactory.showLicenseRequired).to.be.a('function');
+    expect(displayFactory.showLicenseUpdate).to.be.a('function');
+    expect(displayFactory.showUnlockThisFeatureModal).to.be.a('function'); 
   });
   
   it('should initialize',function(){
@@ -148,43 +167,38 @@ describe('service: displayFactory:', function() {
       'monitoringEnabled': true,
       'useCompanyAddress': true
     });
-    expect(displayFactory.displayId).to.not.be.truely;
   });
   
   describe('addDisplayModal: ', function() {
     it('should open modal', function() {
-      var $modalSpy = sinon.spy($modal, 'open');
-      
       displayFactory.addDisplayModal();      
       
-      $modalSpy.should.have.been.calledWithMatch({
+      $modal.open.should.have.been.calledWithMatch({
     	  controller: "displayAddModal",
     	  size: "lg",
     	  templateUrl: "partials/displays/display-add-modal.html"
     	});
 
-      expect($modalSpy.lastCall.args[0].resolve.downloadOnly()).to.be.falsey;
+      expect($modal.open.lastCall.args[0].resolve.downloadOnly()).to.be.falsey;
     });
 
     it('should open modal on download only mode', function() {
-      var $modalSpy = sinon.spy($modal, 'open');
       var testDisplay = { id: 'test', name: 'test' };
 
       displayFactory.addDisplayModal(testDisplay);
 
-      $modalSpy.should.have.been.calledWithMatch({
+      $modal.open.should.have.been.calledWithMatch({
     	  controller: "displayAddModal",
     	  size: "lg",
     	  templateUrl: "partials/displays/display-add-modal.html"
     	});
 
-      expect($modalSpy.lastCall.args[0].resolve.downloadOnly()).to.be.truely;
+      expect($modal.open.lastCall.args[0].resolve.downloadOnly()).to.be.ok;
       expect(displayFactory.display).to.deep.equal(testDisplay);
     });
 
     it('should reset the display',function(){
       displayFactory.display.id = 'displayId';
-      displayFactory.displayId = 'displayId';
       
       displayFactory.addDisplayModal();
       
@@ -199,7 +213,6 @@ describe('service: displayFactory:', function() {
         'monitoringEnabled': true,
         'useCompanyAddress': true
       });
-      expect(displayFactory.displayId).to.not.be.truely;
     });
 
     it('should set the display to parameter if it exists',function(){
@@ -218,7 +231,7 @@ describe('service: displayFactory:', function() {
     it("should get the display",function(done){
       displayFactory.getDisplay("displayId")
       .then(function() {
-        expect(displayFactory.display).to.be.truely;
+        expect(displayFactory.display).to.be.ok;
         expect(displayFactory.display.name).to.equal("some display");
 
         setTimeout(function() {
@@ -262,7 +275,7 @@ describe('service: displayFactory:', function() {
       updateDisplay = true;
       var broadcastSpy = sinon.spy($rootScope,'$broadcast');
       sandbox.stub(playerLicenseFactory, 'toggleDisplayLicenseLocal');
-      sandbox.stub(playerLicenseFactory, 'areAllProLicensesUsed').returns(false);
+      playerLicenseFactory.areAllProLicensesUsed.returns(false);
       display._display.playerProAuthorized = true;
 
       displayFactory.addDisplay();
@@ -309,7 +322,8 @@ describe('service: displayFactory:', function() {
       })
       .then(null, function() {
         setTimeout(function(){
-          expect(currentState).to.be.empty;
+          $state.go.should.not.have.been.called;
+
           expect(trackerCalled).to.not.be.ok;
           expect(displayFactory.savingDisplay).to.be.false;
           expect(displayFactory.loadingDisplay).to.be.false;
@@ -466,7 +480,9 @@ describe('service: displayFactory:', function() {
         expect(displayFactory.errorMessage).to.not.be.ok;
         expect(displayFactory.apiError).to.not.be.ok;
         expect(trackerCalled).to.equal('Display Deleted');
-        expect(currentState).to.equal('apps.displays.list');
+
+        $state.go.should.have.been.calledWith('apps.displays.list');
+
         expect(playerLicenseFactory.toggleDisplayLicenseLocal).to.have.been.calledWith(false);
         done();
       },10);
@@ -495,7 +511,8 @@ describe('service: displayFactory:', function() {
       expect(displayFactory.loadingDisplay).to.be.true;
 
       setTimeout(function(){
-        expect(currentState).to.be.empty;
+        $state.go.should.not.have.been.called;
+
         expect(trackerCalled).to.not.be.ok;
         expect(displayFactory.loadingDisplay).to.be.false;
         
@@ -504,6 +521,94 @@ describe('service: displayFactory:', function() {
         done();
       },10);
     });
+  });
+  
+  describe('showLicenseRequired:', function() {
+    it('should not show for null display', function() {
+      expect(displayFactory.showLicenseRequired(null)).to.not.be.true;
+    });
+
+    it('should show for unlicensed display', function() {
+      var display = {
+        playerProAuthorized: false
+      };
+
+      expect(displayFactory.showLicenseRequired(display)).to.be.true;
+    });
+
+    it('should not show for licensed display', function() {
+      var display = {
+        playerProAuthorized: true
+      };
+
+      expect(displayFactory.showLicenseRequired(display)).to.be.false;
+    });
+
+    it('should not show for Rise Users', function() {
+      userState.isRiseAdmin.returns(true);
+      var display = {
+        playerProAuthorized: false
+      };
+
+      expect(displayFactory.showLicenseRequired(display)).to.be.false;
+    });
+
+  });
+
+  describe('showLicenseUpdate:', function() {
+    it('should open plans modal if user confirms and they do not have licenses', function() {
+      playerLicenseFactory.getProLicenseCount.returns(0);
+      displayFactory.showLicenseUpdate();
+
+      plansFactory.showPlansModal.should.have.been.called;
+
+      $state.go.should.not.have.been.called;
+    });
+
+    it('should show the billing page if user confirms and they have licenses', function() {
+      playerLicenseFactory.getProLicenseCount.returns(1);
+      displayFactory.showLicenseUpdate();
+
+      plansFactory.showPlansModal.should.not.have.been.called;
+
+      $state.go.should.have.been.calledWith('apps.billing.home');
+    });
+  });
+
+  describe('showUnlockThisFeatureModal: ', function() {
+    beforeEach(function() {
+      sinon.stub(displayFactory, 'showLicenseUpdate');
+    });
+
+    it('should not open modal and return false if Display is licensed', function() {
+      displayFactory.display.playerProAuthorized = true;
+      
+      expect(displayFactory.showUnlockThisFeatureModal()).to.be.false;
+      
+      $modal.open.should.not.have.been.called;
+    });
+
+    it('should open modal on download only mode', function() {
+      expect(displayFactory.showUnlockThisFeatureModal()).to.be.true;
+
+      $modal.open.should.have.been.calledWithMatch({
+    	  controller: "confirmModalController",
+    	  size: "sm",
+    	  templateUrl: "partials/displays/unlock-display-feature-modal.html"
+    	});
+    });
+
+    it('should show license update if user confirms', function(done) {
+      playerLicenseFactory.getProLicenseCount.returns(0);
+      displayFactory.showUnlockThisFeatureModal();
+
+      setTimeout(function() {
+        displayFactory.showLicenseUpdate.should.have.been.called;
+
+        done();
+      }, 10);
+    });
+
   });
 
 });

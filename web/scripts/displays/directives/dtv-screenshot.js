@@ -2,18 +2,21 @@
 
 angular.module('risevision.displays.directives')
   .directive('screenshot', ['$filter', 'display', 'screenshotFactory',
-    'playerProFactory',
-    function ($filter, displayService, screenshotFactory, playerProFactory) {
+    'playerProFactory', 'displayFactory',
+    function ($filter, displayService, screenshotFactory, playerProFactory, displayFactory) {
       return {
         restrict: 'E',
         templateUrl: 'partials/displays/screenshot.html',
         link: function ($scope) {
           $scope.screenshotFactory = screenshotFactory;
+          $scope.displayFactory = displayFactory;
 
           $scope.screenshotState = function (display) {
             var statusFilter = $filter('status');
 
-            if (!display || displayService.statusLoading || screenshotFactory.screenshotLoading) {
+            if (displayFactory.showLicenseRequired(display)) {
+              return 'no-license';
+            } else if (!display || displayService.statusLoading || screenshotFactory.screenshotLoading) {
               return 'loading';
             } else if (display.os && display.os.indexOf('cros') === 0) {
               return 'os-not-supported';
