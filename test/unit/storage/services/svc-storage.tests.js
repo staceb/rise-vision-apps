@@ -403,17 +403,14 @@ describe('service: storage:', function() {
   });
 
   describe('getResumableUploadURI:',function(){
-    it('should get Resumable Upload URI',function(done){
-      storage.getResumableUploadURI("fileName","fileType")
+    it('should get Resumable Upload URI',function(){
+      return storage.getResumableUploadURI("fileName","fileType")
         .then(function(result){
           expect(result).to.be.ok;
           expect(storageApiRequestObj.fileName).to.equal('fileName');
           expect(storageApiRequestObj.fileType).to.equal('fileType');
           expect(storageApiRequestObj.companyId).to.equal('TEST_COMP_ID');
-
-          done();
         })
-        .then(null,done);
     });
     
     it('should encode URI',function(done){
