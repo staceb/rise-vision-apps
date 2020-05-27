@@ -28,7 +28,7 @@ angular.module('risevision.template-editor.services')
               return 'Financial Data License Required';
             },
             confirmationMessage: function () {
-              return 'This Template requires a Financial Data License to show on your Display(s). Contact <a href="mailto:sales@risevision.com">sales@risevision.com</a> for a 30 day free trial.';
+              return 'This Presentation requires a Financial Data License to show on your Display(s). Contact <a href="mailto:sales@risevision.com">sales@risevision.com</a> for a 30 day free trial.';
             },
             confirmationButton: function () {
               return 'Get a 30 Day Free Trial';
