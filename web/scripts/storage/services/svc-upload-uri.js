@@ -11,7 +11,7 @@ angular.module('risevision.storage.services')
           });
         }
 
-        return encoding.isApplicable(file.type)
+        return encoding.isApplicable(file.type, file.name)
           .then(function (useEncoding) {
             var applicableService = useEncoding ? encoding : storage;
 
